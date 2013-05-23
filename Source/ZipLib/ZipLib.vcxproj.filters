@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\extlibs">
+      <UniqueIdentifier>{6d52c1ba-1900-44e4-95c6-d43477dfa56b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\extlibs\zlib">
+      <UniqueIdentifier>{29d8dfbc-ba22-4138-9874-737d0a1066dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\streams">
+      <UniqueIdentifier>{f34bddd8-89d1-4f8a-ba15-4ef52c04d5a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\streams\streambuffs">
+      <UniqueIdentifier>{55dadd8b-5ea3-4885-86ae-7f5a3dd583ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\extlibs">
+      <UniqueIdentifier>{c4aa9a2e-d588-4dd1-90da-21d1b3d49451}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\extlibs\zlib">
+      <UniqueIdentifier>{96bc8353-b544-4de8-8a8b-f68649b1215f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="streams\streambuffs\zip_crypto_streambuf.h">
+      <Filter>Header Files\streams\streambuffs</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\streambuffs\tee_streambuff.h">
+      <Filter>Header Files\streams\streambuffs</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\streambuffs\sub_streambuf.h">
+      <Filter>Header Files\streams\streambuffs</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\streambuffs\streambuf_conf.h">
+      <Filter>Header Files\streams\streambuffs</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\streambuffs\mem_streambuf.h">
+      <Filter>Header Files\streams\streambuffs</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\streambuffs\inflate_streambuf.h">
+      <Filter>Header Files\streams\streambuffs</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\streambuffs\deflate_streambuf.h">
+      <Filter>Header Files\streams\streambuffs</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\streambuffs\crc32_streambuf.h">
+      <Filter>Header Files\streams\streambuffs</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\zip_cryptostream.h">
+      <Filter>Header Files\streams</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\teestream.h">
+      <Filter>Header Files\streams</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\substream.h">
+      <Filter>Header Files\streams</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\serialization.h">
+      <Filter>Header Files\streams</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\memstream.h">
+      <Filter>Header Files\streams</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\infstream.h">
+      <Filter>Header Files\streams</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\defstream.h">
+      <Filter>Header Files\streams</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\crc32stream.h">
+      <Filter>Header Files\streams</Filter>
+    </ClInclude>
+    <ClInclude Include="extlibs\zlib\zutil.h">
+      <Filter>Header Files\extlibs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="extlibs\zlib\zlib.h">
+      <Filter>Header Files\extlibs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="extlibs\zlib\zconf.h">
+      <Filter>Header Files\extlibs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="extlibs\zlib\trees.h">
+      <Filter>Header Files\extlibs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="extlibs\zlib\inftrees.h">
+      <Filter>Header Files\extlibs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="extlibs\zlib\inflate.h">
+      <Filter>Header Files\extlibs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="extlibs\zlib\inffixed.h">
+      <Filter>Header Files\extlibs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="extlibs\zlib\inffast.h">
+      <Filter>Header Files\extlibs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="extlibs\zlib\gzguts.h">
+      <Filter>Header Files\extlibs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="extlibs\zlib\deflate.h">
+      <Filter>Header Files\extlibs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="extlibs\zlib\crc32.h">
+      <Filter>Header Files\extlibs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="ZipLocalFileHeader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZipGenericExtraField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZipFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZipCentralDirectoryFileHeader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZipArchiveEntry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZipArchive.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnumTools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EndOfCentralDirectoryBlock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="extlibs\zlib\zutil.c">
+      <Filter>Source Files\extlibs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="extlibs\zlib\uncompr.c">
+      <Filter>Source Files\extlibs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="extlibs\zlib\trees.c">
+      <Filter>Source Files\extlibs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="extlibs\zlib\inftrees.c">
+      <Filter>Source Files\extlibs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="extlibs\zlib\inflate.c">
+      <Filter>Source Files\extlibs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="extlibs\zlib\inffast.c">
+      <Filter>Source Files\extlibs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="extlibs\zlib\infback.c">
+      <Filter>Source Files\extlibs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="extlibs\zlib\gzwrite.c">
+      <Filter>Source Files\extlibs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="extlibs\zlib\gzread.c">
+      <Filter>Source Files\extlibs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="extlibs\zlib\gzlib.c">
+      <Filter>Source Files\extlibs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="extlibs\zlib\gzclose.c">
+      <Filter>Source Files\extlibs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="extlibs\zlib\deflate.c">
+      <Filter>Source Files\extlibs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="extlibs\zlib\crc32.c">
+      <Filter>Source Files\extlibs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="extlibs\zlib\compress.c">
+      <Filter>Source Files\extlibs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="extlibs\zlib\adler32.c">
+      <Filter>Source Files\extlibs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="ZipLocalFileHeader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ZipGenericExtraField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ZipFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ZipCentralDirectoryFileHeader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ZipArchiveEntry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ZipArchive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EndOfCentralDirectoryBlock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

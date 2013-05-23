@@ -1,0 +1,27 @@
+# Compiled Object files
+*.obj
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Binaries
+*.exe
+*.dll
+*.lib
+*.ilk
+*.pdb
+
+# Visual Studio files
+Obj/**
+*.suo
+*.sdf
+*.opensdf

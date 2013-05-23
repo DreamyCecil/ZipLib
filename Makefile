@@ -1,4 +1,4 @@
-EXE      = Bin/x86/ziplib.so
+EXE      = Bin/ziplib.so
 
 #####################
 CC       = gcc

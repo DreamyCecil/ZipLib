@@ -25,8 +25,8 @@ ZipArchive::ZipArchive(ZipArchive&& other)
   other._destroySimultaneously = false;
 }
 
-ZipArchive::ZipArchive(std::istream& stream)
-  : _zipStream(&stream)
+ZipArchive::ZipArchive(std::istream* stream)
+  : _zipStream(stream)
   , _destroySimultaneously(false)
 {
   this->ReadEndOfCentralDirectory();

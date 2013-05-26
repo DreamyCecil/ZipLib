@@ -161,7 +161,7 @@ void ZipArchiveEntry::CopyStream(std::istream& input, std::ostream& output)
     std::istreambuf_iterator<char>(input),
     std::istreambuf_iterator<char>(), // eof
     std::ostreambuf_iterator<char>(output)
-    );
+  );
 }
 
 //////////////////////////////////////////////////////////////////////////

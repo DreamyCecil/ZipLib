@@ -3,10 +3,10 @@
 #else
 # define _CRT_SECURE_NO_WARNINGS
 #endif
-#include "ZipFile.h"
 #include <fstream>
 #include <cassert>
 #include <stdexcept>
+#include "ZipFile.h"
 
 namespace
 {

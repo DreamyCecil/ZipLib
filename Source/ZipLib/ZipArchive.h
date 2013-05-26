@@ -12,7 +12,7 @@ class ZipArchive
   public:
     ZipArchive();
     ZipArchive(ZipArchive&& other);
-    ZipArchive(std::istream& stream);
+    ZipArchive(std::istream* stream);
     ZipArchive(std::istream* stream, bool destroySimultaneously = false);
     ~ZipArchive();
 

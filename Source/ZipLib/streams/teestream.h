@@ -3,6 +3,9 @@
 #include <cstdint>
 #include "streambuffs/tee_streambuff.h"
 
+/**
+ * \brief Basic teestream. Distributes the input data into every bound output stream.
+ */
 template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
 class basic_teestream
   : public std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>

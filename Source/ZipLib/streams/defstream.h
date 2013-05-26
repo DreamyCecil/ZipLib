@@ -2,6 +2,10 @@
 #include <ostream>
 #include "streambuffs/deflate_streambuf.h"
 
+/**
+ * \brief Basic deflate stream.
+ *        Compresses input data using DEFLATE algorithm by given compression level.
+ */
 template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
 class basic_defstream
   : public std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>

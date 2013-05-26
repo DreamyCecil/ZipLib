@@ -2,6 +2,10 @@
 #include <istream>
 #include "streambuffs/inflate_streambuf.h"
 
+/**
+ * \brief Basic inflate stream.
+ *        Decompresses data using the DEFLATE algorithm.
+ */
 template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
 class basic_infstream
   : public std::basic_istream<ELEM_TYPE, TRAITS_TYPE>

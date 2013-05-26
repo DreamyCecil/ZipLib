@@ -7,6 +7,12 @@
 # pragma warning(disable : 4250)
 #endif
 
+/**
+ * \brief Basic input memory stream.
+ *        Creates input stream around the memory buffer.
+ *        Supports seeking.
+ *        Returns EOF when stream seeks behind the size of buffer.
+ */
 template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
 class basic_imemstream
   : public std::basic_istream<ELEM_TYPE, TRAITS_TYPE>
@@ -23,6 +29,12 @@ class basic_imemstream
     mem_streambuf<ELEM_TYPE, TRAITS_TYPE> _memStreambuf;
 };
 
+/**
+ * \brief Basic output memory stream.
+ *        Creates output stream around the memory buffer.
+ *        Supports seeking.
+ *        Sets badbit if the stream wants to write behind the buffer size.
+ */
 template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
 class basic_omemstream
   : public std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>
@@ -39,6 +51,14 @@ class basic_omemstream
     mem_streambuf<ELEM_TYPE, TRAITS_TYPE> _memStreambuf;
 };
 
+/**
+ * \brief Basic input/output memory stream.
+ *        Combines imemstream & omemstream.
+ *        Creates input/output stream around the memory buffer.
+ *        Supports seeking.
+ *        Returns EOF when stream seeks behind the size of buffer.
+ *        Sets badbit if the stream wants to write behind the buffer size.
+ */
 template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
 class basic_iomemstream
   : public std::basic_iostream<ELEM_TYPE, TRAITS_TYPE>

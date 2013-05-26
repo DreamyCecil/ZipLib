@@ -2,6 +2,9 @@
 #include <ostream>
 #include "streambuffs/crc32_streambuf.h"
 
+/**
+ * \brief Basic CRC32 output stream. Computes CRC32 of input data.
+ */
 template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
 class basic_crc32stream
   : public std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>

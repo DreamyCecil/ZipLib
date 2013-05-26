@@ -2,8 +2,10 @@
 #include <istream>
 #include "streambuffs/sub_streambuf.h"
 
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * \brief Basic input substream. Creates a virtual stream over an existing input stream.
+ *        The substream starts at the position 0 and continues until EOF or the specified length.
+ */
 template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
 class basic_isubstream
   : public std::basic_istream<ELEM_TYPE, TRAITS_TYPE>
@@ -45,7 +47,6 @@ class basic_isubstream
     {
       return _subStreambuf.is_init();
     }
-
 
   private:
     sub_streambuf<ELEM_TYPE, TRAITS_TYPE> _subStreambuf;

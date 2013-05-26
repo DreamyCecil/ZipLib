@@ -157,11 +157,22 @@ bool ZipArchiveEntry::IsDirectoryPath(const std::string& fullPath)
 
 void ZipArchiveEntry::CopyStream(std::istream& input, std::ostream& output)
 {
-  std::copy(
-    std::istreambuf_iterator<char>(input),
-    std::istreambuf_iterator<char>(), // eof
-    std::ostreambuf_iterator<char>(output)
-  );
+  size_t buffSize = 1024 * 1024;
+  char* tmpBuff = new char[buffSize];
+
+  do
+  {
+    input.read(tmpBuff, buffSize);
+    output.write(tmpBuff, input.gcount());
+  } while (static_cast<size_t>(input.gcount()) == buffSize);
+
+  delete[] tmpBuff;
+
+  // std::copy(
+  //   std::istreambuf_iterator<char>(input),
+  //   std::istreambuf_iterator<char>(), // eof
+  //   std::ostreambuf_iterator<char>(output)
+  // );
 }
 
 //////////////////////////////////////////////////////////////////////////

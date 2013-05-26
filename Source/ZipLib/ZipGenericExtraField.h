@@ -7,7 +7,7 @@ struct ZipGenericExtraField
 {
   enum : size_t
   {
-    HEADER_SIZE = 8
+    HEADER_SIZE = 4
   };
 
   uint16_t Tag;

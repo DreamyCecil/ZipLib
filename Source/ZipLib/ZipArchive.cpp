@@ -124,6 +124,11 @@ ZipArchiveEntry* ZipArchive::GetEntry(const std::string& entryName)
   return CALL_CONST_METHOD(GetEntry(entryName));
 }
 
+size_t ZipArchive::GetEntriesCount() const
+{
+  return _entries.size();
+}
+
 void ZipArchive::RemoveEntry(const std::string& entryName)
 {
   auto it = std::find_if(_entries.begin(), _entries.end(), [&entryName](ZipArchiveEntry* value) { return value->GetFullName() == entryName; });
@@ -184,7 +189,7 @@ bool ZipArchive::SeekToSignature(uint32_t signature, SeekDirection direction)
 {
   std::streampos streamPosition = _zipStream->tellg();
   uint32_t buffer = 0;
-  int appendix = static_cast<int>(direction == SeekDirection::Backward ? 0 - sizeof(buffer) : sizeof(buffer));
+  int appendix = static_cast<int>(direction == SeekDirection::Backward ? 0 - 1 : 1);
 
   while (!_zipStream->eof() && !_zipStream->fail())
   {

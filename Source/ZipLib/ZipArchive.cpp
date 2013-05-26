@@ -29,17 +29,23 @@ ZipArchive::ZipArchive(std::istream* stream)
   : _zipStream(stream)
   , _destroySimultaneously(false)
 {
-  this->ReadEndOfCentralDirectory();
-  this->EnsureCentralDirectoryRead();
+  if (stream != nullptr)
+  {
+    this->ReadEndOfCentralDirectory();
+    this->EnsureCentralDirectoryRead();
+  }
 }
 
 ZipArchive::ZipArchive(std::istream* stream, bool destroySimultaneously)
   : _zipStream(stream)
-  , _destroySimultaneously(destroySimultaneously)
+  , _destroySimultaneously(stream != nullptr ? destroySimultaneously : false)
 {
   // jesus blew up a school bus when this metod has been implemented
-  this->ReadEndOfCentralDirectory();
-  this->EnsureCentralDirectoryRead();
+  if (stream != nullptr)
+  {
+    this->ReadEndOfCentralDirectory();
+    this->EnsureCentralDirectoryRead();
+  }
 }
 
 ZipArchive::~ZipArchive()
@@ -96,11 +102,6 @@ const ZipArchiveEntry* ZipArchive::GetEntry(int index) const
   return _entries[index];
 }
 
-ZipArchiveEntry* ZipArchive::GetEntry(int index)
-{
-  return _entries[index];
-}
-
 const ZipArchiveEntry* ZipArchive::GetEntry(const std::string& entryName) const
 {
   auto it = std::find_if(_entries.begin(), _entries.end(), [&entryName](ZipArchiveEntry* value) { return value->GetFullName() == entryName; });
@@ -111,6 +112,11 @@ const ZipArchiveEntry* ZipArchive::GetEntry(const std::string& entryName) const
   }
 
   return nullptr;
+}
+
+ZipArchiveEntry* ZipArchive::GetEntry(int index)
+{
+  return _entries[index];
 }
 
 ZipArchiveEntry* ZipArchive::GetEntry(const std::string& entryName)

@@ -20,12 +20,18 @@ class ZipArchiveEntry
   friend class ZipCrypto;
 
   public:
+    /**
+     * \brief Values that represent the method of compression.
+     */
     enum class CompressionMethod : uint16_t
     {
       Deflate = 8,
       Stored = 0
     };
 
+    /**
+     * \brief Values that represent the level of the compression.
+     */
     enum class CompressionLevel
     {
       Stored = 0,
@@ -34,13 +40,18 @@ class ZipArchiveEntry
       BestCompression = 9
     };
 
+    /**
+     * \brief Values that represent the way the zip entry will be compressed.
+     */
     enum class CompressionMode
     {
       Immediate,
       Deferred
     };
 
-    // ms-dos attributes
+    /**
+     * \brief Values that represent the MS-DOS file attributes.
+     */
     enum class Attributes : uint32_t
     {
       None = 0,
@@ -62,12 +73,38 @@ class ZipArchiveEntry
     MARK_AS_TYPED_ENUMFLAGS_FRIEND(Attributes);
     MARK_AS_TYPED_ENUMFLAGS_FRIEND(CompressionMode);
 
+    /**
+     * \brief Destructor.
+     */
     ~ZipArchiveEntry();
 
+    /**
+     * \brief Gets full path of the entry.
+     *
+     * \return  The full name with the path.
+     */
     const std::string& GetFullName() const;
+
+    /**
+     * \brief Sets full name with the path of the entry.
+     *
+     * \param fullName The full name with the path.
+     */
     void SetFullName(const std::string& fullName);
 
+    /**
+     * \brief Gets only the file name of the entry (without path).
+     *
+     * \return  The file name.
+     */
     std::string GetName() const;
+
+    /**
+     * \brief Sets only a file name of the entry.
+     *        If the file is located within some folder, the path is kept.
+     *
+     * \param name  The name.
+     */
     void SetName(const std::string& name);
 
     const std::string& GetComment() const;

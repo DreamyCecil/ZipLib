@@ -20,8 +20,13 @@
 *.ilk
 *.pdb
 
+# Project files
+Bin/**
+
 # Visual Studio files
 Obj/**
+*.psess
+*.vspx
 *.suo
 *.sdf
 *.opensdf

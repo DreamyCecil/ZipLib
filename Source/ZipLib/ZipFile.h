@@ -2,6 +2,9 @@
 #include <string>
 #include "ZipArchive.h"
 
+/**
+ * \brief Provides static methods for creating, extracting, and opening zip archives.
+ */
 class ZipFile
 {
   // TODO:
@@ -14,7 +17,7 @@ class ZipFile
      *
      * \param zipPath Full pathname of the zip file.
      *
-     * \return  .
+     * \return The ZipArchive instance.
      */
     static ZipArchive Open(const std::string& zipPath);
    

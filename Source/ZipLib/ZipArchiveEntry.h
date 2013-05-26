@@ -14,6 +14,9 @@
 
 class ZipArchive;
 
+/**
+ * \brief Represents a compressed file within a zip archive.
+ */
 class ZipArchiveEntry
 {
   friend class ZipArchive;

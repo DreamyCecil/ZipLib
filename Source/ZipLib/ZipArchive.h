@@ -5,6 +5,9 @@
 #include "EndOfCentralDirectoryBlock.h"
 #include "ZipArchiveEntry.h"
 
+/**
+ * \brief Represents a package of compressed files in the zip archive format.
+ */
 class ZipArchive
 {
   friend class ZipArchiveEntry;
@@ -34,9 +37,9 @@ class ZipArchive
      *        with the ZipArchive.
      *
      * \param stream                The input stream of the zip archive content. Must be seekable.
-     * \param destroySimultaneously (Optional) If true, it calls "delete stream" in the ZipArchive destructor.
+     * \param destroySimultaneously If true, it calls "delete stream" in the ZipArchive destructor.
      */
-    ZipArchive(std::istream* stream, bool destroySimultaneously = false);
+    ZipArchive(std::istream* stream, bool destroySimultaneously);
 
     /**
      * \brief Destructor.

@@ -148,15 +148,17 @@ class inflate_streambuf :
 
     int decompress_buffer()
     {
-      if (_endOfStream)
-      {
-        return 0;
-      }
-
       // do not load any data until there
       // are something left
       if (_zstream.avail_out != 0)
       {
+        // if all data has not been fetched and the stream is at the end,
+        // it is an error
+        if (_endOfStream)
+        {
+          return 0;
+        }
+
         // read data into buffer
         read_input_stream();
 

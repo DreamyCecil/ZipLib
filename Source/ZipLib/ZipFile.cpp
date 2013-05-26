@@ -25,19 +25,19 @@ namespace
   }
 }
 
-ZipArchive ZipFile::Open(const std::string& zipName)
+ZipArchive ZipFile::Open(const std::string& zipFileName)
 {
   std::ifstream* zipFile = new std::ifstream();
-  zipFile->open(zipName, std::ios::binary);
+  zipFile->open(zipFileName, std::ios::binary);
 
   if (!zipFile->is_open())
   {
     // if file does not exist, try to create it
     std::ofstream tmpFile;
-    tmpFile.open(zipName, std::ios::binary);
+    tmpFile.open(zipFileName, std::ios::binary);
     tmpFile.close();
 
-    zipFile->open(zipName, std::ios::binary);
+    zipFile->open(zipFileName, std::ios::binary);
 
     // if attempt to create file failed, throw an exception
     if (!zipFile->is_open())
@@ -49,33 +49,33 @@ ZipArchive ZipFile::Open(const std::string& zipName)
   return ZipArchive(zipFile, true);
 }
 
-bool ZipFile::IsInArchive(const std::string& zipName, const std::string& fileName)
+bool ZipFile::IsInArchive(const std::string& zipFileName, const std::string& fileName)
 {
-  ZipArchive zipArchive = ZipFile::Open(zipName);
+  ZipArchive zipArchive = ZipFile::Open(zipFileName);
   return zipArchive->GetEntry(fileName) != nullptr;
 }
 
-void ZipFile::AddFile(const std::string& zipName, const std::string& fileName, ZipArchiveEntry::CompressionLevel level)
+void ZipFile::AddFile(const std::string& zipFileName, const std::string& fileName, ZipArchiveEntry::CompressionLevel level)
 {
-  AddFile(zipName, fileName, GetFilenameFromPath(fileName), level);
+  AddFile(zipFileName, fileName, GetFilenameFromPath(fileName), level);
 }
 
-void ZipFile::AddFile(const std::string& zipName, const std::string& fileName, const std::string& inArchiveName, ZipArchiveEntry::CompressionLevel level)
+void ZipFile::AddFile(const std::string& zipFileName, const std::string& fileName, const std::string& inArchiveName, ZipArchiveEntry::CompressionLevel level)
 {
-  AddEncryptedFile(zipName, fileName, inArchiveName, std::string(), level);
+  AddEncryptedFile(zipFileName, fileName, inArchiveName, std::string(), level);
 }
 
-void ZipFile::AddEncryptedFile(const std::string& zipName, const std::string& fileName, const std::string& password, ZipArchiveEntry::CompressionLevel level)
+void ZipFile::AddEncryptedFile(const std::string& zipFileName, const std::string& fileName, const std::string& password, ZipArchiveEntry::CompressionLevel level)
 {
-  AddEncryptedFile(zipName, fileName, GetFilenameFromPath(fileName), std::string(), level);
+  AddEncryptedFile(zipFileName, fileName, GetFilenameFromPath(fileName), std::string(), level);
 }
 
-void ZipFile::AddEncryptedFile(const std::string& zipName, const std::string& fileName, const std::string& inArchiveName, const std::string& password, ZipArchiveEntry::CompressionLevel level)
+void ZipFile::AddEncryptedFile(const std::string& zipFileName, const std::string& fileName, const std::string& inArchiveName, const std::string& password, ZipArchiveEntry::CompressionLevel level)
 {
   std::string tmpName(L_tmpnam, '\0');
 
   {
-    ZipArchive zipArchive = ZipFile::Open(zipName);
+    ZipArchive zipArchive = ZipFile::Open(zipFileName);
 
     std::ifstream fileToAdd;
     fileToAdd.open(fileName, std::ios::binary);
@@ -127,28 +127,28 @@ void ZipFile::AddEncryptedFile(const std::string& zipName, const std::string& fi
   }
 
 
-  remove(zipName.c_str());
-  rename(tmpName.c_str(), zipName.c_str());
+  remove(zipFileName.c_str());
+  rename(tmpName.c_str(), zipFileName.c_str());
 }
 
-void ZipFile::ExtractFile(const std::string& zipName, const std::string& fileName)
+void ZipFile::ExtractFile(const std::string& zipFileName, const std::string& fileName)
 {
-  ExtractFile(zipName, fileName, GetFilenameFromPath(fileName));
+  ExtractFile(zipFileName, fileName, GetFilenameFromPath(fileName));
 }
 
-void ZipFile::ExtractFile(const std::string& zipName, const std::string& fileName, const std::string& destinationPath)
+void ZipFile::ExtractFile(const std::string& zipFileName, const std::string& fileName, const std::string& destinationPath)
 {
-  ExtractEncryptedFile(zipName, fileName, destinationPath, std::string());
+  ExtractEncryptedFile(zipFileName, fileName, destinationPath, std::string());
 }
 
-void ZipFile::ExtractEncryptedFile(const std::string& zipName, const std::string& fileName, const std::string& password)
+void ZipFile::ExtractEncryptedFile(const std::string& zipFileName, const std::string& fileName, const std::string& password)
 {
-  ExtractEncryptedFile(zipName, fileName, GetFilenameFromPath(fileName), password);
+  ExtractEncryptedFile(zipFileName, fileName, GetFilenameFromPath(fileName), password);
 }
 
-void ZipFile::ExtractEncryptedFile(const std::string& zipName, const std::string& fileName, const std::string& destinationPath, const std::string& password)
+void ZipFile::ExtractEncryptedFile(const std::string& zipFileName, const std::string& fileName, const std::string& destinationPath, const std::string& password)
 {
-  ZipArchive zipArchive = ZipFile::Open(zipName);
+  ZipArchive zipArchive = ZipFile::Open(zipFileName);
 
   std::ofstream destFile;
   destFile.open(destinationPath, std::ios::binary | std::ios::trunc);

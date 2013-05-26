@@ -37,6 +37,19 @@ void Sample_ZipFile()
   }
 }
 
+void Sample_ZipFile_Remove()
+{
+  try
+  {
+    printf("Removing '%s'\n", fileIn1);
+    ZipFile::RemoveEntry(zipFilename2, fileIn1);
+  }
+  catch (std::exception& e)
+  {
+    printf("An exception occured: '%s'\n", e.what());
+  }
+}
+
 void Sample_ZipArchive_Listing()
 {
   ZipArchive archive = ZipFile::Open(zipFilename);
@@ -285,6 +298,8 @@ int main()
 
   Sample_ZipArchive_EncryptFileManually();
   Sample_ZipArchive_DecryptFileManually();
+
+  Sample_ZipFile_Remove();
 
   return 0;
 }

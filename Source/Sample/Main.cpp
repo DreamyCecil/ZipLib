@@ -1,4 +1,5 @@
 #include "../ZipLib/ZipFile.h"
+#include "../ZipLib/streams/memstream.h"
 #include <fstream>
 
 static const char* zipFilename  = "archive.zip";
@@ -7,6 +8,7 @@ static const char* zipFilename2 = "archive_helper.zip";
 static const char* fileIn1     = "in1.jpg";
 static const char* fileIn2     = "in2.png";
 static const char* fileIn3     = "in3.txt";
+static const char* fileIn4     = "by_memstream.txt";
 static const char* fileIn2Dest = "dir/in2.png";
 
 static const char* fileOut1    = "out1.jpg";
@@ -118,6 +120,33 @@ void Sample_ZipArchive_CompressFileDeferred()
   // must be still alive
   printf("Saving into '%s'\n", zipFilename2);
   std::ofstream z2(zipFilename2, std::ios::binary);
+  archive->WriteToStream(z2);
+  z2.close();
+}
+
+void Sample_ZipArchive_CompressFromMemory()
+{
+  ZipArchive archive = ZipFile::Open(zipFilename2);
+  printf("\n");
+
+  printf("Compressing from memory and saving as '%s'\n", fileIn4);
+  char buff[] = "Sample text";
+  imemstream memstrm(buff);
+
+  ZipArchiveEntry* entry = archive->CreateEntry(fileIn4);
+  if (entry != nullptr)
+  {
+    entry->SetCompressionStream(&memstrm,
+      ZipArchiveEntry::CompressionLevel::BestCompression,
+      ZipArchiveEntry::CompressionMethod::Deflate,
+      ZipArchiveEntry::CompressionMode::Deferred
+    );
+  }
+
+  // when deferred mode is chosen, the input stream ("f" here)
+  // must be still alive
+  printf("Saving into '%s'\n", zipFilename);
+  std::ofstream z2(zipFilename, std::ios::binary);
   archive->WriteToStream(z2);
   z2.close();
 }
@@ -251,6 +280,7 @@ int main()
   Sample_ZipArchive_StoreFileImmediate();
   Sample_ZipArchive_RemoveEntry();
   Sample_ZipArchive_CompressFileDeferred();
+  Sample_ZipArchive_CompressFromMemory();
   Sample_ZipArchive_ExtractManually();
 
   Sample_ZipArchive_EncryptFileManually();

@@ -103,46 +103,193 @@ class ZipArchiveEntry
      * \brief Sets only a file name of the entry.
      *        If the file is located within some folder, the path is kept.
      *
-     * \param name  The name.
+     * \param name  The file name.
      */
     void SetName(const std::string& name);
 
+    /**
+     * \brief Gets the comment of this zip entry.
+     *
+     * \return  The comment.
+     */
     const std::string& GetComment() const;
+
+    /**
+     * \brief Sets a comment of this zip entry.
+     *
+     * \param comment The comment.
+     */
     void SetComment(const std::string& comment);
 
+    /**
+     * \brief Gets the time the file was last modified.
+     *
+     * \return  The last write time.
+     */
     time_t GetLastWriteTime() const;
+
+    /**
+     * \brief Sets the time the file was last modified.
+     *
+     * \param modTime Time of the modifier.
+     */
     void SetLastWriteTime(time_t modTime);
 
+    /**
+     * \brief Gets the file attributes of this zip entry.
+     *
+     * \return  The file attributes.
+     */
     Attributes GetAttributes() const;
+
+    /**
+     * \brief Sets the file attributes of this zip entry.
+     *
+     * \param value The file attributes.
+     */
     void SetAttributes(Attributes value);
 
+    /**
+     * \brief Gets the password of the zip entry. If the password is empty string, the password is not set.
+     *
+     * \return  The password.
+     */
     const std::string& GetPassword() const;
+
+    /**
+     * \brief Sets a password of the zip entry. If the password is empty string, the password is not set.
+     *        Use before GetDecompressionStream or SetCompressionStream.
+     *
+     * \param password  The password.
+     */
     void SetPassword(const std::string& password);
 
+    /**
+     * \brief Gets CRC 32 of the file.
+     *
+     * \return  The CRC 32.
+     */
     uint32_t GetCrc32() const;
+
+    /**
+     * \brief Gets the size of the uncompressed data.
+     *
+     * \return  The size.
+     */
     size_t GetSize() const;
+
+    /**
+     * \brief Gets the size of compressed data.
+     *
+     * \return  The compressed size.
+     */
     size_t GetCompressedSize() const;
 
+    /**
+     * \brief Determine if we can extract the entry.
+     *        It depends on which version was the zip archive created with.
+     *
+     * \return  true if we can extract, false if not.
+     */
     bool CanExtract() const;
+
+    /**
+     * \brief Query if this entry is a directory.
+     *
+     * \return  true if directory, false if not.
+     */
     bool IsDirectory() const;
+
+    /**
+     * \brief Query if this object is using data descriptor.
+     *        Data descriptor is small chunk of information written after the compressed data.
+     *        It's most useful when encrypting a zip entry.
+     *        When it is not using, the CRC32 value is required before
+     *        encryption of the file data begins. In this case there is no way
+     *        around it: must read the stream in its entirety to compute the
+     *        actual CRC32 before proceeding.
+     *
+     * \return  true if using data descriptor, false if not.
+     */
     bool IsUsingDataDescriptor() const;
 
+    /**
+     * \brief Use data descriptor.
+     *        Data descriptor is small chunk of information written after the compressed data.
+     *        It's most useful when encrypting a zip entry.
+     *        When it is not using, the CRC32 value is required before
+     *        encryption of the file data begins. In this case there is no way
+     *        around it: must read the stream in its entirety to compute the
+     *        actual CRC32 before proceeding.
+     * \param use (Optional) If true, use the data descriptor, false to not use.
+     */
     void UseDataDescriptor(bool use = true);
 
+    /**
+     * \brief Gets raw stream of the compressed data.
+     *
+     * \return  null if it fails, else the stream of raw data.
+     */
     std::istream* GetRawStream();
+
+    /**
+     * \brief Gets decompression stream.
+     *
+     * \return  null if it fails, else the decompression stream.
+     */
     std::istream* GetDecompressionStream();
 
+    /**
+     * \brief Query if the GetRawStream method has been already called.
+     *
+     * \return  true if the raw stream is opened, false if not.
+     */
     bool IsRawStreamOpened() const;
+
+    /**
+    * \brief Query if the GetDecompressionStream method has been already called.
+     *
+     * \return  true if the decompression stream is opened, false if not.
+     */
     bool IsDecompressionStreamOpened() const;
 
+    /**
+     * \brief Closes the raw stream, opened by GetRawStream.
+     */
     void CloseRawStream();
+    
+    /**
+     * \brief Closes the decompression stream, opened by GetDecompressionStream.
+     */
     void CloseDecompressionStream();
 
+    /**
+     * \brief Sets the input stream to fetch the data to compress from.
+     *
+     * \param stream            The input stream to compress.
+     * \param level             (Optional) The level of compression.
+     * \param method            (Optional) The method of compression.
+     * \param mode              (Optional) The mode of compression.
+     *                          If deferred mode is chosen, the data are compressed when the zip archive is about to be written.
+     *                          The stream instance must exist when the ZipArchive::WriteToStream method is called.
+     *                          The advantage of deferred compression mode is the compressed data needs not to be loaded
+     *                          into the memory, because they are streamed into the final output stream.
+     *                          
+     *                          If immediate mode is chosen, the data are compressed immediately into the memory buffer.
+     *                          It is not recommended to use this method for large files.
+     *                          The advantage of immediate mode is the input stream can be destroyed (i.e. by scope)
+     *                          even before the ZipArchive::WriteToStream method is called.
+     *
+     * \return  true if it succeeds, false if it fails.
+     */
     bool SetCompressionStream(std::istream*     stream,
                               CompressionLevel  level  = CompressionLevel::Default,
                               CompressionMethod method = CompressionMethod::Deflate,
                               CompressionMode   mode   = CompressionMode::Deferred);
 
+    /**
+     * \brief Removes this entry from the ZipArchive.
+     */
     void Remove();
 
   private:

@@ -237,6 +237,7 @@ class ZipArchiveEntry
 
     /**
      * \brief Gets decompression stream.
+     *        If the file is encrypted and correct password is not provided, it returns nullptr.
      *
      * \return  null if it fails, else the decompression stream.
      */
@@ -250,7 +251,7 @@ class ZipArchiveEntry
     bool IsRawStreamOpened() const;
 
     /**
-    * \brief Query if the GetDecompressionStream method has been already called.
+     * \brief Query if the GetDecompressionStream method has been already called.
      *
      * \return  true if the decompression stream is opened, false if not.
      */

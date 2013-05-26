@@ -1,6 +1,7 @@
 #pragma once
 #include <streambuf>
 #include <cstdint>
+#include <cassert>
 
 template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
 class mem_streambuf :

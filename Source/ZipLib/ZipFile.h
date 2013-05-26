@@ -110,4 +110,12 @@ class ZipFile
      * \param password        The password.
      */
     static void ExtractEncryptedFile(const std::string& zipPath, const std::string& fileName, const std::string& destinationPath, const std::string& password);
+
+    /**
+     * \brief Removes the file from the zip archive.
+     *
+     * \param zipPath   Full pathname of the zip file.
+     * \param fileName  Filename of the file to remove.
+     */
+    static void RemoveEntry(const std::string& zipPath, const std::string& fileName);
 };

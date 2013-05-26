@@ -187,3 +187,38 @@ void ZipFile::ExtractEncryptedFile(const std::string& zipPath, const std::string
   destFile.close();
 }
 
+void ZipFile::RemoveEntry(const std::string& zipPath, const std::string& fileName)
+{
+  std::string tmpName(L_tmpnam, '\0');
+
+  {
+    ZipArchive zipArchive = ZipFile::Open(zipPath);
+    zipArchive->RemoveEntry(fileName);
+
+    //////////////////////////////////////////////////////////////////////////
+
+    std::ofstream outFile;
+
+#ifndef WIN32
+    tmpName = "/tmp/.zlXXXXX";
+    mkstemp(&tmpName[0]);
+#else
+    tmpnam(&tmpName[0]);
+#endif
+
+    outFile.open(tmpName, std::ios::binary);
+
+    if (!outFile.is_open())
+    {
+      throw std::runtime_error("cannot open output file");
+    }
+
+    zipArchive.WriteToStream(outFile);
+    outFile.close();
+
+    // force closing the input zip stream
+  }
+
+//   remove(zipPath.c_str());
+//   rename(tmpName.c_str(), zipPath.c_str());
+}

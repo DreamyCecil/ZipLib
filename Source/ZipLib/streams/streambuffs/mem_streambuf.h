@@ -45,8 +45,8 @@ class mem_streambuf :
           this->pptr() < this->epptr()) 
       {
         *this->pptr() = c;
-        this->pbump(1);     // shift pptr() by 1
-        return c;     // return value must not be EOF
+        this->pbump(1); // shift pptr() by 1
+        return c;       // return value must not be EOF
       }
 
       return traits_type::eof();

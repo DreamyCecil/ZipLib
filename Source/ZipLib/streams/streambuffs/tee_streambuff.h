@@ -27,28 +27,34 @@ class tee_streambuf:
     }
 
   protected:
-    int_type overflow(int_type c = traits_type::eof())
+    int_type overflow(int_type c = traits_type::eof()) override
     {
-      if (std::find_if(_sbCollection.begin(),
-                       _sbCollection.end(),
-                       [&c](base_type* sb) { return sb->sputc(c) == traits_type::eof(); }) != _sbCollection.end())
-      {
-        return traits_type::eof();
-      }
+      bool failed = false;
       
-      return c;
-    }
-  
-    int sync()
-    {
-      if (std::find_if(_sbCollection.begin(),
-                       _sbCollection.end(),
-                       [](base_type* sb) { return sb->pubsync() == -1; }) != _sbCollection.end())
+      for (auto* sb : _sbCollection)
       {
-        return -1;
+        if (sb->sputc(c) == traits_type::eof())
+        {
+          failed = true;
+        }
       }
 
-      return 0;
+      return failed ? traits_type::eof() : c;
+    }
+  
+    int sync() override
+    {
+      bool failed = false;
+
+      for (auto* sb : _sbCollection)
+      {
+        if (sb->pubsync() == -1)
+        {
+          failed = true;
+        }
+      }
+
+      return failed ? -1 : 0;
     }
   
   private:

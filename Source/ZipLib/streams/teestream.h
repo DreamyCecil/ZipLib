@@ -20,7 +20,7 @@ class basic_teestream
     basic_teestream(basic_teestream<ELEM_TYPE, TRAITS_TYPE>&& other)
       : std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>(&_teeStreambuf)
     {
-      _teeStreambuf = std::forward<tee_streambuf<ELEM_TYPE, TRAITS_TYPE>>(other._teeStreambuf);
+      _teeStreambuf = std::move(other._teeStreambuf);
       this->swap(other);
     }
 
@@ -36,12 +36,15 @@ class basic_teestream
       return *this;
     }
 
-    basic_teestream&& move()
+    basic_teestream move()
     {
-      return std::forward<basic_teestream<ELEM_TYPE, TRAITS_TYPE>>(*this);
+      return std::move(*this);
     }
 
   private:
+    basic_teestream(const basic_teestream&);
+    basic_teestream& operator = (const basic_teestream&);
+
     tee_streambuf<ELEM_TYPE, TRAITS_TYPE> _teeStreambuf;
 };
 

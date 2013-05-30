@@ -147,11 +147,25 @@ class ZipArchiveEntry
     Attributes GetAttributes() const;
 
     /**
+     * \brief Gets the compression method.
+     *
+     * \return  The compression method.
+     */
+    CompressionMethod GetCompressionMethod() const;
+
+    /**
      * \brief Sets the file attributes of this zip entry.
      *
      * \param value The file attributes.
      */
     void SetAttributes(Attributes value);
+
+    /**
+     * \brief Query if this entry is password protected.
+     *
+     * \return  true if password protected, false if not.
+     */
+    bool IsPasswordProtected() const;
 
     /**
      * \brief Gets the password of the zip entry. If the password is empty string, the password is not set.
@@ -335,7 +349,6 @@ class ZipArchiveEntry
     static void CopyStream(std::istream& input, std::ostream& output);
 
     // methods
-    CompressionMethod GetCompressionMethod() const;
     void SetCompressionMethod(CompressionMethod value);
 
     BitFlag GetGeneralPurposeBitFlag() const;

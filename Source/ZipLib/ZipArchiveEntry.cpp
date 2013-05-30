@@ -265,6 +265,11 @@ ZipArchiveEntry::Attributes ZipArchiveEntry::GetAttributes() const
   return static_cast<Attributes>(_centralDirectoryFileHeader.ExternalFileAttributes);
 }
 
+ZipArchiveEntry::CompressionMethod ZipArchiveEntry::GetCompressionMethod() const
+{
+  return static_cast<CompressionMethod>(_centralDirectoryFileHeader.CompressionMethod);
+}
+
 void ZipArchiveEntry::SetAttributes(Attributes value)
 {
   Attributes prevVal = this->GetAttributes();
@@ -302,6 +307,11 @@ void ZipArchiveEntry::SetAttributes(Attributes value)
   }
 
   _centralDirectoryFileHeader.ExternalFileAttributes = static_cast<uint32_t>(newVal);
+}
+
+bool ZipArchiveEntry::IsPasswordProtected() const
+{
+  return !!(this->GetGeneralPurposeBitFlag() & BitFlag::Encrypted);
 }
 
 const std::string& ZipArchiveEntry::GetPassword() const
@@ -519,11 +529,6 @@ void ZipArchiveEntry::Remove()
 
 //////////////////////////////////////////////////////////////////////////
 // private getters & setters
-
-ZipArchiveEntry::CompressionMethod ZipArchiveEntry::GetCompressionMethod() const
-{
-  return static_cast<CompressionMethod>(_centralDirectoryFileHeader.CompressionMethod);
-}
 
 void ZipArchiveEntry::SetCompressionMethod(CompressionMethod value)
 {
@@ -824,6 +829,7 @@ void ZipArchiveEntry::FigureCrc32()
   crc32Stream.flush();
 
   // seek back
+  _compressionStream->clear();
   _compressionStream->seekg(position);
 
   _centralDirectoryFileHeader.Crc32 = crc32Stream.get_crc32();

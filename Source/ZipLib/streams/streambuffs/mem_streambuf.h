@@ -19,8 +19,8 @@ class mem_streambuf :
     {
       // set stream buffer
       ELEM_TYPE* endOfBuffer = buffer + length;
-      setg(buffer, buffer, endOfBuffer);
-      setp(buffer, buffer, endOfBuffer);
+      this->setg(buffer, buffer, endOfBuffer);
+      this->setp(buffer, buffer, endOfBuffer);
     }
 
   protected:

@@ -1,8 +1,3 @@
-#ifndef WIN32
-#include <unistd.h>
-#else
-# define _CRT_SECURE_NO_WARNINGS
-#endif
 #include <fstream>
 #include <cassert>
 #include <stdexcept>
@@ -22,6 +17,11 @@ namespace
     {
       return fullPath;
     }
+  }
+
+  std::string MakeTempFilename(const std::string& fileName)
+  {
+    return fileName + ".tmp";
   }
 }
 
@@ -49,6 +49,40 @@ ZipArchive ZipFile::Open(const std::string& zipPath)
   return ZipArchive(zipFile, true);
 }
 
+void ZipFile::Save(ZipArchive& zipArchive, const std::string& zipPath)
+{
+  ZipFile::SaveAndClose(zipArchive, zipPath);
+
+  // the operator = (ZipArchive&&) method will be called
+  zipArchive = ZipFile::Open(zipPath);
+}
+
+void ZipFile::SaveAndClose(ZipArchive& zipArchive, const std::string& zipPath)
+{
+  // check if file exist
+  std::string tempZipPath = MakeTempFilename(zipPath);
+  std::ofstream outZipFile;
+  outZipFile.open(tempZipPath, std::ios::binary | std::ios::trunc);
+
+  if (!outZipFile.is_open())
+  {
+    throw std::runtime_error("cannot save zip file");
+  }
+
+  zipArchive.WriteToStream(outZipFile);
+  outZipFile.close();
+
+  {
+    // force destroying original archive
+    // (it may hold the handle on the original zip archive)
+    ZipArchive tempZipArchive;
+    zipArchive.Swap(tempZipArchive);
+  }
+
+  remove(zipPath.c_str());
+  rename(tempZipPath.c_str(), zipPath.c_str());
+}
+
 bool ZipFile::IsInArchive(const std::string& zipPath, const std::string& fileName)
 {
   ZipArchive zipArchive = ZipFile::Open(zipPath);
@@ -72,7 +106,7 @@ void ZipFile::AddEncryptedFile(const std::string& zipPath, const std::string& fi
 
 void ZipFile::AddEncryptedFile(const std::string& zipPath, const std::string& fileName, const std::string& inArchiveName, const std::string& password, ZipArchiveEntry::CompressionLevel level)
 {
-  std::string tmpName(L_tmpnam, '\0');
+  std::string tmpName = MakeTempFilename(zipPath);
 
   {
     ZipArchive zipArchive = ZipFile::Open(zipPath);
@@ -105,14 +139,6 @@ void ZipFile::AddEncryptedFile(const std::string& zipPath, const std::string& fi
     //////////////////////////////////////////////////////////////////////////
 
     std::ofstream outFile;
-
-#ifndef WIN32
-    tmpName = "/tmp/.zlXXXXX";
-    mkstemp(&tmpName[0]);
-#else
-    tmpnam(&tmpName[0]);
-#endif
-
     outFile.open(tmpName, std::ios::binary);
 
     if (!outFile.is_open())
@@ -125,7 +151,6 @@ void ZipFile::AddEncryptedFile(const std::string& zipPath, const std::string& fi
   
     // force closing the input zip stream
   }
-
 
   remove(zipPath.c_str());
   rename(tmpName.c_str(), zipPath.c_str());
@@ -177,11 +202,7 @@ void ZipFile::ExtractEncryptedFile(const std::string& zipPath, const std::string
     throw std::runtime_error("wrong password");
   }
 
-  std::copy(
-    std::istreambuf_iterator<char>(*dataStream),
-    std::istreambuf_iterator<char>(), // eof
-    std::ostreambuf_iterator<char>(destFile)
-  );
+  ZipArchiveEntry::CopyStream(*dataStream, destFile);
 
   destFile.flush();
   destFile.close();
@@ -189,7 +210,7 @@ void ZipFile::ExtractEncryptedFile(const std::string& zipPath, const std::string
 
 void ZipFile::RemoveEntry(const std::string& zipPath, const std::string& fileName)
 {
-  std::string tmpName(L_tmpnam, '\0');
+  std::string tmpName = MakeTempFilename(zipPath);
 
   {
     ZipArchive zipArchive = ZipFile::Open(zipPath);
@@ -198,13 +219,6 @@ void ZipFile::RemoveEntry(const std::string& zipPath, const std::string& fileNam
     //////////////////////////////////////////////////////////////////////////
 
     std::ofstream outFile;
-
-#ifndef WIN32
-    tmpName = "/tmp/.zlXXXXX";
-    mkstemp(&tmpName[0]);
-#else
-    tmpnam(&tmpName[0]);
-#endif
 
     outFile.open(tmpName, std::ios::binary);
 
@@ -219,6 +233,6 @@ void ZipFile::RemoveEntry(const std::string& zipPath, const std::string& fileNam
     // force closing the input zip stream
   }
 
-//   remove(zipPath.c_str());
-//   rename(tmpName.c_str(), zipPath.c_str());
+  remove(zipPath.c_str());
+  rename(tmpName.c_str(), zipPath.c_str());
 }

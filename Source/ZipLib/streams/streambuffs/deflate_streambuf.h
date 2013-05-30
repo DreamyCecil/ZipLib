@@ -142,7 +142,7 @@ class deflate_streambuf :
       // set the input buffer
       // TODO: deal properly with zero inputLenght
       // (and force zipcrypto)
-      ptrdiff_t inputLength = this->pptr() - this->pbase();
+      std::ptrdiff_t inputLength = this->pptr() - this->pbase();
 
       _zstream.next_in  = reinterpret_cast<Bytef*>(this->pbase());
       _zstream.avail_in = static_cast<uInt>(inputLength);

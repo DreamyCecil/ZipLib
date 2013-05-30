@@ -94,12 +94,12 @@ TEST_METHOD(Sample_ZipArchive_Stream_Deferred_Comment)
   // this method is only useful for password protected files
   entry->UseDataDescriptor();
 
-
   entry->SetCompressionStream(
     &contentStream,
     ZipArchiveEntry::CompressionLevel::BestCompression,
     ZipArchiveEntry::CompressionMethod::Deflate,
-    ZipArchiveEntry::CompressionMode::Deferred);
+    ZipArchiveEntry::CompressionMode::Deferred
+  );
 
   entry->SetComment("entry comment");
 
@@ -126,7 +126,8 @@ TEST_METHOD(Sample_ZipArchive_Stream_Immediate_Store_Own_Save_Password_Protected
       &contentStream,
       ZipArchiveEntry::CompressionLevel::Stored,
       ZipArchiveEntry::CompressionMethod::Stored,
-      ZipArchiveEntry::CompressionMode::Immediate);
+      ZipArchiveEntry::CompressionMode::Immediate
+    );
 
     // ifs stream is destroyed here
   }

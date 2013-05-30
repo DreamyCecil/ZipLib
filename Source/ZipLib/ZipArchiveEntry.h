@@ -19,6 +19,7 @@ class ZipArchive;
  */
 class ZipArchiveEntry
 {
+  friend class ZipFile;
   friend class ZipArchive;
   friend class ZipCrypto;
 

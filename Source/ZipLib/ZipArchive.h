@@ -142,6 +142,8 @@ class ZipArchive
      */
     void WriteToStream(std::ostream& stream);
 
+    void Swap(ZipArchive& other);
+
     const ZipArchive* operator -> () const { return this; }
     ZipArchive* operator -> () { return this; }
 
@@ -152,6 +154,26 @@ class ZipArchive
       Backward
     };
 
+    // used in ZipArchiveEntry::CopyStream method for effective allocation
+    struct InternalSharedBuffer 
+    {
+      static InternalSharedBuffer* GetInstance();
+
+      size_t GetBufferSize();
+      char* GetBuffer();
+      void IncRef();
+      void DecRef();
+
+      private:
+        enum
+        {
+          INTERNAL_BUFFER_SIZE = 1024 * 1024
+        };
+
+        char* _buffer;
+        size_t   _refCount;
+    };
+
     ZipArchive(const ZipArchive&);
     ZipArchive& operator = (const ZipArchive& other);
 
@@ -159,8 +181,8 @@ class ZipArchive
     bool ReadEndOfCentralDirectory();
     bool SeekToSignature(uint32_t signature, SeekDirection direction);
 
-    std::istream* _zipStream;
-    bool _destroySimultaneously;
     EndOfCentralDirectoryBlock _endOfCentralDirectoryBlock;
     std::vector<ZipArchiveEntry*> _entries;
+    std::istream* _zipStream;
+    bool _destroySimultaneously;
 };

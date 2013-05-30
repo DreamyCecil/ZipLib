@@ -1,24 +1,75 @@
 #include "ZipArchive.h"
 #include "streams/serialization.h"
 #include <algorithm>
+#include <cassert>
 
 #define CALL_CONST_METHOD(expression) \
   const_cast<      std::remove_pointer<std::remove_const<decltype(expression)>::type>::type*>( \
   const_cast<const std::remove_pointer<std::remove_const<decltype(this)      >::type>::type*>(this)->expression)
 
+//////////////////////////////////////////////////////////////////////////
+// internal shared buffer
+
+ZipArchive::InternalSharedBuffer* ZipArchive::InternalSharedBuffer::GetInstance()
+{
+  static ZipArchive::InternalSharedBuffer instance;
+  return &instance;
+}
+
+size_t ZipArchive::InternalSharedBuffer::GetBufferSize()
+{
+  return INTERNAL_BUFFER_SIZE;
+}
+
+char* ZipArchive::InternalSharedBuffer::GetBuffer()
+{
+  if (_buffer == nullptr)
+  {
+    _buffer = new char[INTERNAL_BUFFER_SIZE];
+  }
+
+  return _buffer;
+}
+
+void ZipArchive::InternalSharedBuffer::IncRef()
+{
+  ++_refCount;
+}
+
+void ZipArchive::InternalSharedBuffer::DecRef()
+{
+  assert(_refCount > 0);
+
+  if (_refCount == 0)
+  {
+    return;
+  }
+
+  if (--_refCount == 0 && _buffer != nullptr)
+  {
+    delete[] _buffer;
+    _buffer = nullptr;
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////
+// zip archive
+
 ZipArchive::ZipArchive()
   : _zipStream(nullptr)
   , _destroySimultaneously(false)
 {
-
+  InternalSharedBuffer::GetInstance()->IncRef();
 }
 
 ZipArchive::ZipArchive(ZipArchive&& other)
 {
-  _zipStream = other._zipStream;
-  _destroySimultaneously = other._destroySimultaneously;
+  InternalSharedBuffer::GetInstance()->IncRef();
+
   _endOfCentralDirectoryBlock = other._endOfCentralDirectoryBlock;
   _entries = std::move(other._entries);
+  _zipStream = other._zipStream;
+  _destroySimultaneously = other._destroySimultaneously;
 
   // clean "other"
   other._zipStream = nullptr;
@@ -29,6 +80,8 @@ ZipArchive::ZipArchive(std::istream* stream)
   : _zipStream(stream)
   , _destroySimultaneously(false)
 {
+  InternalSharedBuffer::GetInstance()->IncRef();
+
   if (stream != nullptr)
   {
     this->ReadEndOfCentralDirectory();
@@ -40,6 +93,8 @@ ZipArchive::ZipArchive(std::istream* stream, bool destroySimultaneously)
   : _zipStream(stream)
   , _destroySimultaneously(stream != nullptr ? destroySimultaneously : false)
 {
+  InternalSharedBuffer::GetInstance()->IncRef();
+
   // jesus blew up a school bus when this metod has been implemented
   if (stream != nullptr)
   {
@@ -50,6 +105,8 @@ ZipArchive::ZipArchive(std::istream* stream, bool destroySimultaneously)
 
 ZipArchive::~ZipArchive()
 {
+  InternalSharedBuffer::GetInstance()->DecRef();
+
   std::for_each(_entries.begin(), _entries.end(), [](ZipArchiveEntry* e) { delete e; });
 
   if (_destroySimultaneously && _zipStream != nullptr) 
@@ -60,10 +117,10 @@ ZipArchive::~ZipArchive()
 
 ZipArchive& ZipArchive::operator = (ZipArchive&& other)
 {
-  _zipStream = other._zipStream;
-  _destroySimultaneously = other._destroySimultaneously;
   _endOfCentralDirectoryBlock = other._endOfCentralDirectoryBlock;
   _entries = std::move(other._entries);
+  _zipStream = other._zipStream;
+  _destroySimultaneously = other._destroySimultaneously;
 
   // clean "other"
   other._zipStream = nullptr;
@@ -233,3 +290,14 @@ void ZipArchive::WriteToStream(std::ostream& stream)
   _endOfCentralDirectoryBlock.OffsetOfStartOfCentralDirectoryWithRespectToTheStartingDiskNumber = static_cast<uint32_t>(offsetOfStartOfCDFH);
   _endOfCentralDirectoryBlock.Serialize(stream);
 }
+
+void ZipArchive::Swap(ZipArchive& other)
+{
+  if (this == &other) return;
+
+  std::swap(_endOfCentralDirectoryBlock, other._endOfCentralDirectoryBlock);
+  std::swap(_entries, other._entries);
+  std::swap(_zipStream, other._zipStream);
+  std::swap(_destroySimultaneously, other._destroySimultaneously);
+}
+

@@ -190,4 +190,11 @@ class mem_streambuf :
         return (traits_type::not_eof(c));
       }
     }
+
+  private:
+    void setp(ELEM_TYPE* first, ELEM_TYPE* next, ELEM_TYPE* last)
+    {
+      this->std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>::setp(first, last);
+      this->pbump(static_cast<int>(next - first));
+    }
 };

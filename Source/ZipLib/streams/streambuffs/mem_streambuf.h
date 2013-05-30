@@ -72,7 +72,7 @@ class mem_streambuf :
           if (which & std::ios::out)
           {
             // change write position to match
-            setp(this->pbase(), this->gptr(), this->epptr());
+            this->setp(this->pbase(), this->gptr(), this->epptr());
           }
         }
 

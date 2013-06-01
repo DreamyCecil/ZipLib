@@ -1,11 +1,11 @@
 #pragma once
 #include <mutex>
 
-template <typename T>
+template <typename T, typename LOCK_TYPE = std::mutex>
 class threadsafe_holder
 {
   public:
-    threadsafe_holder(T* instance, std::mutex& mutex)
+    threadsafe_holder(T* instance, LOCK_TYPE& mutex)
       : _instance(instance)
       , _mtx(mutex)
     {
@@ -24,16 +24,16 @@ class threadsafe_holder
 
   private:
     T* _instance;
-    std::mutex& _mtx;
+    LOCK_TYPE& _mtx;
 };
 
-template <typename T>
+template <typename T, typename LOCK_TYPE = std::mutex>
 struct enable_threadsafe_from_this
 {
   public:
-    threadsafe_holder<T> get_threadsafe_instance() 
+    threadsafe_holder<T, LOCK_TYPE> get_threadsafe_instance() 
     {
-      return threadsafe_holder<T>(static_cast<T*>(this), _mtx);
+      return threadsafe_holder<T, LOCK_TYPE>(static_cast<T*>(this), _mtx);
     }
 
   protected:
@@ -43,5 +43,5 @@ struct enable_threadsafe_from_this
     }
 
   private:
-    std::mutex _mtx;
+    LOCK_TYPE _mtx;
 };

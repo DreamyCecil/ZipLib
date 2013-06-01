@@ -31,6 +31,9 @@
     <Filter Include="Source Files\extlibs\zlib">
       <UniqueIdentifier>{96bc8353-b544-4de8-8a8b-f68649b1215f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\utils">
+      <UniqueIdentifier>{7826c1d6-f7ce-454f-9504-5bafe98a1657}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="streams\streambuffs\zip_crypto_streambuf.h">
@@ -137,6 +140,9 @@
     </ClInclude>
     <ClInclude Include="EndOfCentralDirectoryBlock.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\threadsafe_holder.h">
+      <Filter>Header Files\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

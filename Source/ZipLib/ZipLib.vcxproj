@@ -48,6 +48,7 @@
     <ClInclude Include="streams\substream.h" />
     <ClInclude Include="streams\teestream.h" />
     <ClInclude Include="streams\zip_cryptostream.h" />
+    <ClInclude Include="utils\threadsafe_holder.h" />
     <ClInclude Include="ZipArchive.h" />
     <ClInclude Include="ZipArchiveEntry.h" />
     <ClInclude Include="ZipCentralDirectoryFileHeader.h" />

@@ -157,8 +157,9 @@ bool ZipArchiveEntry::IsDirectoryPath(const std::string& fullPath)
 
 void ZipArchiveEntry::CopyStream(std::istream& input, std::ostream& output)
 {
-  char*  buff     = ZipArchive::InternalSharedBuffer::GetInstance()->GetBuffer();
-  size_t buffSize = ZipArchive::InternalSharedBuffer::GetInstance()->GetBufferSize();
+  auto   safeBuff = ZipArchive::InternalSharedBuffer::GetInstance()->get_threadsafe_instance();
+  char*  buff     = safeBuff->GetBuffer();
+  size_t buffSize = safeBuff->GetBufferSize();
 
   assert(buff != nullptr && buffSize > 0);
 

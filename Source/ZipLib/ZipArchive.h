@@ -2,8 +2,10 @@
 #include <istream>
 #include <vector>
 #include <algorithm>
+#include <atomic>
 #include "EndOfCentralDirectoryBlock.h"
 #include "ZipArchiveEntry.h"
+#include "utils/threadsafe_holder.h"
 
 /**
  * \brief Represents a package of compressed files in the zip archive format.
@@ -155,14 +157,16 @@ class ZipArchive
     };
 
     // used in ZipArchiveEntry::CopyStream method for effective allocation
-    struct InternalSharedBuffer 
+    class InternalSharedBuffer
+      : public enable_threadsafe_from_this<InternalSharedBuffer>
     {
-      static InternalSharedBuffer* GetInstance();
+      public:
+        static InternalSharedBuffer* GetInstance();
 
-      size_t GetBufferSize();
-      char* GetBuffer();
-      void IncRef();
-      void DecRef();
+        char* GetBuffer();
+        size_t GetBufferSize();
+        void IncRef();
+        void DecRef();
 
       private:
         enum
@@ -170,8 +174,9 @@ class ZipArchive
           INTERNAL_BUFFER_SIZE = 1024 * 1024
         };
 
+        // counter is independent of the buffer
+        std::atomic<size_t> _refCount;
         char* _buffer;
-        size_t   _refCount;
     };
 
     ZipArchive(const ZipArchive&);

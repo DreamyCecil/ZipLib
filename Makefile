@@ -4,7 +4,7 @@ EXE      = Bin/ziplib.so
 CC       = gcc
 CXX      = g++-4.7
 CFLAGS   = -O3
-CXXFLAGS = -std=c++11 -03
+CXXFLAGS = -std=c++11 -O3
 LDFLAGS  = 
 SRCSZL   = $(wildcard Source/ZipLib/extlibs/zlib/*.c)
 SRCS     = $(wildcard Source/ZipLib/*.cpp)

@@ -72,12 +72,7 @@ void ZipFile::SaveAndClose(ZipArchive::Ptr zipArchive, const std::string& zipPat
   zipArchive->WriteToStream(outZipFile);
   outZipFile.close();
 
-  {
-    // force destroying original archive
-    // (it may hold the handle on the original zip archive)
-    ZipArchive::Ptr tempZipArchive = ZipArchive::Create();
-    zipArchive->Swap(tempZipArchive);
-  }
+  zipArchive->InternalDestroy();
 
   remove(zipPath.c_str());
   rename(tempZipPath.c_str(), zipPath.c_str());

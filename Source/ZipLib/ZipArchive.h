@@ -13,6 +13,7 @@
  */
 class ZipArchive
 {
+  friend class ZipFile;
   friend class ZipArchiveEntry;
 
   public:

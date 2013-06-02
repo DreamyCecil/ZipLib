@@ -300,5 +300,6 @@ void ZipArchive::InternalDestroy()
   if (_destroySimultaneously && _zipStream != nullptr) 
   {
     delete _zipStream;
+    _zipStream = nullptr;
   }
 }

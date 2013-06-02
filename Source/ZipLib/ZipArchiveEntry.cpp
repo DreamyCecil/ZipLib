@@ -411,13 +411,15 @@ std::istream* ZipArchiveEntry::GetDecompressionStream()
       cryptoStream->set_final_byte(this->GetLastByteOfEncryptionHeader());
       bool hasCorrectPassword = cryptoStream->prepare_for_decryption();
 
+      // set it here, because in case the hasCorrectPassword is false
+      // the method CloseDecompressionStream() will properly delete the stream
+      intermediateStream = _zipCryptoStream = cryptoStream;
+
       if (!hasCorrectPassword)
       {
         this->CloseDecompressionStream();
         return nullptr;
       }
-
-      intermediateStream = _zipCryptoStream = cryptoStream;
     }
 
     if (needsDecompress)

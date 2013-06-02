@@ -95,7 +95,7 @@ TEST_METHOD(Sample_ZipArchive_Stream_Deferred_Comment)
   entry->UseDataDescriptor();
 
   entry->SetCompressionStream(
-    &contentStream,
+    contentStream,
     ZipArchiveEntry::CompressionLevel::BestCompression,
     ZipArchiveEntry::CompressionMethod::Deflate,
     ZipArchiveEntry::CompressionMode::Deferred
@@ -123,7 +123,7 @@ TEST_METHOD(Sample_ZipArchive_Stream_Immediate_Store_Own_Save_Password_Protected
     assert(contentStream.is_open());
 
     entry->SetCompressionStream(   // data from contentStream are pumped here
-      &contentStream,
+      contentStream,
       ZipArchiveEntry::CompressionLevel::Stored,
       ZipArchiveEntry::CompressionMethod::Stored,
       ZipArchiveEntry::CompressionMode::Immediate

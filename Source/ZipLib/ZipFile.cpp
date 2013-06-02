@@ -134,7 +134,7 @@ void ZipFile::AddEncryptedFile(const std::string& zipPath, const std::string& fi
       fileEntry->UseDataDescriptor();
     }
 
-    fileEntry->SetCompressionStream(&fileToAdd, level);
+    fileEntry->SetCompressionStream(fileToAdd, level);
 
     //////////////////////////////////////////////////////////////////////////
 

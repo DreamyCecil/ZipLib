@@ -301,10 +301,15 @@ class ZipArchiveEntry
      *
      * \return  true if it succeeds, false if it fails.
      */
-    bool SetCompressionStream(std::istream*     stream,
+    bool SetCompressionStream(std::istream&     stream,
                               CompressionLevel  level  = CompressionLevel::Default,
                               CompressionMethod method = CompressionMethod::Deflate,
                               CompressionMode   mode   = CompressionMode::Deferred);
+
+    /**
+     * \brief Sets compression stream to be null and unsets the password. The entry would contain no data with zero size.
+     */
+    void UnsetCompressionStream();
 
     /**
      * \brief Removes this entry from the ZipArchive.

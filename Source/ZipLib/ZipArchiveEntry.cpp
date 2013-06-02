@@ -324,7 +324,8 @@ void ZipArchiveEntry::SetPassword(const std::string& password)
 {
   _password = password;
 
-  if (!_originallyInArchive)
+  // allow unset password only for empty files
+  if (!_originallyInArchive || (_hasLocalFileHeader && this->GetSize() == 0))
   {
     this->SetGeneralPurposeBitFlag(BitFlag::Encrypted, !_password.empty());
   }
@@ -468,14 +469,14 @@ void ZipArchiveEntry::CloseDecompressionStream()
   }
 }
 
-bool ZipArchiveEntry::SetCompressionStream(std::istream* stream,
+bool ZipArchiveEntry::SetCompressionStream(std::istream& stream,
                                            CompressionLevel  level  /* = CompressionLevel::Default */,
                                            CompressionMethod method /* = CompressionMethod::Deflate */,
                                            CompressionMode mode /* = CompressionMode::Deferred */)
 {
   // validate data
   assert((method == CompressionMethod::Deflate || method == CompressionMethod::Stored ) &&
-    (mode   == CompressionMode::Deferred  || mode   == CompressionMode::Immediate));
+         (mode   == CompressionMode::Deferred  || mode   == CompressionMode::Immediate));
 
   assert(int(level) >= 0 && int(level) <= 9);
   assert((level == CompressionLevel::Stored ? method == CompressionMethod::Stored ? true : false : true));
@@ -500,7 +501,7 @@ bool ZipArchiveEntry::SetCompressionStream(std::istream* stream,
 
   _isNewOrChanged = true;
 
-  _compressionStream = stream;
+  _compressionStream = &stream;
   _compressionMode = mode;
   _compressionLevel = level;
   this->SetCompressionMethod(method);
@@ -515,6 +516,17 @@ bool ZipArchiveEntry::SetCompressionStream(std::istream* stream,
   }
 
   return true;
+}
+
+void ZipArchiveEntry::UnsetCompressionStream()
+{
+  if (!this->HasCompressionStream())
+  {
+    this->FetchLocalFileHeader();
+  }
+
+  this->UnloadCompressionData();
+  this->SetPassword(std::string());
 }
 
 void ZipArchiveEntry::Remove()
@@ -718,7 +730,7 @@ void ZipArchiveEntry::SerializeLocalFileHeader(std::ostream& stream)
     this->IsDirectory()
     ? !GetCrc32() && !GetCompressedSize() && !GetSize() && !_compressionStream
     : true
-    );
+  );
 
 
   if (!this->IsDirectory() && compressedDataStream != nullptr)
@@ -755,12 +767,13 @@ void ZipArchiveEntry::SerializeCentralDirectoryFileHeader(std::ostream& stream)
 
 void ZipArchiveEntry::UnloadCompressionData()
 {
-  if (_compressionStream != nullptr)
-  {
-    // unload stream and create new (love you C++11!)
-    //_compressionImmediateBuffer.swap(decltype(_compressionImmediateBuffer)());
-    _compressionImmediateBuffer.clear();
-  }
+  // unload stream
+  _compressionImmediateBuffer.clear();
+  _compressionStream = nullptr;
+
+  _centralDirectoryFileHeader.CompressedSize = 0;
+  _centralDirectoryFileHeader.UncompressedSize = 0;
+  _centralDirectoryFileHeader.Crc32 = 0;
 }
 
 void ZipArchiveEntry::InternalCompressStream(std::istream& inputStream, std::ostream& outputStream)

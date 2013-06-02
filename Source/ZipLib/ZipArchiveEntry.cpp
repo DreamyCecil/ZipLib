@@ -42,15 +42,15 @@ ZipArchiveEntry::~ZipArchiveEntry()
   this->CloseDecompressionStream();
 }
 
-ZipArchiveEntry* ZipArchiveEntry::CreateNew(ZipArchive* zipArchive, const std::string& fullPath)
+ZipArchiveEntry::Ptr ZipArchiveEntry::CreateNew(ZipArchive* zipArchive, const std::string& fullPath)
 {
-  ZipArchiveEntry* result = nullptr;
+  ZipArchiveEntry::Ptr result;
 
   assert(zipArchive != nullptr);
 
   if (IsValidFilename(fullPath))
   {
-    result = new ZipArchiveEntry();
+    result.reset(new ZipArchiveEntry());
 
     result->_archive = zipArchive;
     result->_isNewOrChanged = true;
@@ -68,15 +68,15 @@ ZipArchiveEntry* ZipArchiveEntry::CreateNew(ZipArchive* zipArchive, const std::s
   return result;
 }
 
-ZipArchiveEntry* ZipArchiveEntry::CreateExisting(ZipArchive* zipArchive, ZipCentralDirectoryFileHeader& cd)
+ZipArchiveEntry::Ptr ZipArchiveEntry::CreateExisting(ZipArchive* zipArchive, ZipCentralDirectoryFileHeader& cd)
 {
-  ZipArchiveEntry* result = nullptr;
+  ZipArchiveEntry::Ptr result;
 
   assert(zipArchive != nullptr);
 
   if (IsValidFilename(cd.Filename))
   {
-    result = new ZipArchiveEntry();
+    result.reset(new ZipArchiveEntry());
 
     result->_archive                    = zipArchive;
     result->_centralDirectoryFileHeader = cd;
@@ -531,7 +531,7 @@ void ZipArchiveEntry::UnsetCompressionStream()
 
 void ZipArchiveEntry::Remove()
 {
-  auto it = std::find(_archive->_entries.begin(), _archive->_entries.end(), this);
+  auto it = std::find(_archive->_entries.begin(), _archive->_entries.end(), this->shared_from_this());
 
   if (it != _archive->_entries.end())
   {

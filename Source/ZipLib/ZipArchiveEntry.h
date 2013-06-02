@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <memory>
 
 #include "ZipLocalFileHeader.h"
 #include "ZipCentralDirectoryFileHeader.h"
@@ -18,12 +19,15 @@ class ZipArchive;
  * \brief Represents a compressed file within a zip archive.
  */
 class ZipArchiveEntry
+  : public std::enable_shared_from_this<ZipArchiveEntry>
 {
   friend class ZipFile;
   friend class ZipArchive;
   friend class ZipCrypto;
 
   public:
+    typedef std::shared_ptr<ZipArchiveEntry> Ptr;
+
     /**
      * \brief Values that represent the method of compression.
      */
@@ -342,8 +346,8 @@ class ZipArchiveEntry
     ZipArchiveEntry& operator = (ZipArchiveEntry&);
 
     // static methods
-    static ZipArchiveEntry* CreateNew(ZipArchive* zipArchive, const std::string& fullPath);
-    static ZipArchiveEntry* CreateExisting(ZipArchive* zipArchive, ZipCentralDirectoryFileHeader& cd);
+    static ZipArchiveEntry::Ptr CreateNew(ZipArchive* zipArchive, const std::string& fullPath);
+    static ZipArchiveEntry::Ptr CreateExisting(ZipArchive* zipArchive, ZipCentralDirectoryFileHeader& cd);
 
     static void TimestampToDateTime(time_t dateTime, uint16_t& date, uint16_t& time);
     static time_t DateTimeToTimestamp(uint16_t date, uint16_t time);

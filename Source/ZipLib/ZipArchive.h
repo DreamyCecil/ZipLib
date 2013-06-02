@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <atomic>
+#include <memory>
 #include "EndOfCentralDirectoryBlock.h"
 #include "ZipArchiveEntry.h"
 #include "utils/threadsafe_holder.h"
@@ -15,24 +16,26 @@ class ZipArchive
   friend class ZipArchiveEntry;
 
   public:
+    typedef std::shared_ptr<ZipArchive> Ptr;
+
     /**
      * \brief Default constructor.
      */
-    ZipArchive();
+    static ZipArchive::Ptr Create();
 
     /**
      * \brief Move constructor.
      *
      * \param other The ZipArchive instance to move.
      */
-    ZipArchive(ZipArchive&& other);
-
+    static ZipArchive::Ptr Create(ZipArchive::Ptr&& other);
+    
     /**
      * \brief Constructor.
      *
      * \param stream The input stream of the zip archive content. Must be seekable.
      */
-    ZipArchive(std::istream* stream);
+    static ZipArchive::Ptr Create(std::istream& stream);
 
     /**
      * \brief Constructor. It optionally allows to simultaneously destroy and dealloc the input stream
@@ -41,7 +44,7 @@ class ZipArchive
      * \param stream                The input stream of the zip archive content. Must be seekable.
      * \param destroySimultaneously If true, it calls "delete stream" in the ZipArchive destructor.
      */
-    ZipArchive(std::istream* stream, bool destroySimultaneously);
+    static ZipArchive::Ptr Create(std::istream* stream, bool destroySimultaneously);
 
     /**
      * \brief Destructor.
@@ -64,7 +67,7 @@ class ZipArchive
      *
      * \return  nullptr if it fails, else the new entry.
      */
-    ZipArchiveEntry* CreateEntry(const std::string& fileName);
+    ZipArchiveEntry::Ptr CreateEntry(const std::string& fileName);
 
     /**
      * \brief Gets the comment of the zip archive.
@@ -81,31 +84,13 @@ class ZipArchive
     void SetComment(const std::string& comment);
 
     /**
-     * \brief Gets a const pointer to the zip entry located on the given index.
-     *
-     * \param index Zero-based index of the zip entry.
-     *
-     * \return  null if it fails, else the entry.
-     */
-    const ZipArchiveEntry* GetEntry(int index) const;
-
-    /**
-     * \brief Gets a const pointer to the zip entry with given file name.
-     *
-     * \param entryName Name of the entry.
-     *
-     * \return  null if it fails, else the entry.
-     */
-    const ZipArchiveEntry* GetEntry(const std::string& entryName) const;
-
-    /**
      * \brief Gets a pointer to the zip entry located on the given index.
      *
      * \param index Zero-based index of the.
      *
      * \return  null if it fails, else the entry.
      */
-    ZipArchiveEntry* GetEntry(int index);
+    ZipArchiveEntry::Ptr GetEntry(int index);
 
     /**
      * \brief Gets a const pointer to the zip entry with given file name.
@@ -114,7 +99,7 @@ class ZipArchive
      *
      * \return  null if it fails, else the entry.
      */
-    ZipArchiveEntry* GetEntry(const std::string& entryName);
+    ZipArchiveEntry::Ptr GetEntry(const std::string& entryName);
 
     /**
      * \brief Gets the number of the zip entries in this archive.
@@ -144,9 +129,18 @@ class ZipArchive
      */
     void WriteToStream(std::ostream& stream);
 
-    void Swap(ZipArchive& other);
+    /**
+     * \brief Swaps this instance of ZipArchive with another instance.
+     *
+     * \param other The instance to swap with.
+     */
+    void Swap(ZipArchive::Ptr other);
 
   private:
+    ZipArchive();
+    ZipArchive(const ZipArchive&);
+    ZipArchive& operator = (const ZipArchive& other);
+
     enum class SeekDirection
     {
       Forward,
@@ -176,15 +170,14 @@ class ZipArchive
         char* _buffer;
     };
 
-    ZipArchive(const ZipArchive&);
-    ZipArchive& operator = (const ZipArchive& other);
-
     bool EnsureCentralDirectoryRead();
     bool ReadEndOfCentralDirectory();
     bool SeekToSignature(uint32_t signature, SeekDirection direction);
 
+    void InternalDestroy();
+
     EndOfCentralDirectoryBlock _endOfCentralDirectoryBlock;
-    std::vector<ZipArchiveEntry*> _entries;
+    std::vector<std::shared_ptr<ZipArchiveEntry>> _entries;
     std::istream* _zipStream;
     bool _destroySimultaneously;
 };

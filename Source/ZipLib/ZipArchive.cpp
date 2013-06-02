@@ -55,6 +55,57 @@ void ZipArchive::InternalSharedBuffer::DecRef()
 //////////////////////////////////////////////////////////////////////////
 // zip archive
 
+ZipArchive::Ptr ZipArchive::Create()
+{
+  return ZipArchive::Ptr(new ZipArchive());
+}
+
+ZipArchive::Ptr ZipArchive::Create(ZipArchive::Ptr&& other)
+{
+  ZipArchive::Ptr result(new ZipArchive());
+
+  result->_endOfCentralDirectoryBlock = other->_endOfCentralDirectoryBlock;
+  result->_entries = std::move(other->_entries);
+  result->_zipStream = other->_zipStream;
+  result->_destroySimultaneously = other->_destroySimultaneously;
+
+  // clean "other"
+  other->_zipStream = nullptr;
+  other->_destroySimultaneously = false;
+
+  return result;
+}
+
+ZipArchive::Ptr ZipArchive::Create(std::istream& stream)
+{
+  ZipArchive::Ptr result(new ZipArchive());
+
+  result->_zipStream = &stream;
+  result->_destroySimultaneously = false;
+
+  result->ReadEndOfCentralDirectory();
+  result->EnsureCentralDirectoryRead();
+
+  return result;
+}
+
+ZipArchive::Ptr ZipArchive::Create(std::istream* stream, bool destroySimultaneously)
+{
+  ZipArchive::Ptr result(new ZipArchive());
+
+  result->_zipStream = stream;
+  result->_destroySimultaneously = stream != nullptr ? destroySimultaneously : false;
+
+  // jesus blew up a school bus when this metod has been implemented
+  if (stream != nullptr)
+  {
+    result->ReadEndOfCentralDirectory();
+    result->EnsureCentralDirectoryRead();
+  }
+
+  return result;
+}
+
 ZipArchive::ZipArchive()
   : _zipStream(nullptr)
   , _destroySimultaneously(false)
@@ -62,57 +113,11 @@ ZipArchive::ZipArchive()
   InternalSharedBuffer::GetInstance()->IncRef();
 }
 
-ZipArchive::ZipArchive(ZipArchive&& other)
-{
-  InternalSharedBuffer::GetInstance()->IncRef();
-
-  _endOfCentralDirectoryBlock = other._endOfCentralDirectoryBlock;
-  _entries = std::move(other._entries);
-  _zipStream = other._zipStream;
-  _destroySimultaneously = other._destroySimultaneously;
-
-  // clean "other"
-  other._zipStream = nullptr;
-  other._destroySimultaneously = false;
-}
-
-ZipArchive::ZipArchive(std::istream* stream)
-  : _zipStream(stream)
-  , _destroySimultaneously(false)
-{
-  InternalSharedBuffer::GetInstance()->IncRef();
-
-  if (stream != nullptr)
-  {
-    this->ReadEndOfCentralDirectory();
-    this->EnsureCentralDirectoryRead();
-  }
-}
-
-ZipArchive::ZipArchive(std::istream* stream, bool destroySimultaneously)
-  : _zipStream(stream)
-  , _destroySimultaneously(stream != nullptr ? destroySimultaneously : false)
-{
-  InternalSharedBuffer::GetInstance()->IncRef();
-
-  // jesus blew up a school bus when this metod has been implemented
-  if (stream != nullptr)
-  {
-    this->ReadEndOfCentralDirectory();
-    this->EnsureCentralDirectoryRead();
-  }
-}
-
 ZipArchive::~ZipArchive()
 {
   InternalSharedBuffer::GetInstance()->DecRef();
 
-  std::for_each(_entries.begin(), _entries.end(), [](ZipArchiveEntry* e) { delete e; });
-
-  if (_destroySimultaneously && _zipStream != nullptr) 
-  {
-    delete _zipStream;
-  }
+  this->InternalDestroy();
 }
 
 ZipArchive& ZipArchive::operator = (ZipArchive&& other)
@@ -129,9 +134,9 @@ ZipArchive& ZipArchive::operator = (ZipArchive&& other)
   return *this;
 }
 
-ZipArchiveEntry* ZipArchive::CreateEntry(const std::string& fileName)
+ZipArchiveEntry::Ptr ZipArchive::CreateEntry(const std::string& fileName)
 {
-  ZipArchiveEntry* result = nullptr;
+  ZipArchiveEntry::Ptr result = nullptr;
 
   if (this->GetEntry(fileName) == nullptr)
   {
@@ -154,14 +159,14 @@ void ZipArchive::SetComment(const std::string& comment)
   _endOfCentralDirectoryBlock.Comment = comment;
 }
 
-const ZipArchiveEntry* ZipArchive::GetEntry(int index) const
+ZipArchiveEntry::Ptr ZipArchive::GetEntry(int index)
 {
   return _entries[index];
 }
 
-const ZipArchiveEntry* ZipArchive::GetEntry(const std::string& entryName) const
+ZipArchiveEntry::Ptr ZipArchive::GetEntry(const std::string& entryName)
 {
-  auto it = std::find_if(_entries.begin(), _entries.end(), [&entryName](ZipArchiveEntry* value) { return value->GetFullName() == entryName; });
+  auto it = std::find_if(_entries.begin(), _entries.end(), [&entryName](ZipArchiveEntry::Ptr& value) { return value->GetFullName() == entryName; });
 
   if (it != _entries.end())
   {
@@ -171,16 +176,6 @@ const ZipArchiveEntry* ZipArchive::GetEntry(const std::string& entryName) const
   return nullptr;
 }
 
-ZipArchiveEntry* ZipArchive::GetEntry(int index)
-{
-  return _entries[index];
-}
-
-ZipArchiveEntry* ZipArchive::GetEntry(const std::string& entryName)
-{
-  return CALL_CONST_METHOD(GetEntry(entryName));
-}
-
 size_t ZipArchive::GetEntriesCount() const
 {
   return _entries.size();
@@ -188,18 +183,16 @@ size_t ZipArchive::GetEntriesCount() const
 
 void ZipArchive::RemoveEntry(const std::string& entryName)
 {
-  auto it = std::find_if(_entries.begin(), _entries.end(), [&entryName](ZipArchiveEntry* value) { return value->GetFullName() == entryName; });
+  auto it = std::find_if(_entries.begin(), _entries.end(), [&entryName](ZipArchiveEntry::Ptr& value) { return value->GetFullName() == entryName; });
 
   if (it != _entries.end())
   {
-    delete *it;
     _entries.erase(it);
   }
 }
 
 void ZipArchive::RemoveEntry(int index)
 {
-  delete _entries[index];
   _entries.erase(_entries.begin() + index);
 }
 
@@ -211,7 +204,7 @@ bool ZipArchive::EnsureCentralDirectoryRead()
 
   while (zipCentralDirectoryFileHeader.Deserialize(*_zipStream))
   {
-    ZipArchiveEntry* newEntry;
+    ZipArchiveEntry::Ptr newEntry;
 
     if ((newEntry = ZipArchiveEntry::CreateExisting(this, zipCentralDirectoryFileHeader)) != nullptr)
     {
@@ -291,13 +284,21 @@ void ZipArchive::WriteToStream(std::ostream& stream)
   _endOfCentralDirectoryBlock.Serialize(stream);
 }
 
-void ZipArchive::Swap(ZipArchive& other)
+void ZipArchive::Swap(ZipArchive::Ptr other)
 {
-  if (this == &other) return;
+  //if (this == other) return;
+  if (other == nullptr) return;
 
-  std::swap(_endOfCentralDirectoryBlock, other._endOfCentralDirectoryBlock);
-  std::swap(_entries, other._entries);
-  std::swap(_zipStream, other._zipStream);
-  std::swap(_destroySimultaneously, other._destroySimultaneously);
+  std::swap(_endOfCentralDirectoryBlock, other->_endOfCentralDirectoryBlock);
+  std::swap(_entries, other->_entries);
+  std::swap(_zipStream, other->_zipStream);
+  std::swap(_destroySimultaneously, other->_destroySimultaneously);
 }
 
+void ZipArchive::InternalDestroy()
+{
+  if (_destroySimultaneously && _zipStream != nullptr) 
+  {
+    delete _zipStream;
+  }
+}

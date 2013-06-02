@@ -19,7 +19,7 @@ class ZipFile
      *
      * \return The ZipArchive instance.
      */
-    static ZipArchive Open(const std::string& zipPath);
+    static ZipArchive::Ptr Open(const std::string& zipPath);
 
     /**
      * \brief Saves the zip archive file with the given filename.
@@ -28,7 +28,7 @@ class ZipFile
      * \param zipArchive  The zip archive to save.
      * \param zipPath     Full pathname of the zip archive file.
      */
-    static void Save(ZipArchive& zipArchive, const std::string& zipPath);
+    static void Save(ZipArchive::Ptr zipArchive, const std::string& zipPath);
 
     /**
      * \brief Saves the zip archive file and close it.
@@ -37,7 +37,7 @@ class ZipFile
      * \param zipArchive  The zip archive to save.
      * \param zipPath     Full pathname of the zip archive file.
      */
-    static void SaveAndClose(ZipArchive& zipArchive, const std::string& zipPath);
+    static void SaveAndClose(ZipArchive::Ptr zipArchive, const std::string& zipPath);
 
     /**
      * \brief Checks if file with the given path is contained in the archive.

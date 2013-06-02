@@ -24,15 +24,15 @@ static const char* fileOut3    = "out3.txt";
 
 void ListZipArchive(const char* zipArchiveName = zipFilename)
 {
-  ZipArchive archive = ZipFile::Open(zipArchiveName);
-  size_t entries = archive.GetEntriesCount();
+  ZipArchive::Ptr archive = ZipFile::Open(zipArchiveName);
+  size_t entries = archive->GetEntriesCount();
 
-  printf("[o] Listing archive (comment: '%s'):\n", archive.GetComment().c_str());
+  printf("[o] Listing archive (comment: '%s'):\n", archive->GetComment().c_str());
   printf("[o] Entries count: %u\n", entries);
 
   for (size_t i = 0; i < entries; ++i)
   {
-    auto* entry = archive.GetEntry(i);
+    auto entry = archive->GetEntry(i);
 
     printf("[o] -- %s\n", entry->GetFullName().c_str());
     printf("[o]   >> uncompressed size: %u\n", entry->GetSize());
@@ -79,13 +79,13 @@ TEST_METHOD(Sample_ZipFile)
 
 TEST_METHOD(Sample_ZipArchive_Stream_Deferred_Comment)
 {
-  ZipArchive archive = ZipFile::Open(zipFilename);
-  archive.SetComment("archive comment");
+  ZipArchive::Ptr archive = ZipFile::Open(zipFilename);
+  archive->SetComment("archive comment");
 
   char content[] = "Content to add";
   imemstream contentStream(content);
 
-  ZipArchiveEntry* entry = archive.CreateEntry(fileIn3);
+  ZipArchiveEntry::Ptr entry = archive->CreateEntry(fileIn3);
   assert(entry != nullptr);
 
   entry->SetPassword("pass");
@@ -111,9 +111,9 @@ TEST_METHOD(Sample_ZipArchive_Stream_Deferred_Comment)
 
 TEST_METHOD(Sample_ZipArchive_Stream_Immediate_Store_Own_Save_Password_Protected)
 {
-  ZipArchive archive = ZipFile::Open(zipFilename);
+  ZipArchive::Ptr archive = ZipFile::Open(zipFilename);
 
-  ZipArchiveEntry* entry = archive.CreateEntry(fileIn2Dest);
+  ZipArchiveEntry::Ptr entry = archive->CreateEntry(fileIn2Dest);
   assert(entry != nullptr);
 
   {
@@ -134,7 +134,7 @@ TEST_METHOD(Sample_ZipArchive_Stream_Immediate_Store_Own_Save_Password_Protected
 
   std::ofstream archiveToSave;
   archiveToSave.open(zipFilename2, std::ios::binary);
-  archive.WriteToStream(archiveToSave);
+  archive->WriteToStream(archiveToSave);
 
   archiveToSave.flush();
   archiveToSave.close();
@@ -144,13 +144,13 @@ TEST_METHOD(Sample_ZipArchive_Stream_Immediate_Store_Own_Save_Password_Protected
 
 TEST_METHOD(Sample_ZipArchive_Decompress_Password_Protected)
 {
-  ZipArchive archive = ZipFile::Open(zipFilename);
+  ZipArchive::Ptr archive = ZipFile::Open(zipFilename);
 
   std::istream* decompressStream = nullptr;
 
   printf("[+] Extracting file '%s'\n", fileIn3);
 
-  ZipArchiveEntry* entry = archive.GetEntry(fileIn3);
+  ZipArchiveEntry::Ptr entry = archive->GetEntry(fileIn3);
   assert(entry != nullptr);
 
   printf("[+] Trying no pass...\n");

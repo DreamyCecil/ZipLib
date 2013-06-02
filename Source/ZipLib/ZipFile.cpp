@@ -25,7 +25,7 @@ namespace
   }
 }
 
-ZipArchive ZipFile::Open(const std::string& zipPath)
+ZipArchive::Ptr ZipFile::Open(const std::string& zipPath)
 {
   std::ifstream* zipFile = new std::ifstream();
   zipFile->open(zipPath, std::ios::binary);
@@ -46,10 +46,10 @@ ZipArchive ZipFile::Open(const std::string& zipPath)
     }
   }
 
-  return ZipArchive(zipFile, true);
+  return ZipArchive::Create(zipFile, true);
 }
 
-void ZipFile::Save(ZipArchive& zipArchive, const std::string& zipPath)
+void ZipFile::Save(ZipArchive::Ptr zipArchive, const std::string& zipPath)
 {
   ZipFile::SaveAndClose(zipArchive, zipPath);
 
@@ -57,7 +57,7 @@ void ZipFile::Save(ZipArchive& zipArchive, const std::string& zipPath)
   zipArchive = ZipFile::Open(zipPath);
 }
 
-void ZipFile::SaveAndClose(ZipArchive& zipArchive, const std::string& zipPath)
+void ZipFile::SaveAndClose(ZipArchive::Ptr zipArchive, const std::string& zipPath)
 {
   // check if file exist
   std::string tempZipPath = MakeTempFilename(zipPath);
@@ -69,14 +69,14 @@ void ZipFile::SaveAndClose(ZipArchive& zipArchive, const std::string& zipPath)
     throw std::runtime_error("cannot save zip file");
   }
 
-  zipArchive.WriteToStream(outZipFile);
+  zipArchive->WriteToStream(outZipFile);
   outZipFile.close();
 
   {
     // force destroying original archive
     // (it may hold the handle on the original zip archive)
-    ZipArchive tempZipArchive;
-    zipArchive.Swap(tempZipArchive);
+    ZipArchive::Ptr tempZipArchive = ZipArchive::Create();
+    zipArchive->Swap(tempZipArchive);
   }
 
   remove(zipPath.c_str());
@@ -85,8 +85,8 @@ void ZipFile::SaveAndClose(ZipArchive& zipArchive, const std::string& zipPath)
 
 bool ZipFile::IsInArchive(const std::string& zipPath, const std::string& fileName)
 {
-  ZipArchive zipArchive = ZipFile::Open(zipPath);
-  return zipArchive.GetEntry(fileName) != nullptr;
+  ZipArchive::Ptr zipArchive = ZipFile::Open(zipPath);
+  return zipArchive->GetEntry(fileName) != nullptr;
 }
 
 void ZipFile::AddFile(const std::string& zipPath, const std::string& fileName, ZipArchiveEntry::CompressionLevel level)
@@ -109,7 +109,7 @@ void ZipFile::AddEncryptedFile(const std::string& zipPath, const std::string& fi
   std::string tmpName = MakeTempFilename(zipPath);
 
   {
-    ZipArchive zipArchive = ZipFile::Open(zipPath);
+    ZipArchive::Ptr zipArchive = ZipFile::Open(zipPath);
 
     std::ifstream fileToAdd;
     fileToAdd.open(fileName, std::ios::binary);
@@ -119,13 +119,13 @@ void ZipFile::AddEncryptedFile(const std::string& zipPath, const std::string& fi
       throw std::runtime_error("cannot open input file");
     }
 
-    auto* fileEntry = zipArchive.CreateEntry(inArchiveName);
+    auto fileEntry = zipArchive->CreateEntry(inArchiveName);
 
     if (fileEntry == nullptr)
     {
       //throw std::runtime_error("input file already exist in the archive");
-      zipArchive.RemoveEntry(inArchiveName);
-      fileEntry = zipArchive.CreateEntry(inArchiveName);
+      zipArchive->RemoveEntry(inArchiveName);
+      fileEntry = zipArchive->CreateEntry(inArchiveName);
     }
 
     if (!password.empty())
@@ -146,7 +146,7 @@ void ZipFile::AddEncryptedFile(const std::string& zipPath, const std::string& fi
       throw std::runtime_error("cannot open output file");
     }
 
-    zipArchive.WriteToStream(outFile);
+    zipArchive->WriteToStream(outFile);
     outFile.close();
   
     // force closing the input zip stream
@@ -173,7 +173,7 @@ void ZipFile::ExtractEncryptedFile(const std::string& zipPath, const std::string
 
 void ZipFile::ExtractEncryptedFile(const std::string& zipPath, const std::string& fileName, const std::string& destinationPath, const std::string& password)
 {
-  ZipArchive zipArchive = ZipFile::Open(zipPath);
+  ZipArchive::Ptr zipArchive = ZipFile::Open(zipPath);
 
   std::ofstream destFile;
   destFile.open(destinationPath, std::ios::binary | std::ios::trunc);
@@ -183,7 +183,7 @@ void ZipFile::ExtractEncryptedFile(const std::string& zipPath, const std::string
     throw std::runtime_error("cannot create destination file");
   }
 
-  ZipArchiveEntry* entry = zipArchive.GetEntry(fileName);
+  auto entry = zipArchive->GetEntry(fileName);
 
   if (entry == nullptr)
   {
@@ -213,8 +213,8 @@ void ZipFile::RemoveEntry(const std::string& zipPath, const std::string& fileNam
   std::string tmpName = MakeTempFilename(zipPath);
 
   {
-    ZipArchive zipArchive = ZipFile::Open(zipPath);
-    zipArchive.RemoveEntry(fileName);
+    ZipArchive::Ptr zipArchive = ZipFile::Open(zipPath);
+    zipArchive->RemoveEntry(fileName);
 
     //////////////////////////////////////////////////////////////////////////
 
@@ -227,7 +227,7 @@ void ZipFile::RemoveEntry(const std::string& zipPath, const std::string& fileNam
       throw std::runtime_error("cannot open output file");
     }
 
-    zipArchive.WriteToStream(outFile);
+    zipArchive->WriteToStream(outFile);
     outFile.close();
 
     // force closing the input zip stream

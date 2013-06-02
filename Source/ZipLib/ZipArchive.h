@@ -146,9 +146,6 @@ class ZipArchive
 
     void Swap(ZipArchive& other);
 
-    const ZipArchive* operator -> () const { return this; }
-    ZipArchive* operator -> () { return this; }
-
   private:
     enum class SeekDirection
     {

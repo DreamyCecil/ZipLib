@@ -86,7 +86,7 @@ void ZipFile::SaveAndClose(ZipArchive& zipArchive, const std::string& zipPath)
 bool ZipFile::IsInArchive(const std::string& zipPath, const std::string& fileName)
 {
   ZipArchive zipArchive = ZipFile::Open(zipPath);
-  return zipArchive->GetEntry(fileName) != nullptr;
+  return zipArchive.GetEntry(fileName) != nullptr;
 }
 
 void ZipFile::AddFile(const std::string& zipPath, const std::string& fileName, ZipArchiveEntry::CompressionLevel level)
@@ -119,13 +119,13 @@ void ZipFile::AddEncryptedFile(const std::string& zipPath, const std::string& fi
       throw std::runtime_error("cannot open input file");
     }
 
-    auto* fileEntry = zipArchive->CreateEntry(inArchiveName);
+    auto* fileEntry = zipArchive.CreateEntry(inArchiveName);
 
     if (fileEntry == nullptr)
     {
       //throw std::runtime_error("input file already exist in the archive");
       zipArchive.RemoveEntry(inArchiveName);
-      fileEntry = zipArchive->CreateEntry(inArchiveName);
+      fileEntry = zipArchive.CreateEntry(inArchiveName);
     }
 
     if (!password.empty())
@@ -183,7 +183,7 @@ void ZipFile::ExtractEncryptedFile(const std::string& zipPath, const std::string
     throw std::runtime_error("cannot create destination file");
   }
 
-  ZipArchiveEntry* entry = zipArchive->GetEntry(fileName);
+  ZipArchiveEntry* entry = zipArchive.GetEntry(fileName);
 
   if (entry == nullptr)
   {
@@ -214,7 +214,7 @@ void ZipFile::RemoveEntry(const std::string& zipPath, const std::string& fileNam
 
   {
     ZipArchive zipArchive = ZipFile::Open(zipPath);
-    zipArchive->RemoveEntry(fileName);
+    zipArchive.RemoveEntry(fileName);
 
     //////////////////////////////////////////////////////////////////////////
 

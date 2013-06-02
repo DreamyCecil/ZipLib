@@ -53,7 +53,6 @@ void ZipFile::Save(ZipArchive::Ptr zipArchive, const std::string& zipPath)
 {
   ZipFile::SaveAndClose(zipArchive, zipPath);
 
-  // the operator = (ZipArchive&&) method will be called
   zipArchive = ZipFile::Open(zipPath);
 }
 

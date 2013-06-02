@@ -32,7 +32,7 @@ void ListZipArchive(const char* zipArchiveName = zipFilename)
 
   for (size_t i = 0; i < entries; ++i)
   {
-    auto entry = archive->GetEntry(i);
+    auto entry = archive->GetEntry(int(i));
 
     printf("[o] -- %s\n", entry->GetFullName().c_str());
     printf("[o]   >> uncompressed size: %u\n", entry->GetSize());

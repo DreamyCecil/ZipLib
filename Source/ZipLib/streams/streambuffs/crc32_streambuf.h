@@ -2,10 +2,10 @@
 #include <streambuf>
 #include <cstdint>
 
-#include "streambuf_conf.h"
+#include "../substream.h"
 #include "../../extlibs/zlib/zlib.h"
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
+template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class crc32_streambuf
   : public std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>
 {
@@ -18,9 +18,37 @@ class crc32_streambuf
     typedef typename base_type::off_type off_type;
 
     crc32_streambuf()
-      : _crc32(0)
+      : _inputStream(nullptr)
+      , _internalBufferPosition(_internalBuffer + INTERNAL_BUFFER_SIZE)
+      , _internalBufferEnd(_internalBuffer + INTERNAL_BUFFER_SIZE)
+      , _bytesRead(0)
+      , _crc32(0)
     {
 
+    }
+
+    crc32_streambuf(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& input)
+      : crc32_streambuf()
+    {
+      init(input);
+    }
+
+    void init(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& input)
+    {
+      _inputStream = &input;
+
+      ELEM_TYPE* endOfBuffer = _internalBuffer + INTERNAL_BUFFER_SIZE;
+      this->setg(endOfBuffer, endOfBuffer, endOfBuffer);
+    }
+
+    bool is_init() const
+    {
+      return (_inputStream != nullptr);
+    }
+
+    size_t get_bytes_read() const
+    {
+      return _bytesRead;
     }
 
     uint32_t get_crc32() const
@@ -29,20 +57,48 @@ class crc32_streambuf
     }
 
   protected:
-    int_type overflow(int_type c = traits_type::eof()) override
+    int_type underflow() override
     {
-      bool is_eof = traits_type::eq_int_type(c, traits_type::eof());
-
-      // buffering would be great, maybe?
-      if (!is_eof)
+      // buffer exhausted
+      if (this->gptr() >= _internalBufferEnd)
       {
-        _crc32 = crc32(_crc32, reinterpret_cast<Bytef*>(&c), static_cast<uInt>(sizeof(ELEM_TYPE)));
-        return c;
+        _inputStream->read(_internalBuffer, static_cast<std::streamsize>(INTERNAL_BUFFER_SIZE));
+        size_t n = static_cast<size_t>(_inputStream->gcount());
+
+        _bytesRead += n;
+
+        _internalBufferPosition = _internalBuffer;
+        _internalBufferEnd = _internalBuffer + n;
+
+        if (n == 0)
+        {
+          return traits_type::eof();
+        }
       }
 
-      return traits_type::eof();
-    }
+      // set buffer pointers, increment current position
+      ELEM_TYPE* base = _internalBufferPosition++;
 
+      // setting all pointers to the same position forces calling of this method each time,
+      // so crc32 really represents the checksum of what really has been read
+      this->setg(base, base, base);
+
+      _crc32 = crc32(_crc32, reinterpret_cast<Bytef*>(this->gptr()), static_cast<uInt>(sizeof(ELEM_TYPE)));
+
+      return traits_type::to_int_type(*this->gptr());
+    }
+    
   private:
+    enum : size_t
+    {
+      INTERNAL_BUFFER_SIZE = 1 << 15
+    };
+
+    ELEM_TYPE  _internalBuffer[INTERNAL_BUFFER_SIZE];
+    ELEM_TYPE* _internalBufferPosition;
+    ELEM_TYPE* _internalBufferEnd;
+
+    std::basic_istream<ELEM_TYPE, TRAITS_TYPE>* _inputStream;
+    size_t _bytesRead;
     uint32_t _crc32;
 };

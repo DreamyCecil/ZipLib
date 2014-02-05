@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -19,8 +19,57 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EndOfCentralDirectoryBlock.h" />
-    <ClInclude Include="EnumTools.h" />
+    <ClInclude Include="compression\deflate\deflate_decoder.h" />
+    <ClInclude Include="compression\deflate\deflate_decoder_properties.h" />
+    <ClInclude Include="compression\deflate\deflate_encoder.h" />
+    <ClInclude Include="compression\deflate\deflate_encoder_properties.h" />
+    <ClInclude Include="compression\lzma\detail\lzma_alloc.h" />
+    <ClInclude Include="compression\lzma\detail\lzma_handle.h" />
+    <ClInclude Include="compression\lzma\detail\lzma_header.h" />
+    <ClInclude Include="compression\lzma\detail\lzma_in_stream.h" />
+    <ClInclude Include="compression\lzma\detail\lzma_out_stream.h" />
+    <ClInclude Include="compression\lzma\lzma_decoder.h" />
+    <ClInclude Include="compression\lzma\lzma_decoder_properties.h" />
+    <ClInclude Include="compression\lzma\lzma_encoder.h" />
+    <ClInclude Include="compression\lzma\lzma_encoder_properties.h" />
+    <ClInclude Include="compression\store\store_decoder.h" />
+    <ClInclude Include="compression\store\store_decoder_properties.h" />
+    <ClInclude Include="compression\store\store_encoder.h" />
+    <ClInclude Include="compression\store\store_encoder_properties.h" />
+    <ClInclude Include="detail\EndOfCentralDirectoryBlock.h" />
+    <ClInclude Include="detail\ZipCentralDirectoryFileHeader.h" />
+    <ClInclude Include="detail\ZipGenericExtraField.h" />
+    <ClInclude Include="detail\ZipLocalFileHeader.h" />
+    <ClInclude Include="extlibs\lzma\7z.h" />
+    <ClInclude Include="extlibs\lzma\7zAlloc.h" />
+    <ClInclude Include="extlibs\lzma\7zBuf.h" />
+    <ClInclude Include="extlibs\lzma\7zCrc.h" />
+    <ClInclude Include="extlibs\lzma\7zFile.h" />
+    <ClInclude Include="extlibs\lzma\7zVersion.h" />
+    <ClInclude Include="extlibs\lzma\Alloc.h" />
+    <ClInclude Include="extlibs\lzma\Bcj2.h" />
+    <ClInclude Include="extlibs\lzma\Bra.h" />
+    <ClInclude Include="extlibs\lzma\CpuArch.h" />
+    <ClInclude Include="extlibs\lzma\Delta.h" />
+    <ClInclude Include="extlibs\lzma\LzFind.h" />
+    <ClInclude Include="extlibs\lzma\LzFindMt.h" />
+    <ClInclude Include="extlibs\lzma\LzHash.h" />
+    <ClInclude Include="extlibs\lzma\Lzma2Dec.h" />
+    <ClInclude Include="extlibs\lzma\Lzma2Enc.h" />
+    <ClInclude Include="extlibs\lzma\Lzma86.h" />
+    <ClInclude Include="extlibs\lzma\LzmaDec.h" />
+    <ClInclude Include="extlibs\lzma\LzmaEnc.h" />
+    <ClInclude Include="extlibs\lzma\LzmaLib.h" />
+    <ClInclude Include="extlibs\lzma\MtCoder.h" />
+    <ClInclude Include="extlibs\lzma\Ppmd.h" />
+    <ClInclude Include="extlibs\lzma\Ppmd7.h" />
+    <ClInclude Include="extlibs\lzma\RotateDefs.h" />
+    <ClInclude Include="extlibs\lzma\Sha256.h" />
+    <ClInclude Include="extlibs\lzma\Threads.h" />
+    <ClInclude Include="extlibs\lzma\Types.h" />
+    <ClInclude Include="extlibs\lzma\Xz.h" />
+    <ClInclude Include="extlibs\lzma\XzCrc64.h" />
+    <ClInclude Include="extlibs\lzma\XzEnc.h" />
     <ClInclude Include="extlibs\zlib\crc32.h" />
     <ClInclude Include="extlibs\zlib\deflate.h" />
     <ClInclude Include="extlibs\zlib\gzguts.h" />
@@ -32,32 +81,74 @@
     <ClInclude Include="extlibs\zlib\zconf.h" />
     <ClInclude Include="extlibs\zlib\zlib.h" />
     <ClInclude Include="extlibs\zlib\zutil.h" />
+    <ClInclude Include="methods\DeflateMethod.h" />
+    <ClInclude Include="methods\ICompressionMethod.h" />
+    <ClInclude Include="methods\LzmaMethod.h" />
+    <ClInclude Include="methods\StoreMethod.h" />
+    <ClInclude Include="methods\ZipMethodResolver.h" />
+    <ClInclude Include="streams\compression_decoder_stream.h" />
+    <ClInclude Include="streams\compression_encoder_stream.h" />
     <ClInclude Include="streams\crc32stream.h" />
-    <ClInclude Include="streams\defstream.h" />
-    <ClInclude Include="streams\infstream.h" />
     <ClInclude Include="streams\memstream.h" />
     <ClInclude Include="streams\serialization.h" />
+    <ClInclude Include="streams\streambuffs\compression_decoder_streambuf.h" />
+    <ClInclude Include="streams\streambuffs\compression_encoder_streambuf.h" />
     <ClInclude Include="streams\streambuffs\crc32_streambuf.h" />
-    <ClInclude Include="streams\streambuffs\deflate_streambuf.h" />
-    <ClInclude Include="streams\streambuffs\inflate_streambuf.h" />
     <ClInclude Include="streams\streambuffs\mem_streambuf.h" />
-    <ClInclude Include="streams\streambuffs\streambuf_conf.h" />
     <ClInclude Include="streams\streambuffs\sub_streambuf.h" />
     <ClInclude Include="streams\streambuffs\tee_streambuff.h" />
     <ClInclude Include="streams\streambuffs\zip_crypto_streambuf.h" />
     <ClInclude Include="streams\substream.h" />
     <ClInclude Include="streams\teestream.h" />
     <ClInclude Include="streams\zip_cryptostream.h" />
-    <ClInclude Include="utils\threadsafe_holder.h" />
+    <ClInclude Include="utils\enum_utils.h" />
+    <ClInclude Include="utils\stream_utils.h" />
+    <ClInclude Include="utils\time_utils.h" />
     <ClInclude Include="ZipArchive.h" />
     <ClInclude Include="ZipArchiveEntry.h" />
-    <ClInclude Include="ZipCentralDirectoryFileHeader.h" />
     <ClInclude Include="ZipFile.h" />
-    <ClInclude Include="ZipGenericExtraField.h" />
-    <ClInclude Include="ZipLocalFileHeader.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EndOfCentralDirectoryBlock.cpp" />
+    <ClCompile Include="detail\EndOfCentralDirectoryBlock.cpp" />
+    <ClCompile Include="detail\ZipCentralDirectoryFileHeader.cpp" />
+    <ClCompile Include="detail\ZipGenericExtraField.cpp" />
+    <ClCompile Include="detail\ZipLocalFileHeader.cpp" />
+    <ClCompile Include="extlibs\lzma\7zAlloc.c" />
+    <ClCompile Include="extlibs\lzma\7zBuf.c" />
+    <ClCompile Include="extlibs\lzma\7zBuf2.c" />
+    <ClCompile Include="extlibs\lzma\7zCrc.c" />
+    <ClCompile Include="extlibs\lzma\7zCrcOpt.c" />
+    <ClCompile Include="extlibs\lzma\7zDec.c" />
+    <ClCompile Include="extlibs\lzma\7zFile.c" />
+    <ClCompile Include="extlibs\lzma\7zIn.c" />
+    <ClCompile Include="extlibs\lzma\7zStream.c" />
+    <ClCompile Include="extlibs\lzma\Alloc.c" />
+    <ClCompile Include="extlibs\lzma\Bcj2.c" />
+    <ClCompile Include="extlibs\lzma\Bra.c" />
+    <ClCompile Include="extlibs\lzma\Bra86.c" />
+    <ClCompile Include="extlibs\lzma\BraIA64.c" />
+    <ClCompile Include="extlibs\lzma\CpuArch.c" />
+    <ClCompile Include="extlibs\lzma\Delta.c" />
+    <ClCompile Include="extlibs\lzma\LzFind.c" />
+    <ClCompile Include="extlibs\lzma\LzFindMt.c" />
+    <ClCompile Include="extlibs\lzma\Lzma2Dec.c" />
+    <ClCompile Include="extlibs\lzma\Lzma2Enc.c" />
+    <ClCompile Include="extlibs\lzma\Lzma86Dec.c" />
+    <ClCompile Include="extlibs\lzma\Lzma86Enc.c" />
+    <ClCompile Include="extlibs\lzma\LzmaDec.c" />
+    <ClCompile Include="extlibs\lzma\LzmaEnc.c" />
+    <ClCompile Include="extlibs\lzma\LzmaLib.c" />
+    <ClCompile Include="extlibs\lzma\MtCoder.c" />
+    <ClCompile Include="extlibs\lzma\Ppmd7.c" />
+    <ClCompile Include="extlibs\lzma\Ppmd7Dec.c" />
+    <ClCompile Include="extlibs\lzma\Ppmd7Enc.c" />
+    <ClCompile Include="extlibs\lzma\Sha256.c" />
+    <ClCompile Include="extlibs\lzma\Threads.c" />
+    <ClCompile Include="extlibs\lzma\Xz.c" />
+    <ClCompile Include="extlibs\lzma\XzCrc64.c" />
+    <ClCompile Include="extlibs\lzma\XzDec.c" />
+    <ClCompile Include="extlibs\lzma\XzEnc.c" />
+    <ClCompile Include="extlibs\lzma\XzIn.c" />
     <ClCompile Include="extlibs\zlib\adler32.c" />
     <ClCompile Include="extlibs\zlib\compress.c" />
     <ClCompile Include="extlibs\zlib\crc32.c" />
@@ -75,10 +166,7 @@
     <ClCompile Include="extlibs\zlib\zutil.c" />
     <ClCompile Include="ZipArchive.cpp" />
     <ClCompile Include="ZipArchiveEntry.cpp" />
-    <ClCompile Include="ZipCentralDirectoryFileHeader.cpp" />
     <ClCompile Include="ZipFile.cpp" />
-    <ClCompile Include="ZipGenericExtraField.cpp" />
-    <ClCompile Include="ZipLocalFileHeader.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5C9FD859-DDF9-4510-8397-B329B0AE8C48}</ProjectGuid>
@@ -89,26 +177,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>

@@ -2,7 +2,7 @@
 #include <streambuf>
 #include <algorithm>
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
+template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class tee_streambuf:
   public std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>
 {

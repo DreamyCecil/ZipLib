@@ -5,10 +5,9 @@
 #include <chrono>
 #include <random>
 
-#include "streambuf_conf.h"
 #include "../../extlibs/zlib/zlib.h"
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
+template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class zip_crypto_streambuf
   : public std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>
 {
@@ -32,24 +31,14 @@ class zip_crypto_streambuf
     }
 
     zip_crypto_streambuf(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const ELEM_TYPE* password)
-      : _internalBuffer(nullptr)
-      , _inputStream(nullptr)
-      , _outputStream(nullptr)
-      , _finalByte(-1)
-      , _encryptionHeaderRead(false)
-      , _encryptionHeaderWritten(false)
+      : zip_crypto_streambuf()
     {
       static_assert(sizeof(ELEM_TYPE) == 1, "size of ELEM_TYPE must be 1");
       init(stream, password);
     }
 
     zip_crypto_streambuf(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, const ELEM_TYPE* password)
-      : _internalBuffer(nullptr)
-      , _inputStream(nullptr)
-      , _outputStream(nullptr)
-      , _finalByte(-1)
-      , _encryptionHeaderRead(false)
-      , _encryptionHeaderWritten(false)
+      : zip_crypto_streambuf()
     {
       static_assert(sizeof(ELEM_TYPE) == 1, "size of ELEM_TYPE must be 1");
       init(stream, password);
@@ -279,7 +268,7 @@ class zip_crypto_streambuf
 
     enum : size_t
     {
-      INTERNAL_BUFFER_SIZE = STREAM_DEFAULT_BUFFER_SIZE
+      INTERNAL_BUFFER_SIZE = 1 << 15
     };
 
     ELEM_TYPE* _internalBuffer;

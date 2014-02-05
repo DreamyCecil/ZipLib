@@ -6,7 +6,7 @@
 /**
  * \brief Basic teestream. Distributes the input data into every bound output stream.
  */
-template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
+template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class basic_teestream
   : public std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>
 {
@@ -18,7 +18,7 @@ class basic_teestream
     }
 
     basic_teestream(basic_teestream<ELEM_TYPE, TRAITS_TYPE>&& other)
-      : std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>(&_teeStreambuf)
+      : basic_teestream()
     {
       _teeStreambuf = std::move(other._teeStreambuf);
       this->swap(other);

@@ -2,7 +2,7 @@
 #include <iostream>
 #include "streambuffs/zip_crypto_streambuf.h"
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
+template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class basic_zip_cryptostream
   : public std::basic_iostream<ELEM_TYPE, TRAITS_TYPE>
 {
@@ -14,15 +14,15 @@ class basic_zip_cryptostream
     }
 
     basic_zip_cryptostream(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const ELEM_TYPE* password)
-      : _zipCryptoStreambuf(stream, password)
-      , std::basic_iostream<ELEM_TYPE, TRAITS_TYPE>(&_zipCryptoStreambuf)
+      : std::basic_iostream<ELEM_TYPE, TRAITS_TYPE>(&_zipCryptoStreambuf)
+      , _zipCryptoStreambuf(stream, password)
     {
 
     }
 
     basic_zip_cryptostream(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, const ELEM_TYPE* password)
-      : _zipCryptoStreambuf(stream, password)
-      , std::basic_iostream<ELEM_TYPE, TRAITS_TYPE>(&_zipCryptoStreambuf)
+      : std::basic_iostream<ELEM_TYPE, TRAITS_TYPE>(&_zipCryptoStreambuf)
+      , _zipCryptoStreambuf(stream, password)
     {
 
     }

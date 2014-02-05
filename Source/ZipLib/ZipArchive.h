@@ -1,12 +1,13 @@
 #pragma once
+#include "detail/EndOfCentralDirectoryBlock.h"
+
+#include "ZipArchiveEntry.h"
+
 #include <istream>
 #include <vector>
 #include <algorithm>
 #include <atomic>
 #include <memory>
-#include "EndOfCentralDirectoryBlock.h"
-#include "ZipArchiveEntry.h"
-#include "utils/threadsafe_holder.h"
 
 /**
  * \brief Represents a package of compressed files in the zip archive format.
@@ -148,37 +149,14 @@ class ZipArchive
       Backward
     };
 
-    // used in ZipArchiveEntry::CopyStream method for effective allocation
-    class InternalSharedBuffer
-      : public enable_threadsafe_from_this<InternalSharedBuffer>
-    {
-      public:
-        static InternalSharedBuffer* GetInstance();
-
-        char* GetBuffer();
-        size_t GetBufferSize();
-        void IncRef();
-        void DecRef();
-
-      private:
-        enum
-        {
-          INTERNAL_BUFFER_SIZE = 1024 * 1024
-        };
-
-        // counter is independent of the buffer
-        std::atomic<size_t> _refCount;
-        char* _buffer;
-    };
-
     bool EnsureCentralDirectoryRead();
     bool ReadEndOfCentralDirectory();
     bool SeekToSignature(uint32_t signature, SeekDirection direction);
 
     void InternalDestroy();
 
-    EndOfCentralDirectoryBlock _endOfCentralDirectoryBlock;
-    std::vector<std::shared_ptr<ZipArchiveEntry>> _entries;
+    detail::EndOfCentralDirectoryBlock _endOfCentralDirectoryBlock;
+    std::vector<ZipArchiveEntry::Ptr> _entries;
     std::istream* _zipStream;
     bool _destroySimultaneously;
 };

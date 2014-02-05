@@ -6,7 +6,7 @@
  * \brief Basic input substream. Creates a virtual stream over an existing input stream.
  *        The substream starts at the position 0 and continues until EOF or the specified length.
  */
-template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
+template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class basic_isubstream
   : public std::basic_istream<ELEM_TYPE, TRAITS_TYPE>
 {
@@ -20,15 +20,15 @@ class basic_isubstream
     }
 
     basic_isubstream(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& input, pos_type startOffset = 0)
-      : _subStreambuf(input, startOffset, static_cast<size_t>(-1))
-      , std::basic_istream<ELEM_TYPE, TRAITS_TYPE>(&_subStreambuf)
+      : std::basic_istream<ELEM_TYPE, TRAITS_TYPE>(&_subStreambuf)
+      , _subStreambuf(input, startOffset, static_cast<size_t>(-1))
     {
 
     }
 
     basic_isubstream(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& input, pos_type startOffset, size_t length)
-      : _subStreambuf(input, startOffset, length)
-      , std::basic_istream<ELEM_TYPE, TRAITS_TYPE>(&_subStreambuf)
+      : std::basic_istream<ELEM_TYPE, TRAITS_TYPE>(&_subStreambuf)
+      , _subStreambuf(input, startOffset, length)
     {
 
     }

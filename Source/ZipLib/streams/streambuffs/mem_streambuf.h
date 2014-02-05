@@ -3,9 +3,9 @@
 #include <cstdint>
 #include <cassert>
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
-class mem_streambuf :
-  public std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>
+template <typename ELEM_TYPE, typename TRAITS_TYPE>
+class mem_streambuf
+  : public std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>
 {
   public:
     typedef std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE> base_type;

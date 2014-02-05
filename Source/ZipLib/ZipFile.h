@@ -1,6 +1,8 @@
 #pragma once
-#include <string>
 #include "ZipArchive.h"
+
+#include <string>
+#include <memory>
 
 /**
  * \brief Provides static methods for creating, extracting, and opening zip archives.
@@ -57,7 +59,7 @@ class ZipFile
      * \param fileName  Filename of the file to add.
      * \param level     (Optional) The level of compression. Use CompressionLevel::Stored for no compression.
      */
-    static void AddFile(const std::string& zipPath, const std::string& fileName, ZipArchiveEntry::CompressionLevel level = ZipArchiveEntry::CompressionLevel::Default);
+    static void AddFile(const std::string& zipPath, const std::string& fileName, ICompressionMethod::Ptr method = DeflateMethod::Create());
     
     /**
      * \brief Adds a file to the zip archive.
@@ -67,7 +69,7 @@ class ZipFile
      * \param inArchiveName Final name of the file in the archive.
      * \param level         (Optional) The level of compression. Use CompressionLevel::Stored for no compression.
      */
-    static void AddFile(const std::string& zipPath, const std::string& fileName, const std::string& inArchiveName, ZipArchiveEntry::CompressionLevel level = ZipArchiveEntry::CompressionLevel::Default);
+    static void AddFile(const std::string& zipPath, const std::string& fileName, const std::string& inArchiveName, ICompressionMethod::Ptr method = DeflateMethod::Create());
 
     /**
      * \brief Adds an encrypted file to the zip archive.
@@ -78,7 +80,7 @@ class ZipFile
      * \param password  The password.
      * \param level     (Optional) The level of compression. Use CompressionLevel::Stored for no compression.
      */
-    static void AddEncryptedFile(const std::string& zipPath, const std::string& fileName, const std::string& password, ZipArchiveEntry::CompressionLevel level = ZipArchiveEntry::CompressionLevel::Default);
+    static void AddEncryptedFile(const std::string& zipPath, const std::string& fileName, const std::string& password, ICompressionMethod::Ptr method = DeflateMethod::Create());
 
     /**
      * \brief Adds an encrypted file to the zip archive.
@@ -89,7 +91,7 @@ class ZipFile
      * \param password      The password.
      * \param level         (Optional) The level of compression. Use CompressionLevel::Stored for no compression.
      */
-    static void AddEncryptedFile(const std::string& zipPath, const std::string& fileName, const std::string& inArchiveName, const std::string& password, ZipArchiveEntry::CompressionLevel level = ZipArchiveEntry::CompressionLevel::Default);
+    static void AddEncryptedFile(const std::string& zipPath, const std::string& fileName, const std::string& inArchiveName, const std::string& password, ICompressionMethod::Ptr method = DeflateMethod::Create());
 
     /**
      * \brief Extracts the file from the zip archive.

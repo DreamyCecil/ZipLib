@@ -3,9 +3,7 @@
 #include <istream>
 #include <cstdint>
 
-#include "streambuf_conf.h"
-
-template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
+template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class sub_streambuf :
   public std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>
 {
@@ -27,10 +25,7 @@ class sub_streambuf :
     }
 
     sub_streambuf(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& input, pos_type startOffset, size_t length)
-      : _inputStream(nullptr)
-      , _startPosition(0)
-      , _currentPosition(0)
-      , _endPosition(0)
+      : sub_streambuf()
     {
       init(input, startOffset, length);
     }
@@ -90,7 +85,7 @@ class sub_streambuf :
   private:
     enum : size_t
     {
-      INTERNAL_BUFFER_SIZE = STREAM_DEFAULT_BUFFER_SIZE
+      INTERNAL_BUFFER_SIZE = 1 << 15
     };
 
     ELEM_TYPE* _internalBuffer;

@@ -13,22 +13,21 @@
  *        Supports seeking.
  *        Returns EOF when stream seeks behind the size of buffer.
  */
-template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
+template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class basic_imemstream
   : public std::basic_istream<ELEM_TYPE, TRAITS_TYPE>
 {
   public:
     basic_imemstream(ELEM_TYPE* buffer, size_t length)
-      : _memStreambuf(buffer, length)
-      , std::basic_istream<ELEM_TYPE, TRAITS_TYPE>(&_memStreambuf)
+      : std::basic_istream<ELEM_TYPE, TRAITS_TYPE>(&_memStreambuf)
+      , _memStreambuf(buffer, length)
     {
 
     }
 
     template <size_t N>
     basic_imemstream(ELEM_TYPE (&buffer)[N])
-      : _memStreambuf(buffer, N)
-      , std::basic_istream<ELEM_TYPE, TRAITS_TYPE>(&_memStreambuf)
+      : basic_imemstream(buffer, N)
     {
 
     }
@@ -43,7 +42,7 @@ class basic_imemstream
  *        Supports seeking.
  *        Sets badbit if the stream wants to write behind the buffer size.
  */
-template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
+template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class basic_omemstream
   : public std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>
 {
@@ -75,7 +74,7 @@ class basic_omemstream
  *        Returns EOF when stream seeks behind the size of buffer.
  *        Sets badbit if the stream wants to write behind the buffer size.
  */
-template <typename ELEM_TYPE, typename TRAITS_TYPE = std::char_traits<ELEM_TYPE>>
+template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class basic_iomemstream
   : public std::basic_iostream<ELEM_TYPE, TRAITS_TYPE>
 {

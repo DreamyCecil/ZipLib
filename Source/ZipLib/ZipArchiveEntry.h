@@ -1,17 +1,20 @@
 #pragma once
+#include "detail/ZipLocalFileHeader.h"
+#include "detail/ZipCentralDirectoryFileHeader.h"
+
+#include "methods/ICompressionMethod.h"
+#include "methods/StoreMethod.h"
+#include "methods/DeflateMethod.h"
+#include "methods/LzmaMethod.h"
+
+#include "streams/substream.h"
+#include "utils/enum_utils.h"
+
 #include <cstdint>
 #include <ctime>
 #include <string>
 #include <vector>
-#include <sstream>
 #include <memory>
-
-#include "ZipLocalFileHeader.h"
-#include "ZipCentralDirectoryFileHeader.h"
-
-#include "streams/infstream.h"
-#include "streams/substream.h"
-#include "EnumTools.h"
 
 class ZipArchive;
 
@@ -27,26 +30,6 @@ class ZipArchiveEntry
 
   public:
     typedef std::shared_ptr<ZipArchiveEntry> Ptr;
-
-    /**
-     * \brief Values that represent the method of compression.
-     */
-    enum class CompressionMethod : uint16_t
-    {
-      Deflate = 8,
-      Stored = 0
-    };
-
-    /**
-     * \brief Values that represent the level of the compression.
-     */
-    enum class CompressionLevel
-    {
-      Stored = 0,
-      BestSpeed = 1,
-      Default = 6,
-      BestCompression = 9
-    };
 
     /**
      * \brief Values that represent the way the zip entry will be compressed.
@@ -76,8 +59,6 @@ class ZipArchiveEntry
       Compressed = 2048,
     };
 
-    MARK_AS_TYPED_ENUMFLAGS_FRIEND(CompressionMethod);
-    MARK_AS_TYPED_ENUMFLAGS_FRIEND(CompressionLevel);
     MARK_AS_TYPED_ENUMFLAGS_FRIEND(Attributes);
     MARK_AS_TYPED_ENUMFLAGS_FRIEND(CompressionMode);
 
@@ -155,7 +136,7 @@ class ZipArchiveEntry
      *
      * \return  The compression method.
      */
-    CompressionMethod GetCompressionMethod() const;
+    uint16_t GetCompressionMethod() const;
 
     /**
      * \brief Sets the file attributes of this zip entry.
@@ -305,10 +286,10 @@ class ZipArchiveEntry
      *
      * \return  true if it succeeds, false if it fails.
      */
-    bool SetCompressionStream(std::istream&     stream,
-                              CompressionLevel  level  = CompressionLevel::Default,
-                              CompressionMethod method = CompressionMethod::Deflate,
-                              CompressionMode   mode   = CompressionMode::Deferred);
+    bool SetCompressionStream(
+      std::istream&     stream,
+      ICompressionMethod::Ptr   method,
+      CompressionMode   mode = CompressionMode::Deferred);
 
     /**
      * \brief Sets compression stream to be null and unsets the password. The entry would contain no data with zero size.
@@ -321,7 +302,11 @@ class ZipArchiveEntry
     void Remove();
 
   private:
-    static const uint16_t DEFAULT_VERSION_MADEBY = 20;
+    static const uint16_t VERSION_NEEDED_DEFAULT = 10;
+    static const uint16_t VERSION_NEEDED_EXPLICIT_DIRECTORY = 20;
+    static const uint16_t VERSION_NEEDED_ZIP64 = 45;
+
+    static const uint16_t VERSION_MADEBY_DEFAULT = 63;
 
     enum class BitFlag : uint16_t
     {
@@ -331,15 +316,7 @@ class ZipArchiveEntry
       UnicodeFileName = 0x800
     };
 
-    enum class ZipVersionNeeded : uint16_t
-    {
-      Default = 10,
-      DeflateAndExplicitDirectory = 20,
-      Zip64 = 45
-    };
-
     MARK_AS_TYPED_ENUMFLAGS_FRIEND(BitFlag);
-    MARK_AS_TYPED_ENUMFLAGS_FRIEND(ZipVersionNeeded);
 
     ZipArchiveEntry();
     ZipArchiveEntry(const ZipArchiveEntry&);
@@ -347,24 +324,16 @@ class ZipArchiveEntry
 
     // static methods
     static ZipArchiveEntry::Ptr CreateNew(ZipArchive* zipArchive, const std::string& fullPath);
-    static ZipArchiveEntry::Ptr CreateExisting(ZipArchive* zipArchive, ZipCentralDirectoryFileHeader& cd);
-
-    static void TimestampToDateTime(time_t dateTime, uint16_t& date, uint16_t& time);
-    static time_t DateTimeToTimestamp(uint16_t date, uint16_t time);
-
-    static bool IsValidFilename(const std::string& fullPath);
-    static std::string GetFilenameFromPath(const std::string& fullPath);
-    static bool IsDirectoryPath(const std::string& fullPath);
-    static void CopyStream(std::istream& input, std::ostream& output);
+    static ZipArchiveEntry::Ptr CreateExisting(ZipArchive* zipArchive, detail::ZipCentralDirectoryFileHeader& cd);
 
     // methods
-    void SetCompressionMethod(CompressionMethod value);
+    void SetCompressionMethod(uint16_t value);
 
     BitFlag GetGeneralPurposeBitFlag() const;
     void SetGeneralPurposeBitFlag(BitFlag value, bool set = true);
 
-    ZipVersionNeeded GetVersionToExtract() const;
-    void SetVersionToExtract(ZipVersionNeeded value);
+    uint16_t GetVersionToExtract() const;
+    void SetVersionToExtract(uint16_t value);
 
     uint16_t GetVersionMadeBy() const;
     void SetVersionMadeBy(uint16_t value);
@@ -376,7 +345,7 @@ class ZipArchiveEntry
 
     void FetchLocalFileHeader();
     void CheckFilenameCorrection();
-    void FixVersionToExtractAtLeast(ZipVersionNeeded value);
+    void FixVersionToExtractAtLeast(uint16_t value);
 
     void SyncLFH_with_CDFH();
     void SyncCDFH_with_LFH();
@@ -391,34 +360,34 @@ class ZipArchiveEntry
     void InternalCompressStream(std::istream& inputStream, std::ostream& outputStream);
 
     // for encryption
-
     void FigureCrc32();
     uint8_t GetLastByteOfEncryptionHeader();
 
     //////////////////////////////////////////////////////////////////////////
-    ZipArchive* _archive;
+    ZipArchive*                     _archive;             //< pointer to the owning zip archive
 
-    std::istream* _rawStream;
-    std::istream* _openedArchive;
-    std::istream* _inflateStream;
-    std::istream* _zipCryptoStream;
+    std::shared_ptr<std::istream>   _rawStream;           //< stream of raw compressed data
+    std::shared_ptr<std::istream>   _compressionStream;   //< stream of uncompressed data
+    std::shared_ptr<std::istream>   _encryptionStream;    //< underlying encryption stream
+    std::shared_ptr<std::istream>   _archiveStream;       //< substream of owning zip archive file
+
+    // internal compression data
+    std::shared_ptr<std::iostream>  _immediateBuffer;     //< stream used in the immediate mode, stores compressed data in memory
+    std::istream*                   _inputStream;         //< input stream
+
+    ICompressionMethod::Ptr         _compressionMethod;   //< compression method
+    CompressionMode                 _compressionMode;     //< compression mode, either deferred or immediate
 
     // TODO: make as flags
     bool _originallyInArchive;
     bool _isNewOrChanged;
     bool _hasLocalFileHeader;
 
-    ZipLocalFileHeader _localFileHeader;
-    ZipCentralDirectoryFileHeader _centralDirectoryFileHeader;
+    detail::ZipLocalFileHeader _localFileHeader;
+    detail::ZipCentralDirectoryFileHeader _centralDirectoryFileHeader;
 
     std::ios::pos_type _offsetOfCompressedData;
     std::ios::pos_type _offsetOfSerializedLocalFileHeader;
 
     std::string _password;
-
-    // internal compression data
-    std::istream* _compressionStream;
-    CompressionMode _compressionMode;
-    CompressionLevel _compressionLevel;
-    std::stringstream _compressionImmediateBuffer; // needed for both reading and writing
 };

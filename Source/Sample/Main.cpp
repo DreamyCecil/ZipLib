@@ -1,5 +1,10 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
 #include "../ZipLib/ZipFile.h"
 #include "../ZipLib/streams/memstream.h"
+
 #include <fstream>
 
 struct PrintMethodName
@@ -38,7 +43,7 @@ void ListZipArchive(const char* zipArchiveName = zipFilename)
     printf("[o]   >> uncompressed size: %u\n", entry->GetSize());
     printf("[o]   >> compressed size: %u\n", entry->GetCompressedSize());
     printf("[o]   >> password protected: %s\n", entry->IsPasswordProtected() ? "yes" : "no");
-    printf("[o]   >> compression method: %s\n", entry->GetCompressionMethod() == ZipArchiveEntry::CompressionMethod::Deflate ? "DEFLATE" : "stored");
+    printf("[o]   >> compression method: %s\n", entry->GetCompressionMethod() == DeflateMethod::CompressionMethod ? "DEFLATE" : "stored");
     printf("[o]   >> comment: %s\n", entry->GetComment().c_str());
     printf("[o]   >> crc32: 0x%08X\n", entry->GetCrc32());
   }
@@ -94,10 +99,12 @@ TEST_METHOD(Sample_ZipArchive_Stream_Deferred_Comment)
   // this method is only useful for password protected files
   entry->UseDataDescriptor();
 
+  DeflateMethod::Ptr ctx = DeflateMethod::Create();
+  ctx->SetCompressionLevel(DeflateMethod::CompressionLevel::Best);
+
   entry->SetCompressionStream(
     contentStream,
-    ZipArchiveEntry::CompressionLevel::BestCompression,
-    ZipArchiveEntry::CompressionMethod::Deflate,
+    ctx,
     ZipArchiveEntry::CompressionMode::Deferred
   );
 
@@ -122,10 +129,12 @@ TEST_METHOD(Sample_ZipArchive_Stream_Immediate_Store_Own_Save_Password_Protected
 
     assert(contentStream.is_open());
 
+    DeflateMethod::Ptr ctx = std::make_shared<DeflateMethod>();
+    ctx->SetCompressionLevel(DeflateMethod::CompressionLevel::L0);
+
     entry->SetCompressionStream(   // data from contentStream are pumped here
       contentStream,
-      ZipArchiveEntry::CompressionLevel::Stored,
-      ZipArchiveEntry::CompressionMethod::Stored,
+      ctx,
       ZipArchiveEntry::CompressionMode::Immediate
     );
 
@@ -173,8 +182,41 @@ TEST_METHOD(Sample_ZipArchive_Decompress_Password_Protected)
   printf("[+] Content of a file: '%s'\n", line.c_str());
 }
 
+TEST_METHOD(Sample_EXAMPLE)
+{
+  ZipArchive::Ptr archive = ZipFile::Open(zipFilename);
+
+  std::ifstream contentStream;
+  contentStream.open(fileIn3, std::ios::binary);
+
+  ZipArchiveEntry::Ptr entry = archive->CreateEntry(fileIn3);
+  assert(entry != nullptr);
+
+  //entry->SetPassword("pass");
+  //
+  //// if this is not set, the input stream would be readen twice
+  //// this method is only useful for password protected files
+  //entry->UseDataDescriptor();
+
+  DeflateMethod::Ptr ctx = std::make_shared<DeflateMethod>();
+  ctx->SetCompressionLevel(DeflateMethod::CompressionLevel::L0);
+
+  entry->SetCompressionStream(
+    contentStream,
+    ctx,
+    ZipArchiveEntry::CompressionMode::Deferred
+    );
+
+  // data from contentStream are pumped here
+  ZipFile::SaveAndClose(archive, zipFilename);
+
+  ListZipArchive();
+}
+
 int main()
 {
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
   // delete archive before this sample
   remove(zipFilename);
   remove(zipFilename2);
@@ -186,6 +228,6 @@ int main()
   Sample_ZipArchive_Stream_Deferred_Comment();
   Sample_ZipArchive_Stream_Immediate_Store_Own_Save_Password_Protected();
   Sample_ZipArchive_Decompress_Password_Protected();
-
+  //Sample_EXAMPLE();
   return 0;
 }

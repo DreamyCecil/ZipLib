@@ -8,51 +8,6 @@
   const_cast<const std::remove_pointer<std::remove_const<decltype(this)      >::type>::type*>(this)->expression)
 
 //////////////////////////////////////////////////////////////////////////
-// internal shared buffer
-
-ZipArchive::InternalSharedBuffer* ZipArchive::InternalSharedBuffer::GetInstance()
-{
-  static ZipArchive::InternalSharedBuffer instance;
-  return &instance;
-}
-
-size_t ZipArchive::InternalSharedBuffer::GetBufferSize()
-{
-  return INTERNAL_BUFFER_SIZE;
-}
-
-char* ZipArchive::InternalSharedBuffer::GetBuffer()
-{
-  if (_buffer == nullptr)
-  {
-    _buffer = new char[INTERNAL_BUFFER_SIZE];
-  }
-
-  return _buffer;
-}
-
-void ZipArchive::InternalSharedBuffer::IncRef()
-{
-  ++_refCount;
-}
-
-void ZipArchive::InternalSharedBuffer::DecRef()
-{
-  assert(_refCount > 0);
-
-  if (_refCount == 0)
-  {
-    return;
-  }
-
-  if (--_refCount == 0 && _buffer != nullptr)
-  {
-    delete[] _buffer;
-    _buffer = nullptr;
-  }
-}
-
-//////////////////////////////////////////////////////////////////////////
 // zip archive
 
 ZipArchive::Ptr ZipArchive::Create()
@@ -110,13 +65,11 @@ ZipArchive::ZipArchive()
   : _zipStream(nullptr)
   , _destroySimultaneously(false)
 {
-  InternalSharedBuffer::GetInstance()->IncRef();
+
 }
 
 ZipArchive::~ZipArchive()
 {
-  InternalSharedBuffer::GetInstance()->DecRef();
-
   this->InternalDestroy();
 }
 
@@ -198,7 +151,7 @@ void ZipArchive::RemoveEntry(int index)
 
 bool ZipArchive::EnsureCentralDirectoryRead()
 {
-  ZipCentralDirectoryFileHeader zipCentralDirectoryFileHeader;
+  detail::ZipCentralDirectoryFileHeader zipCentralDirectoryFileHeader;
 
   _zipStream->seekg(_endOfCentralDirectoryBlock.OffsetOfStartOfCentralDirectoryWithRespectToTheStartingDiskNumber, std::ios::beg);
 
@@ -212,7 +165,7 @@ bool ZipArchive::EnsureCentralDirectoryRead()
     }
 
     // ensure clearing of the CDFH struct
-    zipCentralDirectoryFileHeader = ZipCentralDirectoryFileHeader();
+    zipCentralDirectoryFileHeader = detail::ZipCentralDirectoryFileHeader();
   }
 
   return true;
@@ -226,7 +179,7 @@ bool ZipArchive::ReadEndOfCentralDirectory()
 
   _zipStream->seekg(-MIN_SHIFT, std::ios::end);
 
-  if (this->SeekToSignature(EndOfCentralDirectoryBlock::SignatureConstant, SeekDirection::Backward))
+  if (this->SeekToSignature(detail::EndOfCentralDirectoryBlock::SignatureConstant, SeekDirection::Backward))
   {
     _endOfCentralDirectoryBlock.Deserialize(*_zipStream);
     return true;

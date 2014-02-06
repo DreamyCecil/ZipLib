@@ -739,7 +739,7 @@ void ZipArchiveEntry::FigureCrc32()
   }
 
   // stream must be seekable
-  auto position = _inputStream->gcount();
+  auto position = _inputStream->tellg();
 
   // compute crc32
   crc32stream crc32Stream;

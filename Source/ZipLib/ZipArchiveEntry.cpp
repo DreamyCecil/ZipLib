@@ -392,7 +392,7 @@ std::istream* ZipArchiveEntry::GetDecompressionStream()
 
       if (zipMethod != nullptr)
       {
-        intermediateStream = _compressionStream = std::make_shared<compression_decoder_stream>(zipMethod->GetDecoder(), *intermediateStream);
+        intermediateStream = _compressionStream = std::make_shared<compression_decoder_stream>(zipMethod->GetDecoder(), zipMethod->GetDecoderProperties(), *intermediateStream);
       }
     }
   }
@@ -440,7 +440,7 @@ bool ZipArchiveEntry::SetCompressionStream(
   _inputStream = &stream;
   _compressionMethod = method;
   _compressionMode = mode;
-  this->SetCompressionMethod(method->GetZipMethodDescriptor()->CompressionMethod);
+  this->SetCompressionMethod(method->GetZipMethodDescriptor().GetCompressionMethod());
 
   if (_inputStream != nullptr && _compressionMode == CompressionMode::Immediate)
   {
@@ -598,7 +598,7 @@ void ZipArchiveEntry::SyncCDFH_with_LFH()
 
   this->FixVersionToExtractAtLeast(this->IsDirectory()
     ? VERSION_NEEDED_EXPLICIT_DIRECTORY
-    : _compressionMethod->GetZipMethodDescriptor()->VersionNeededToExtract);
+    : _compressionMethod->GetZipMethodDescriptor().GetVersionNeededToExtract());
 }
 
 std::ios::pos_type ZipArchiveEntry::GetOffsetOfCompressedData()
@@ -736,7 +736,7 @@ void ZipArchiveEntry::InternalCompressStream(std::istream& inputStream, std::ost
   crc32stream crc32Stream;
   crc32Stream.init(inputStream);
 
-  compression_encoder_stream compressionStream(_compressionMethod->GetEncoder(), *intermediateStream);
+  compression_encoder_stream compressionStream(_compressionMethod->GetEncoder(), _compressionMethod->GetEncoderProperties(), *intermediateStream);
   intermediateStream = &compressionStream;
   utils::stream::copy(crc32Stream, *intermediateStream);
 

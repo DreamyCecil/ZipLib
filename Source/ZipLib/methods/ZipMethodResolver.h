@@ -12,8 +12,8 @@
   ZIP_METHOD_ADD(DeflateMethod);  \
   ZIP_METHOD_ADD(LzmaMethod);     \
 
-#define ZIP_METHOD_ADD(method_class)                                                        \
-  if (compressionMethod == method_class::GetZipMethodDescriptorStatic()->CompressionMethod) \
+#define ZIP_METHOD_ADD(method_class)                                                            \
+  if (compressionMethod == method_class::GetZipMethodDescriptorStatic().GetCompressionMethod()) \
     return method_class::Create()
 
 struct ZipMethodResolver

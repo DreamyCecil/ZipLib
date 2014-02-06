@@ -10,22 +10,40 @@ class basic_compression_encoder_stream
   : public std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>
 {
   public:
+    typedef typename compression_encoder_streambuf<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
+    typedef typename compression_encoder_streambuf<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
+
+    typedef typename compression_encoder_streambuf<ELEM_TYPE, TRAITS_TYPE>::icompression_encoder_type icompression_encoder_type;
+    typedef typename compression_encoder_streambuf<ELEM_TYPE, TRAITS_TYPE>::icompression_encoder_ptr_type icompression_encoder_ptr_type;
+
     basic_compression_encoder_stream()
       : std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>(&_compressionEncoderStreambuf)
     {
 
     }
 
-    basic_compression_encoder_stream(std::shared_ptr<compression_encoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>> compressionEncoder, std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream)
+    basic_compression_encoder_stream(icompression_encoder_ptr_type compressionEncoder, ostream_type& stream)
       : std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>(&_compressionEncoderStreambuf)
       , _compressionEncoderStreambuf(compressionEncoder, stream)
     {
 
     }
 
-    void init(std::shared_ptr<compression_encoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>> compressionEncoder, std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& output)
+    basic_compression_encoder_stream(icompression_encoder_ptr_type compressionEncoder, compression_encoder_properties_interface& props, ostream_type& stream)
+      : std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>(&_compressionEncoderStreambuf)
+      , _compressionEncoderStreambuf(compressionEncoder, props, stream)
     {
-      _compressionEncoderStreambuf.init(compressionEncoder, output);
+
+    }
+
+    void init(icompression_encoder_ptr_type compressionEncoder, ostream_type& stream)
+    {
+      _compressionEncoderStreambuf.init(compressionEncoder, stream);
+    }
+
+    void init(icompression_encoder_ptr_type compressionEncoder, compression_encoder_properties_interface& props, ostream_type& stream)
+    {
+      _compressionEncoderStreambuf.init(compressionEncoder, props, stream);
     }
       
     bool is_init() const

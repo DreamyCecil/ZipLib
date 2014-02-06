@@ -3,6 +3,7 @@
 #include <ostream>
 #include <cstdint>
 #include <thread>
+#include <memory>
 #include <condition_variable>
 
 #include "../../compression/compression_interface.h"
@@ -19,14 +20,25 @@ class compression_encoder_streambuf
     typedef typename base_type::pos_type pos_type;
     typedef typename base_type::off_type off_type;
 
+    typedef std::basic_istream<ELEM_TYPE, TRAITS_TYPE> istream_type;
+    typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_type;
+
+    typedef compression_encoder_interface_basic<ELEM_TYPE, TRAITS_TYPE> icompression_encoder_type;
+    typedef std::shared_ptr<icompression_encoder_type>                  icompression_encoder_ptr_type;
+
     compression_encoder_streambuf()
     {
 
     }
 
-    compression_encoder_streambuf(std::shared_ptr<compression_encoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>> compressionEncoder, std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& output)
+    compression_encoder_streambuf(icompression_encoder_ptr_type compressionEncoder, ostream_type& stream)
     {
-      init(compressionEncoder, output);
+      init(compressionEncoder, stream);
+    }
+
+    compression_encoder_streambuf(icompression_encoder_ptr_type compressionEncoder, compression_encoder_properties_interface& props, ostream_type& stream)
+    {
+      init(compressionEncoder, props, stream);
     }
 
     virtual ~compression_encoder_streambuf()
@@ -34,12 +46,23 @@ class compression_encoder_streambuf
       sync();
     }
 
-    void init(std::shared_ptr<compression_encoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>> compressionEncoder, std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& output)
+    void init(icompression_encoder_ptr_type compressionEncoder, ostream_type& stream)
     {
       _compressionEncoder = compressionEncoder;
 
       // compression encoder init
-      _compressionEncoder->init(output);
+      _compressionEncoder->init(stream);
+
+      // set stream buffer
+      this->setp(_compressionEncoder->get_buffer_begin(), _compressionEncoder->get_buffer_end() - 1);
+    }
+
+    void init(icompression_encoder_ptr_type compressionEncoder, compression_encoder_properties_interface& props, ostream_type& stream)
+    {
+      _compressionEncoder = compressionEncoder;
+
+      // compression encoder init
+      _compressionEncoder->init(stream, props);
 
       // set stream buffer
       this->setp(_compressionEncoder->get_buffer_begin(), _compressionEncoder->get_buffer_end() - 1);
@@ -102,5 +125,5 @@ class compression_encoder_streambuf
       this->setp(_compressionEncoder->get_buffer_begin(), _compressionEncoder->get_buffer_end() - 1);
     }
 
-    std::shared_ptr<compression_encoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>> _compressionEncoder;
+    icompression_encoder_ptr_type _compressionEncoder;
 };

@@ -699,13 +699,9 @@ void ZipArchiveEntry::UnloadCompressionData()
 
 void ZipArchiveEntry::InternalCompressStream(std::istream& inputStream, std::ostream& outputStream)
 {
-  // TODO: make write for non-seekable output streams?
-  std::ios::pos_type dataOrigin = outputStream.tellp();
-  std::ios::pos_type inputOrigin = inputStream.tellg();
+  std::ostream* intermediateStream = &outputStream;
 
-  std::ostream*    intermediateStream = &outputStream;
   std::unique_ptr<zip_cryptostream> cryptoStream;
-
   if (!_password.empty())
   {
     this->SetGeneralPurposeBitFlag(BitFlag::Encrypted);
@@ -726,8 +722,8 @@ void ZipArchiveEntry::InternalCompressStream(std::istream& inputStream, std::ost
 
   intermediateStream->flush();
 
-  _localFileHeader.UncompressedSize = static_cast<uint32_t>(crc32Stream.get_bytes_read());
-  _localFileHeader.CompressedSize   = static_cast<uint32_t>(outputStream.tellp() - dataOrigin);
+  _localFileHeader.UncompressedSize = static_cast<uint32_t>(compressionStream.get_bytes_read());
+  _localFileHeader.CompressedSize   = static_cast<uint32_t>(compressionStream.get_bytes_written() + (!_password.empty() ? 12 : 0));
   _localFileHeader.Crc32 = crc32Stream.get_crc32();
 
   this->SyncCDFH_with_LFH();

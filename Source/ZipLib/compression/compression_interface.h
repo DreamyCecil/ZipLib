@@ -22,8 +22,8 @@ template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class compression_interface_basic
 {
   public:
-    typedef std::basic_istream<ELEM_TYPE, TRAITS_TYPE> istream_t;
-    typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_t;
+    typedef std::basic_istream<ELEM_TYPE, TRAITS_TYPE> istream_type;
+    typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_type;
 
     virtual ~compression_interface_basic() { }
 
@@ -41,11 +41,11 @@ class compression_encoder_interface_basic
   : public compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>
 {
   public:
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_t istream_t;
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_t ostream_t;
+    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
+    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
-    virtual void init(ostream_t& stream) = 0;
-    virtual void init(ostream_t& stream, compression_encoder_properties_interface& props) = 0;
+    virtual void init(ostream_type& stream) = 0;
+    virtual void init(ostream_type& stream, compression_encoder_properties_interface& props) = 0;
     virtual void encode_next(size_t length) = 0;
     virtual void sync() = 0;
 };
@@ -55,11 +55,11 @@ class compression_decoder_interface_basic
   : public compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>
 {
   public:
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_t istream_t;
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_t ostream_t;
+    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
+    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
-    virtual void init(istream_t& stream) = 0;
-    virtual void init(istream_t& stream, compression_decoder_properties_interface& props) = 0;
+    virtual void init(istream_type& stream) = 0;
+    virtual void init(istream_type& stream, compression_decoder_properties_interface& props) = 0;
     virtual size_t decode_next() = 0;
 };
 

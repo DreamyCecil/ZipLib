@@ -13,8 +13,8 @@ class basic_lzma_decoder
   : public compression_decoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>
 {
   public:
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_t istream_t;
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_t ostream_t;
+    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
+    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     basic_lzma_decoder()
       : _inPos(0)
@@ -41,12 +41,12 @@ class basic_lzma_decoder
       }
     }
 
-    void init(istream_t& stream) override
+    void init(istream_type& stream) override
     {
       init(stream, lzma_decoder_properties());
     }
 
-    void init(istream_t& stream, compression_decoder_properties_interface& props) override
+    void init(istream_type& stream, compression_decoder_properties_interface& props) override
     {
       // init stream
       _stream = &stream;
@@ -173,7 +173,7 @@ class basic_lzma_decoder
     SizeT _inProcessed;
     SizeT _outProcessed;
 
-    istream_t* _stream;
+    istream_type* _stream;
 
     size_t     _bufferCapacity;
     size_t     _inputBufferSize;  // how many bytes are read in the input buffer

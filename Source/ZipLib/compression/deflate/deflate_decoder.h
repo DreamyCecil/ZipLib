@@ -13,8 +13,8 @@ class basic_deflate_decoder
   : public compression_decoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>
 {
   public:
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_t istream_t;
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_t ostream_t;
+    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
+    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     basic_deflate_decoder()
       : _lastError(Z_OK)
@@ -40,12 +40,12 @@ class basic_deflate_decoder
       }
     }
 
-    void init(istream_t& stream) override
+    void init(istream_type& stream) override
     {
       init(stream, deflate_decoder_properties());
     }
 
-    void init(istream_t& stream, compression_decoder_properties_interface& props) override
+    void init(istream_type& stream, compression_decoder_properties_interface& props) override
     {
       // init stream
       _stream = &stream;
@@ -142,7 +142,7 @@ class basic_deflate_decoder
         if (_zstream.avail_in > 0)
         {
           _stream->clear();
-          _stream->seekg(-static_cast<istream_t::off_type>(_zstream.avail_in), std::ios::cur);
+          _stream->seekg(-static_cast<istream_type::off_type>(_zstream.avail_in), std::ios::cur);
         }
       }
 
@@ -189,7 +189,7 @@ class basic_deflate_decoder
     z_stream    _zstream;         // internal zlib structure
     int         _lastError;       // last error of zlib operation
 
-    istream_t* _stream;
+    istream_type* _stream;
     bool       _endOfStream;
 
     size_t     _bufferCapacity;

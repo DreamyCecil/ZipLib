@@ -13,8 +13,8 @@ class basic_deflate_encoder
   : public compression_encoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>
 {
   public:
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_t istream_t;
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_t ostream_t;
+    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
+    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     basic_deflate_encoder()
       : _lastError(Z_OK)
@@ -37,12 +37,12 @@ class basic_deflate_encoder
       }
     }
 
-    void init(ostream_t& stream) override
+    void init(ostream_type& stream) override
     {
       init(stream, deflate_encoder_properties());
     }
 
-    void init(ostream_t& stream, compression_encoder_properties_interface& props) override
+    void init(ostream_type& stream, compression_encoder_properties_interface& props) override
     {
       // init stream
       _stream = &stream;
@@ -147,7 +147,7 @@ class basic_deflate_encoder
     z_stream    _zstream;         // internal zlib structure
     int         _lastError;       // last error of zlib operation
 
-    ostream_t* _stream;
+    ostream_type* _stream;
 
     size_t     _bufferCapacity;
     ELEM_TYPE* _inputBuffer;      // pointer to the start of the input buffer

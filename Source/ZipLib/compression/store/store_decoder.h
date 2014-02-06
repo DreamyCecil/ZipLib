@@ -13,8 +13,8 @@ class basic_store_decoder
   : public compression_decoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>
 {
   public:
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_t istream_t;
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_t ostream_t;
+    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
+    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     basic_store_decoder()
       : _stream(nullptr)
@@ -35,12 +35,12 @@ class basic_store_decoder
       }
     }
 
-    void init(istream_t& stream) override
+    void init(istream_type& stream) override
     {
       init(stream, store_decoder_properties());
     }
 
-    void init(istream_t& stream, compression_decoder_properties_interface& props) override
+    void init(istream_type& stream, compression_decoder_properties_interface& props) override
     {
       // init stream
       _stream = &stream;
@@ -107,7 +107,7 @@ class basic_store_decoder
       }
     }
 
-    istream_t* _stream;
+    istream_type* _stream;
 
     size_t     _bufferCapacity;
     size_t     _outputBufferSize; // how many bytes are written in the output buffer

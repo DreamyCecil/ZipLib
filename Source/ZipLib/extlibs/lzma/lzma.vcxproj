@@ -19,123 +19,79 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="compression\compression_interface.h" />
-    <ClInclude Include="compression\deflate\deflate_decoder.h" />
-    <ClInclude Include="compression\deflate\deflate_decoder_properties.h" />
-    <ClInclude Include="compression\deflate\deflate_encoder.h" />
-    <ClInclude Include="compression\deflate\deflate_encoder_properties.h" />
-    <ClInclude Include="compression\lzma\detail\lzma_alloc.h" />
-    <ClInclude Include="compression\lzma\detail\lzma_handle.h" />
-    <ClInclude Include="compression\lzma\detail\lzma_header.h" />
-    <ClInclude Include="compression\lzma\detail\lzma_in_stream.h" />
-    <ClInclude Include="compression\lzma\detail\lzma_out_stream.h" />
-    <ClInclude Include="compression\lzma\lzma_decoder.h" />
-    <ClInclude Include="compression\lzma\lzma_decoder_properties.h" />
-    <ClInclude Include="compression\lzma\lzma_encoder.h" />
-    <ClInclude Include="compression\lzma\lzma_encoder_properties.h" />
-    <ClInclude Include="compression\store\store_decoder.h" />
-    <ClInclude Include="compression\store\store_decoder_properties.h" />
-    <ClInclude Include="compression\store\store_encoder.h" />
-    <ClInclude Include="compression\store\store_encoder_properties.h" />
-    <ClInclude Include="detail\EndOfCentralDirectoryBlock.h" />
-    <ClInclude Include="detail\ZipCentralDirectoryFileHeader.h" />
-    <ClInclude Include="detail\ZipGenericExtraField.h" />
-    <ClInclude Include="detail\ZipLocalFileHeader.h" />
-    <ClInclude Include="methods\DeflateMethod.h" />
-    <ClInclude Include="methods\ICompressionMethod.h" />
-    <ClInclude Include="methods\LzmaMethod.h" />
-    <ClInclude Include="methods\StoreMethod.h" />
-    <ClInclude Include="methods\ZipMethodResolver.h" />
-    <ClInclude Include="streams\compression_decoder_stream.h" />
-    <ClInclude Include="streams\compression_encoder_stream.h" />
-    <ClInclude Include="streams\crc32stream.h" />
-    <ClInclude Include="streams\memstream.h" />
-    <ClInclude Include="streams\serialization.h" />
-    <ClInclude Include="streams\streambuffs\compression_decoder_streambuf.h" />
-    <ClInclude Include="streams\streambuffs\compression_encoder_streambuf.h" />
-    <ClInclude Include="streams\streambuffs\crc32_streambuf.h" />
-    <ClInclude Include="streams\streambuffs\mem_streambuf.h" />
-    <ClInclude Include="streams\streambuffs\sub_streambuf.h" />
-    <ClInclude Include="streams\streambuffs\tee_streambuff.h" />
-    <ClInclude Include="streams\streambuffs\zip_crypto_streambuf.h" />
-    <ClInclude Include="streams\substream.h" />
-    <ClInclude Include="streams\teestream.h" />
-    <ClInclude Include="streams\zip_cryptostream.h" />
-    <ClInclude Include="utils\enum_utils.h" />
-    <ClInclude Include="utils\stream_utils.h" />
-    <ClInclude Include="utils\time_utils.h" />
-    <ClInclude Include="ZipArchive.h" />
-    <ClInclude Include="ZipArchiveEntry.h" />
-    <ClInclude Include="ZipFile.h" />
+    <ClCompile Include="7zAlloc.c" />
+    <ClCompile Include="7zBuf.c" />
+    <ClCompile Include="7zBuf2.c" />
+    <ClCompile Include="7zCrc.c" />
+    <ClCompile Include="7zCrcOpt.c" />
+    <ClCompile Include="7zDec.c" />
+    <ClCompile Include="7zFile.c" />
+    <ClCompile Include="7zIn.c" />
+    <ClCompile Include="7zStream.c" />
+    <ClCompile Include="Alloc.c" />
+    <ClCompile Include="Bcj2.c" />
+    <ClCompile Include="Bra.c" />
+    <ClCompile Include="Bra86.c" />
+    <ClCompile Include="BraIA64.c" />
+    <ClCompile Include="CpuArch.c" />
+    <ClCompile Include="Delta.c" />
+    <ClCompile Include="LzFind.c" />
+    <ClCompile Include="LzFindMt.c" />
+    <ClCompile Include="Lzma2Dec.c" />
+    <ClCompile Include="Lzma2Enc.c" />
+    <ClCompile Include="Lzma86Dec.c" />
+    <ClCompile Include="Lzma86Enc.c" />
+    <ClCompile Include="LzmaDec.c" />
+    <ClCompile Include="LzmaEnc.c" />
+    <ClCompile Include="LzmaLib.c" />
+    <ClCompile Include="MtCoder.c" />
+    <ClCompile Include="Ppmd7.c" />
+    <ClCompile Include="Ppmd7Dec.c" />
+    <ClCompile Include="Ppmd7Enc.c" />
+    <ClCompile Include="Sha256.c" />
+    <ClCompile Include="Threads.c" />
+    <ClCompile Include="Xz.c" />
+    <ClCompile Include="XzCrc64.c" />
+    <ClCompile Include="XzDec.c" />
+    <ClCompile Include="XzEnc.c" />
+    <ClCompile Include="XzIn.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="detail\EndOfCentralDirectoryBlock.cpp" />
-    <ClCompile Include="detail\ZipCentralDirectoryFileHeader.cpp" />
-    <ClCompile Include="detail\ZipGenericExtraField.cpp" />
-    <ClCompile Include="detail\ZipLocalFileHeader.cpp" />
-    <ClCompile Include="extlibs\lzma\7zAlloc.c" />
-    <ClCompile Include="extlibs\lzma\7zBuf.c" />
-    <ClCompile Include="extlibs\lzma\7zBuf2.c" />
-    <ClCompile Include="extlibs\lzma\7zCrc.c" />
-    <ClCompile Include="extlibs\lzma\7zCrcOpt.c" />
-    <ClCompile Include="extlibs\lzma\7zDec.c" />
-    <ClCompile Include="extlibs\lzma\7zFile.c" />
-    <ClCompile Include="extlibs\lzma\7zIn.c" />
-    <ClCompile Include="extlibs\lzma\7zStream.c" />
-    <ClCompile Include="extlibs\lzma\Alloc.c" />
-    <ClCompile Include="extlibs\lzma\Bcj2.c" />
-    <ClCompile Include="extlibs\lzma\Bra.c" />
-    <ClCompile Include="extlibs\lzma\Bra86.c" />
-    <ClCompile Include="extlibs\lzma\BraIA64.c" />
-    <ClCompile Include="extlibs\lzma\CpuArch.c" />
-    <ClCompile Include="extlibs\lzma\Delta.c" />
-    <ClCompile Include="extlibs\lzma\LzFind.c" />
-    <ClCompile Include="extlibs\lzma\LzFindMt.c" />
-    <ClCompile Include="extlibs\lzma\Lzma2Dec.c" />
-    <ClCompile Include="extlibs\lzma\Lzma2Enc.c" />
-    <ClCompile Include="extlibs\lzma\Lzma86Dec.c" />
-    <ClCompile Include="extlibs\lzma\Lzma86Enc.c" />
-    <ClCompile Include="extlibs\lzma\LzmaDec.c" />
-    <ClCompile Include="extlibs\lzma\LzmaEnc.c" />
-    <ClCompile Include="extlibs\lzma\LzmaLib.c" />
-    <ClCompile Include="extlibs\lzma\MtCoder.c" />
-    <ClCompile Include="extlibs\lzma\Ppmd7.c" />
-    <ClCompile Include="extlibs\lzma\Ppmd7Dec.c" />
-    <ClCompile Include="extlibs\lzma\Ppmd7Enc.c" />
-    <ClCompile Include="extlibs\lzma\Sha256.c" />
-    <ClCompile Include="extlibs\lzma\Threads.c" />
-    <ClCompile Include="extlibs\lzma\Xz.c" />
-    <ClCompile Include="extlibs\lzma\XzCrc64.c" />
-    <ClCompile Include="extlibs\lzma\XzDec.c" />
-    <ClCompile Include="extlibs\lzma\XzEnc.c" />
-    <ClCompile Include="extlibs\lzma\XzIn.c" />
-    <ClCompile Include="extlibs\zlib\adler32.c" />
-    <ClCompile Include="extlibs\zlib\compress.c" />
-    <ClCompile Include="extlibs\zlib\crc32.c" />
-    <ClCompile Include="extlibs\zlib\deflate.c" />
-    <ClCompile Include="extlibs\zlib\infback.c" />
-    <ClCompile Include="extlibs\zlib\inffast.c" />
-    <ClCompile Include="extlibs\zlib\inflate.c" />
-    <ClCompile Include="extlibs\zlib\inftrees.c" />
-    <ClCompile Include="extlibs\zlib\trees.c" />
-    <ClCompile Include="extlibs\zlib\uncompr.c" />
-    <ClCompile Include="extlibs\zlib\zutil.c" />
-    <ClCompile Include="ZipArchive.cpp" />
-    <ClCompile Include="ZipArchiveEntry.cpp" />
-    <ClCompile Include="ZipFile.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="extlibs\lzma\lzma.vcxproj">
-      <Project>{7ead1358-3e72-4fb6-a212-25d462b5c1e9}</Project>
-    </ProjectReference>
-    <ProjectReference Include="extlibs\zlib\zlib.vcxproj">
-      <Project>{baeb16b3-db4c-432f-9e6a-2acadea0691d}</Project>
-    </ProjectReference>
+    <ClInclude Include="7z.h" />
+    <ClInclude Include="7zAlloc.h" />
+    <ClInclude Include="7zBuf.h" />
+    <ClInclude Include="7zCrc.h" />
+    <ClInclude Include="7zFile.h" />
+    <ClInclude Include="7zVersion.h" />
+    <ClInclude Include="Alloc.h" />
+    <ClInclude Include="Bcj2.h" />
+    <ClInclude Include="Bra.h" />
+    <ClInclude Include="CpuArch.h" />
+    <ClInclude Include="Delta.h" />
+    <ClInclude Include="LzFind.h" />
+    <ClInclude Include="LzFindMt.h" />
+    <ClInclude Include="LzHash.h" />
+    <ClInclude Include="Lzma2Dec.h" />
+    <ClInclude Include="Lzma2Enc.h" />
+    <ClInclude Include="Lzma86.h" />
+    <ClInclude Include="LzmaDec.h" />
+    <ClInclude Include="LzmaEnc.h" />
+    <ClInclude Include="LzmaLib.h" />
+    <ClInclude Include="MtCoder.h" />
+    <ClInclude Include="Ppmd.h" />
+    <ClInclude Include="Ppmd7.h" />
+    <ClInclude Include="RotateDefs.h" />
+    <ClInclude Include="Sha256.h" />
+    <ClInclude Include="Threads.h" />
+    <ClInclude Include="Types.h" />
+    <ClInclude Include="Xz.h" />
+    <ClInclude Include="XzCrc64.h" />
+    <ClInclude Include="XzEnc.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{5C9FD859-DDF9-4510-8397-B329B0AE8C48}</ProjectGuid>
+    <ProjectGuid>{7EAD1358-3E72-4FB6-A212-25D462B5C1E9}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ZipLib</RootNamespace>
+    <RootNamespace>lzma</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -184,11 +140,11 @@
     <OutDir>$(SolutionDir)Bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>

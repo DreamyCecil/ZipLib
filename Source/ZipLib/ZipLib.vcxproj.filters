@@ -16,9 +16,6 @@
     <Filter Include="Header Files\compression">
       <UniqueIdentifier>{c5ae2b37-da95-4e93-8930-d4904de67e58}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\extlibs">
-      <UniqueIdentifier>{7ac8590a-1b6a-483a-8035-5d17addb7d39}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\streams">
       <UniqueIdentifier>{8d36501c-2a0c-493e-839a-a4dbb4b13854}</UniqueIdentifier>
     </Filter>
@@ -27,12 +24,6 @@
     </Filter>
     <Filter Include="Header Files\compression\lzma">
       <UniqueIdentifier>{d4c8cff5-e22e-45fd-8273-a61104dbc01f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\extlibs\lzma">
-      <UniqueIdentifier>{3f32ec14-6cb4-4dc7-a5eb-83dfadd5e87b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\extlibs\zlib">
-      <UniqueIdentifier>{48d4cf55-9577-42a0-9d58-ab4e3cf58a0a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\streams\streambuffs">
       <UniqueIdentifier>{893f10de-143e-4d88-9a4e-691eb8b10c3a}</UniqueIdentifier>
@@ -113,129 +104,6 @@
     </ClInclude>
     <ClInclude Include="compression\lzma\lzma_encoder_properties.h">
       <Filter>Header Files\compression\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\XzEnc.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\XzCrc64.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\Xz.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\Types.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\Threads.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\Sha256.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\RotateDefs.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\Ppmd7.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\Ppmd.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\MtCoder.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\LzmaLib.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\LzmaEnc.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\LzmaDec.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\Lzma86.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\Lzma2Enc.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\Lzma2Dec.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\LzHash.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\LzFindMt.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\LzFind.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\Delta.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\CpuArch.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\Bra.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\Bcj2.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\Alloc.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\7zVersion.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\7zFile.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\7zCrc.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\7zBuf.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\7zAlloc.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\lzma\7z.h">
-      <Filter>Header Files\extlibs\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\zlib\zutil.h">
-      <Filter>Header Files\extlibs\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\zlib\zlib.h">
-      <Filter>Header Files\extlibs\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\zlib\zconf.h">
-      <Filter>Header Files\extlibs\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\zlib\trees.h">
-      <Filter>Header Files\extlibs\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\zlib\inftrees.h">
-      <Filter>Header Files\extlibs\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\zlib\inflate.h">
-      <Filter>Header Files\extlibs\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\zlib\inffixed.h">
-      <Filter>Header Files\extlibs\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\zlib\inffast.h">
-      <Filter>Header Files\extlibs\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\zlib\gzguts.h">
-      <Filter>Header Files\extlibs\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\zlib\deflate.h">
-      <Filter>Header Files\extlibs\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="extlibs\zlib\crc32.h">
-      <Filter>Header Files\extlibs\zlib</Filter>
     </ClInclude>
     <ClInclude Include="streams\compression_decoder_stream.h">
       <Filter>Header Files\streams</Filter>

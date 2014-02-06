@@ -1,7 +1,10 @@
 #include "ZipCentralDirectoryFileHeader.h"
+#include "ZipLocalFileHeader.h"
+
 #include "../streams/serialization.h"
-#include <ctime>
+
 #include <cstring>
+#include <ctime>
 
 namespace detail {
 
@@ -9,6 +12,16 @@ ZipCentralDirectoryFileHeader::ZipCentralDirectoryFileHeader()
 {
   memset(this, 0, sizeof(ZipCentralDirectoryFileHeaderBase));
   Signature = SignatureConstant;
+}
+
+void ZipCentralDirectoryFileHeader::SyncWithLocalFileHeader(ZipLocalFileHeader& lfh)
+{
+  Crc32 = lfh.Crc32;
+  CompressedSize = lfh.CompressedSize;
+  UncompressedSize = lfh.UncompressedSize;
+
+  FilenameLength = static_cast<uint16_t>(Filename.length());
+  FileCommentLength = static_cast<uint16_t>(FileComment.length());
 }
 
 bool ZipCentralDirectoryFileHeader::Deserialize(std::istream& stream)

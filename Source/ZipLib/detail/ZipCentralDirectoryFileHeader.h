@@ -1,14 +1,17 @@
 #pragma once
-#include <cstdint>
+#include "ZipGenericExtraField.h"
+
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
-#include "ZipGenericExtraField.h"
+#include <cstdint>
 
 class ZipArchive;
 class ZipArchiveEntry;
 
 namespace detail {
+
+struct ZipLocalFileHeader;
 
 struct ZipCentralDirectoryFileHeaderBase
 {
@@ -53,6 +56,8 @@ struct ZipCentralDirectoryFileHeader
   private:
     friend class ::ZipArchive;
     friend class ::ZipArchiveEntry;
+
+    void SyncWithLocalFileHeader(ZipLocalFileHeader& lfh);
 
     bool Deserialize(std::istream& stream);
     void Serialize(std::ostream& stream);

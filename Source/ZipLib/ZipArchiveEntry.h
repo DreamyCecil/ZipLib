@@ -271,7 +271,6 @@ class ZipArchiveEntry
      * \brief Sets the input stream to fetch the data to compress from.
      *
      * \param stream            The input stream to compress.
-     * \param level             (Optional) The level of compression.
      * \param method            (Optional) The method of compression.
      * \param mode              (Optional) The mode of compression.
      *                          If deferred mode is chosen, the data are compressed when the zip archive is about to be written.
@@ -287,9 +286,9 @@ class ZipArchiveEntry
      * \return  true if it succeeds, false if it fails.
      */
     bool SetCompressionStream(
-      std::istream&     stream,
-      ICompressionMethod::Ptr   method,
-      CompressionMode   mode = CompressionMode::Deferred);
+      std::istream&           stream,
+      ICompressionMethod::Ptr method = DeflateMethod::Create(),
+      CompressionMode         mode = CompressionMode::Deferred);
 
     /**
      * \brief Sets compression stream to be null and unsets the password. The entry would contain no data with zero size.

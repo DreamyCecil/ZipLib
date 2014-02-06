@@ -574,27 +574,12 @@ void ZipArchiveEntry::FixVersionToExtractAtLeast(uint16_t value)
 
 void ZipArchiveEntry::SyncLFH_with_CDFH()
 {
-  _localFileHeader.VersionNeededToExtract = _centralDirectoryFileHeader.VersionNeededToExtract;
-  _localFileHeader.GeneralPurposeBitFlag  = _centralDirectoryFileHeader.GeneralPurposeBitFlag;
-  _localFileHeader.CompressionMethod      = _centralDirectoryFileHeader.CompressionMethod;
-  _localFileHeader.LastModificationTime   = _centralDirectoryFileHeader.LastModificationTime;
-  _localFileHeader.LastModificationDate   = _centralDirectoryFileHeader.LastModificationDate;
-  _localFileHeader.Crc32                  = _isNewOrChanged ? 0 : _centralDirectoryFileHeader.Crc32;
-  _localFileHeader.CompressedSize         = _isNewOrChanged ? 0 : _centralDirectoryFileHeader.CompressedSize;
-  _localFileHeader.UncompressedSize       = _isNewOrChanged ? 0 : _centralDirectoryFileHeader.UncompressedSize;
-
-  _localFileHeader.Filename               = _centralDirectoryFileHeader.Filename;
-  _localFileHeader.FilenameLength         = static_cast<uint16_t>(_localFileHeader.Filename.length());
+  _localFileHeader.SyncWithCentralDirectoryFileHeader(_centralDirectoryFileHeader);
 }
 
 void ZipArchiveEntry::SyncCDFH_with_LFH()
 {
-  _centralDirectoryFileHeader.Crc32            = _localFileHeader.Crc32;
-  _centralDirectoryFileHeader.CompressedSize   = _localFileHeader.CompressedSize;
-  _centralDirectoryFileHeader.UncompressedSize = _localFileHeader.UncompressedSize;
-
-  _centralDirectoryFileHeader.FilenameLength   = static_cast<uint16_t>(_centralDirectoryFileHeader.Filename.length());
-  _centralDirectoryFileHeader.FileCommentLength = static_cast<uint16_t>(_centralDirectoryFileHeader.FileComment.length());
+  _centralDirectoryFileHeader.SyncWithLocalFileHeader(_localFileHeader);
 
   this->FixVersionToExtractAtLeast(this->IsDirectory()
     ? VERSION_NEEDED_EXPLICIT_DIRECTORY
@@ -648,7 +633,6 @@ void ZipArchiveEntry::SerializeLocalFileHeader(std::ostream& stream)
   {
     this->FetchLocalFileHeader();
   }
-
 
   // save offset of stream here
   _offsetOfSerializedLocalFileHeader = stream.tellp();      

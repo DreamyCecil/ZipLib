@@ -1,18 +1,18 @@
 #pragma once
 #include "ICompressionMethod.h"
-#include "StoreMethod.h"
 #include "../compression/deflate/deflate_encoder.h"
 #include "../compression/deflate/deflate_decoder.h"
 
 #include <memory>
 
 class DeflateMethod :
-  public ICompressionMethodMayBeStored
+  public ICompressionMethod
 {
   public:
     ZIP_METHOD_CLASS_PROLOGUE(
       DeflateMethod,
       deflate_encoder, deflate_decoder,
+      _encoderProps, _decoderProps,
       /* CompressionMethod */ 8,
       /* VersionNeededToExtract */ 20
     );
@@ -36,16 +36,17 @@ class DeflateMethod :
       Best = L9
     };
 
-    size_t GetBufferCapacity() const { return _props.BufferCapacity; }
-    void SetBufferCapacity(size_t bufferCapacity) { _props.BufferCapacity = bufferCapacity; }
+    size_t GetBufferCapacity() const { return _encoderProps.BufferCapacity; }
+    void SetBufferCapacity(size_t bufferCapacity) { _encoderProps.BufferCapacity = bufferCapacity; }
 
-    CompressionLevel GetCompressionLevel() const { return static_cast<CompressionLevel>(_props.CompressionLevel); }
+    CompressionLevel GetCompressionLevel() const { return static_cast<CompressionLevel>(_encoderProps.CompressionLevel); }
     void SetCompressionLevel(CompressionLevel compressionLevel)
     {
       this->SetIsStored(compressionLevel == CompressionLevel::L0);
-      _props.CompressionLevel = static_cast<int>(compressionLevel);
+      _encoderProps.CompressionLevel = static_cast<int>(compressionLevel);
     }
 
   private:
-    deflate_encoder_properties _props;
+    deflate_encoder_properties _encoderProps;
+    deflate_decoder_properties _decoderProps;
 };

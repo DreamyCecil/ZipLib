@@ -330,6 +330,9 @@
     <ClInclude Include="methods\ICompressionMethod.h">
       <Filter>Header Files\methods</Filter>
     </ClInclude>
+    <ClInclude Include="compression\compression_interface.h">
+      <Filter>Header Files\compression</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZipFile.cpp">

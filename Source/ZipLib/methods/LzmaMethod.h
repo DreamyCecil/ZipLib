@@ -1,18 +1,18 @@
 #pragma once
 #include "ICompressionMethod.h"
-#include "StoreMethod.h"
 #include "../compression/lzma/lzma_encoder.h"
 #include "../compression/lzma/lzma_decoder.h"
 
 #include <memory>
 
 class LzmaMethod :
-  public ICompressionMethodMayBeStored
+  public ICompressionMethod
 {
   public:
     ZIP_METHOD_CLASS_PROLOGUE(
       LzmaMethod,
       lzma_encoder, lzma_decoder,
+      _encoderProps, _decoderProps,
       /* CompressionMethod */ 14,
       /* VersionNeededToExtract */ 63
     );
@@ -36,16 +36,17 @@ class LzmaMethod :
       Best = L9
     };
 
-    bool GetIsMultithreaded() const { return _props.IsMultithreaded; }
-    void SetIsMultithreaded(bool isMultithreaded) { _props.IsMultithreaded = isMultithreaded; }
+    bool GetIsMultithreaded() const { return _encoderProps.IsMultithreaded; }
+    void SetIsMultithreaded(bool isMultithreaded) { _encoderProps.IsMultithreaded = isMultithreaded; }
 
-    CompressionLevel GetCompressionLevel() const { return static_cast<CompressionLevel>(_props.CompressionLevel); }
+    CompressionLevel GetCompressionLevel() const { return static_cast<CompressionLevel>(_encoderProps.CompressionLevel); }
     void SetCompressionLevel(CompressionLevel compressionLevel) 
     {
       this->SetIsStored(compressionLevel == CompressionLevel::L0);
-      _props.CompressionLevel = static_cast<int>(compressionLevel);
+      _encoderProps.CompressionLevel = static_cast<int>(compressionLevel);
     }
 
   private:
-    lzma_encoder_properties _props;
+    lzma_encoder_properties _encoderProps;
+    lzma_decoder_properties _decoderProps;
 };

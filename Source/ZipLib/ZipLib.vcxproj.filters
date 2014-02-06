@@ -464,18 +464,6 @@
     <ClCompile Include="extlibs\zlib\deflate.c">
       <Filter>Source Files\extlibs\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="extlibs\zlib\gzclose.c">
-      <Filter>Source Files\extlibs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="extlibs\zlib\gzlib.c">
-      <Filter>Source Files\extlibs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="extlibs\zlib\gzread.c">
-      <Filter>Source Files\extlibs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="extlibs\zlib\gzwrite.c">
-      <Filter>Source Files\extlibs\zlib</Filter>
-    </ClCompile>
     <ClCompile Include="extlibs\zlib\infback.c">
       <Filter>Source Files\extlibs\zlib</Filter>
     </ClCompile>

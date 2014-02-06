@@ -154,10 +154,6 @@
     <ClCompile Include="extlibs\zlib\compress.c" />
     <ClCompile Include="extlibs\zlib\crc32.c" />
     <ClCompile Include="extlibs\zlib\deflate.c" />
-    <ClCompile Include="extlibs\zlib\gzclose.c" />
-    <ClCompile Include="extlibs\zlib\gzlib.c" />
-    <ClCompile Include="extlibs\zlib\gzread.c" />
-    <ClCompile Include="extlibs\zlib\gzwrite.c" />
     <ClCompile Include="extlibs\zlib\infback.c" />
     <ClCompile Include="extlibs\zlib\inffast.c" />
     <ClCompile Include="extlibs\zlib\inflate.c" />

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="compression\compression_interface.h" />
     <ClInclude Include="compression\deflate\deflate_decoder.h" />
     <ClInclude Include="compression\deflate\deflate_decoder_properties.h" />
     <ClInclude Include="compression\deflate\deflate_encoder.h" />

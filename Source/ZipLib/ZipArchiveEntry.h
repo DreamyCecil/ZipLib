@@ -86,7 +86,7 @@ class ZipArchiveEntry
      *
      * \return  The file name.
      */
-    std::string GetName() const;
+    const std::string& GetName() const;
 
     /**
      * \brief Sets only a file name of the entry.
@@ -376,6 +376,8 @@ class ZipArchiveEntry
 
     ICompressionMethod::Ptr         _compressionMethod;   //< compression method
     CompressionMode                 _compressionMode;     //< compression mode, either deferred or immediate
+
+    std::string _name;
 
     // TODO: make as flags
     bool _originallyInArchive;

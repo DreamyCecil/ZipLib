@@ -169,12 +169,14 @@ void ZipArchiveEntry::SetFullName(const std::string& fullName)
   }
 
   _centralDirectoryFileHeader.Filename = correctFilename;
+  _name = GetFilenameFromPath(correctFilename);
+
   this->SetAttributes(isDirectory ? Attributes::Directory : Attributes::Archive);
 }
 
-std::string ZipArchiveEntry::GetName() const
+const std::string& ZipArchiveEntry::GetName() const
 {
-  return GetFilenameFromPath(_centralDirectoryFileHeader.Filename);
+  return _name;
 }
 
 void ZipArchiveEntry::SetName(const std::string& name)

@@ -26,7 +26,6 @@ class ZipArchiveEntry
 {
   friend class ZipFile;
   friend class ZipArchive;
-  friend class ZipCrypto;
 
   public:
     typedef std::shared_ptr<ZipArchiveEntry> Ptr;
@@ -228,6 +227,32 @@ class ZipArchiveEntry
      */
     void UseDataDescriptor(bool use = true);
 
+
+    /**
+     * \brief Sets the input stream to fetch the data to compress from.
+     *
+     * \param stream            The input stream to compress.
+     * \param method            (Optional) The method of compression.
+     * \param mode              (Optional) The mode of compression.
+     *                          If deferred mode is chosen, the data are compressed when the zip archive is about to be written.
+     *                          The stream instance must exist when the ZipArchive::WriteToStream method is called.
+     *                          The advantage of deferred compression mode is the compressed data needs not to be loaded
+     *                          into the memory, because they are streamed into the final output stream.
+     *                          
+     *                          If immediate mode is chosen, the data are compressed immediately into the memory buffer.
+     *                          It is not recommended to use this method for large files.
+     *                          The advantage of immediate mode is the input stream can be destroyed (i.e. by scope)
+     *                          even before the ZipArchive::WriteToStream method is called.
+     *
+     * \return  true if it succeeds, false if it fails.
+     */
+    bool SetCompressionStream(std::istream& stream, ICompressionMethod::Ptr method = DeflateMethod::Create(), CompressionMode mode = CompressionMode::Deferred);
+
+    /**
+     * \brief Sets compression stream to be null and unsets the password. The entry would contain no data with zero size.
+     */
+    void UnsetCompressionStream();
+
     /**
      * \brief Gets raw stream of the compressed data.
      *
@@ -266,34 +291,6 @@ class ZipArchiveEntry
      * \brief Closes the decompression stream, opened by GetDecompressionStream.
      */
     void CloseDecompressionStream();
-
-    /**
-     * \brief Sets the input stream to fetch the data to compress from.
-     *
-     * \param stream            The input stream to compress.
-     * \param method            (Optional) The method of compression.
-     * \param mode              (Optional) The mode of compression.
-     *                          If deferred mode is chosen, the data are compressed when the zip archive is about to be written.
-     *                          The stream instance must exist when the ZipArchive::WriteToStream method is called.
-     *                          The advantage of deferred compression mode is the compressed data needs not to be loaded
-     *                          into the memory, because they are streamed into the final output stream.
-     *                          
-     *                          If immediate mode is chosen, the data are compressed immediately into the memory buffer.
-     *                          It is not recommended to use this method for large files.
-     *                          The advantage of immediate mode is the input stream can be destroyed (i.e. by scope)
-     *                          even before the ZipArchive::WriteToStream method is called.
-     *
-     * \return  true if it succeeds, false if it fails.
-     */
-    bool SetCompressionStream(
-      std::istream&           stream,
-      ICompressionMethod::Ptr method = DeflateMethod::Create(),
-      CompressionMode         mode = CompressionMode::Deferred);
-
-    /**
-     * \brief Sets compression stream to be null and unsets the password. The entry would contain no data with zero size.
-     */
-    void UnsetCompressionStream();
 
     /**
      * \brief Removes this entry from the ZipArchive.

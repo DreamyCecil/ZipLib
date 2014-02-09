@@ -425,12 +425,9 @@ void ZipArchiveEntry::CloseDecompressionStream()
   _immediateBuffer.reset();
 }
 
-bool ZipArchiveEntry::SetCompressionStream(
-  std::istream& stream,
-  ICompressionMethod::Ptr method,
-  CompressionMode mode /* = CompressionMode::Deferred */)
+bool ZipArchiveEntry::SetCompressionStream(std::istream& stream, ICompressionMethod::Ptr method /* = DeflateMethod::Create() */, CompressionMode mode /* = CompressionMode::Deferred */)
 {
-  // if _compressionStream is set, we already have some stream to compress
+  // if _inputStream is set, we already have some stream to compress
   // so we discard it
   if (_inputStream != nullptr)
   {
@@ -652,7 +649,7 @@ void ZipArchiveEntry::SerializeLocalFileHeader(std::ostream& stream)
   // nor crc.
   assert(
     this->IsDirectory()
-    ? !GetCrc32() && !GetCompressedSize() && !GetSize() && !_inputStream
+    ? !GetCrc32() && !GetSize() && !GetCompressedSize() && !_inputStream
     : true
   );
 
@@ -718,7 +715,10 @@ void ZipArchiveEntry::InternalCompressStream(std::istream& inputStream, std::ost
   crc32stream crc32Stream;
   crc32Stream.init(inputStream);
 
-  compression_encoder_stream compressionStream(_compressionMethod->GetEncoder(), _compressionMethod->GetEncoderProperties(), *intermediateStream);
+  compression_encoder_stream compressionStream(
+    _compressionMethod->GetEncoder(),
+    _compressionMethod->GetEncoderProperties(),
+    *intermediateStream);
   intermediateStream = &compressionStream;
   utils::stream::copy(crc32Stream, *intermediateStream);
 

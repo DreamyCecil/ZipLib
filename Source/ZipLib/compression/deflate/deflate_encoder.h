@@ -62,6 +62,11 @@ class basic_deflate_encoder
       _zstream.zfree = nullptr;
       _zstream.opaque = nullptr;
 
+      _zstream.next_in = nullptr;
+      _zstream.next_out = nullptr;
+      _zstream.avail_in = 0;
+      _zstream.avail_out = 0;
+
       deflateInit2(&_zstream, deflateProps.CompressionLevel, Z_DEFLATED, -MAX_WBITS, 8, Z_DEFAULT_STRATEGY);
     }
 

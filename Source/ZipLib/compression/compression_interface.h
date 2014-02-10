@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <algorithm>
 
 struct compression_properties_interface
 {
@@ -9,7 +10,11 @@ struct compression_properties_interface
 struct compression_encoder_properties_interface
   : compression_properties_interface
 {
-
+  template <typename T>
+  inline T clamp(T minimum, T maximum, T value)
+  {
+    return std::min(std::max(minimum, value), maximum);
+  }
 };
 
 struct compression_decoder_properties_interface

@@ -65,17 +65,15 @@ class basic_bzip2_decoder
       // init bzip2
       _bzstream.bzalloc = nullptr;
       _bzstream.bzfree = nullptr;
+      _bzstream.opaque = nullptr;
 
       _bzstream.next_in = nullptr;
+      _bzstream.next_out = nullptr;
       _bzstream.avail_in = 0;
       _bzstream.avail_out = (unsigned int)-1; // force first load of data
-      _bzstream.next_out = nullptr;
 
-      _lastError = BZ2_bzDecompressInit(
-        &_bzstream,
-        bzip2Props.Verbosity,
-        static_cast<int>(bzip2Props.Verbosity)
-      );
+      // no verbosity & do not use small memory model
+      _lastError = BZ2_bzDecompressInit(&_bzstream, 0, 0);
     }
 
     bool is_init() const override
@@ -140,7 +138,7 @@ class basic_bzip2_decoder
       // increase amount of total written bytes
       _bytesWritten += bytesProcessed;
 
-      if (_lastError == Z_STREAM_END)
+      if (_lastError == BZ_STREAM_END)
       {
         _endOfStream = true;
 

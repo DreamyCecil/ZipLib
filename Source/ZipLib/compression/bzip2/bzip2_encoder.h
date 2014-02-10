@@ -58,20 +58,16 @@ class basic_bzip2_encoder
       _outputBuffer = new ELEM_TYPE[_bufferCapacity];
 
       // init bzip2
-      _bzstream.bzalloc = NULL;
-      _bzstream.bzfree = NULL;
+      _bzstream.bzalloc = nullptr;
+      _bzstream.bzfree = nullptr;
+      _bzstream.opaque = nullptr;
 
-      _bzstream.next_in = NULL;
+      _bzstream.next_in = nullptr;
+      _bzstream.next_out = nullptr;
       _bzstream.avail_in = 0;
       _bzstream.avail_out = 0;
-      _bzstream.next_out = NULL;
 
-      _lastError = BZ2_bzCompressInit(
-        &_bzstream,
-        bz2Props.BlockSize,
-        bz2Props.Verbosity,
-        bz2Props.WorkFactor
-      );
+      _lastError = BZ2_bzCompressInit(&_bzstream, bz2Props.BlockSize, 0, bz2Props.WorkFactor);
     }
 
     bool is_init() const override

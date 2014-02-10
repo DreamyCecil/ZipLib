@@ -15,7 +15,7 @@ struct deflate_encoder_properties
 
   void normalize() override
   {
-    CompressionLevel = std::min(std::max(0, CompressionLevel), 9);
+    CompressionLevel = clamp(0, 9, CompressionLevel);
   }
 
   size_t BufferCapacity;

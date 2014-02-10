@@ -66,6 +66,10 @@ class basic_deflate_decoder
       _zstream.zalloc = nullptr;
       _zstream.zfree = nullptr;
       _zstream.opaque = nullptr;
+
+      _zstream.next_in = nullptr;
+      _zstream.next_out = nullptr;
+      _zstream.avail_in = 0;
       _zstream.avail_out = uInt(-1); // force first load of data
 
       inflateInit2(&_zstream, -MAX_WBITS);

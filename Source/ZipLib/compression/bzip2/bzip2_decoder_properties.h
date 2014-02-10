@@ -6,8 +6,6 @@ struct bzip2_decoder_properties
 {
   bzip2_decoder_properties()
     : BufferCapacity(1 << 15)
-    , Verbosity(0)
-    , SmallDecompress(false)
   {
 
   }
@@ -18,6 +16,4 @@ struct bzip2_decoder_properties
   }
 
   size_t BufferCapacity;
-  int Verbosity;
-  bool SmallDecompress;
 };

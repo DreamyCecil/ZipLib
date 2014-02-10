@@ -298,11 +298,11 @@ class ZipArchiveEntry
     void Remove();
 
   private:
-    static const uint16_t VERSION_NEEDED_DEFAULT = 10;
+    static const uint16_t VERSION_MADEBY_DEFAULT            = 63;
+                                                            
+    static const uint16_t VERSION_NEEDED_DEFAULT            = 10;
     static const uint16_t VERSION_NEEDED_EXPLICIT_DIRECTORY = 20;
-    static const uint16_t VERSION_NEEDED_ZIP64 = 45;
-
-    static const uint16_t VERSION_MADEBY_DEFAULT = 63;
+    static const uint16_t VERSION_NEEDED_ZIP64              = 45;
 
     enum class BitFlag : uint16_t
     {

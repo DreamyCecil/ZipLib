@@ -129,8 +129,8 @@ TEST_METHOD(Sample_ZipArchive_Stream_Immediate_Store_Own_Save_Password_Protected
 
     assert(contentStream.is_open());
 
-    DeflateMethod::Ptr ctx = std::make_shared<DeflateMethod>();
-    ctx->SetCompressionLevel(DeflateMethod::CompressionLevel::L0);
+    DeflateMethod::Ptr ctx = DeflateMethod::Create();
+    ctx->SetCompressionLevel(DeflateMethod::CompressionLevel::L1);
 
     entry->SetCompressionStream(   // data from contentStream are pumped here
       contentStream,

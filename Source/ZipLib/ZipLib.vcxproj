@@ -19,6 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="compression\bzip2\bzip2_decoder.h" />
+    <ClInclude Include="compression\bzip2\bzip2_decoder_properties.h" />
+    <ClInclude Include="compression\bzip2\bzip2_encoder.h" />
+    <ClInclude Include="compression\bzip2\bzip2_encoder_properties.h" />
     <ClInclude Include="compression\compression_interface.h" />
     <ClInclude Include="compression\deflate\deflate_decoder.h" />
     <ClInclude Include="compression\deflate\deflate_decoder_properties.h" />
@@ -41,6 +45,7 @@
     <ClInclude Include="detail\ZipCentralDirectoryFileHeader.h" />
     <ClInclude Include="detail\ZipGenericExtraField.h" />
     <ClInclude Include="detail\ZipLocalFileHeader.h" />
+    <ClInclude Include="methods\Bzip2Method.h" />
     <ClInclude Include="methods\DeflateMethod.h" />
     <ClInclude Include="methods\ICompressionMethod.h" />
     <ClInclude Include="methods\LzmaMethod.h" />
@@ -125,6 +130,9 @@
     <ClCompile Include="ZipFile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="extlibs\bzip2\bzip2.vcxproj">
+      <Project>{dbbf348d-c221-4f2e-8a0d-24efa0d98e71}</Project>
+    </ProjectReference>
     <ProjectReference Include="extlibs\lzma\lzma.vcxproj">
       <Project>{7ead1358-3e72-4fb6-a212-25d462b5c1e9}</Project>
     </ProjectReference>

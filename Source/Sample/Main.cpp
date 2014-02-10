@@ -5,6 +5,8 @@
 #include "../ZipLib/ZipFile.h"
 #include "../ZipLib/streams/memstream.h"
 
+#include "../ZipLib/methods/Bzip2Method.h"
+
 #include <fstream>
 
 struct PrintMethodName
@@ -99,8 +101,8 @@ TEST_METHOD(Sample_ZipArchive_Stream_Deferred_Comment)
   // this method is only useful for password protected files
   entry->UseDataDescriptor();
 
-  DeflateMethod::Ptr ctx = DeflateMethod::Create();
-  ctx->SetCompressionLevel(DeflateMethod::CompressionLevel::Best);
+  Bzip2Method::Ptr ctx = Bzip2Method::Create();
+  ctx->SetBlockSize(Bzip2Method::BlockSize::B600);
 
   entry->SetCompressionStream(
     contentStream,

@@ -1,22 +1,22 @@
 #pragma once
 #include "../compression_interface.h"
 
-#include "deflate_encoder_properties.h"
+#include "bzip2_encoder_properties.h"
 
-#include "../../extlibs/zlib/zlib.h"
+#include "../../extlibs/bzip2/bzlib.h"
 
 #include <cstdint>
 
 template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class basic_deflate_encoder
+class basic_bzip2_encoder
   : public compression_encoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>
 {
   public:
     typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
     typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
-    basic_deflate_encoder()
-      : _lastError(Z_OK)
+    basic_bzip2_encoder()
+      : _lastError(BZ_OK)
       , _stream(nullptr)
       , _bufferCapacity(0)
       , _inputBuffer(nullptr)
@@ -27,18 +27,18 @@ class basic_deflate_encoder
 
     }
 
-    ~basic_deflate_encoder()
+    ~basic_bzip2_encoder()
     {
       if (is_init())
       {
-        deflateEnd(&_zstream);
+        BZ2_bzCompressEnd(&_bzstream);
         uninit_buffers();
       }
     }
 
     void init(ostream_type& stream) override
     {
-      init(stream, deflate_encoder_properties());
+      init(stream, bzip2_encoder_properties());
     }
 
     void init(ostream_type& stream, compression_encoder_properties_interface& props) override
@@ -50,19 +50,28 @@ class basic_deflate_encoder
       _bytesRead = _bytesWritten = 0;
 
       // init buffers
-      deflate_encoder_properties& deflateProps = static_cast<deflate_encoder_properties&>(props);
-      _bufferCapacity = deflateProps.BufferCapacity;
+      bzip2_encoder_properties& bz2Props = static_cast<bzip2_encoder_properties&>(props);
+      _bufferCapacity = bz2Props.BufferCapacity;
 
       uninit_buffers();
       _inputBuffer = new ELEM_TYPE[_bufferCapacity];
       _outputBuffer = new ELEM_TYPE[_bufferCapacity];
 
-      // init deflate
-      _zstream.zalloc = nullptr;
-      _zstream.zfree = nullptr;
-      _zstream.opaque = nullptr;
+      // init bzip2
+      _bzstream.bzalloc = NULL;
+      _bzstream.bzfree = NULL;
 
-      deflateInit2(&_zstream, deflateProps.CompressionLevel, Z_DEFLATED, -MAX_WBITS, 8, Z_DEFAULT_STRATEGY);
+      _bzstream.next_in = NULL;
+      _bzstream.avail_in = 0;
+      _bzstream.avail_out = 0;
+      _bzstream.next_out = NULL;
+
+      _lastError = BZ2_bzCompressInit(
+        &_bzstream,
+        bz2Props.BlockSize,
+        bz2Props.Verbosity,
+        bz2Props.WorkFactor
+      );
     }
 
     bool is_init() const override
@@ -93,8 +102,8 @@ class basic_deflate_encoder
     void encode_next(size_t length) override
     {
       // set the input buffer
-      _zstream.next_in = reinterpret_cast<Bytef*>(_inputBuffer);
-      _zstream.avail_in = static_cast<uInt>(length);
+      _bzstream.next_in = reinterpret_cast<char*>(_inputBuffer);
+      _bzstream.avail_in = static_cast<unsigned int>(length);
 
       _bytesRead += length;
 
@@ -103,20 +112,20 @@ class basic_deflate_encoder
       // compress data
       do {
         // zstream output
-        _zstream.next_out = reinterpret_cast<Bytef*>(_outputBuffer);
-        _zstream.avail_out = static_cast<uInt>(_bufferCapacity);
+        _bzstream.next_out = reinterpret_cast<char*>(_outputBuffer);
+        _bzstream.avail_out = static_cast<unsigned int>(_bufferCapacity);
 
         // compress stream
-        deflate(&_zstream, flush ? Z_FINISH : Z_NO_FLUSH);
+        BZ2_bzCompress(&_bzstream, flush ? BZ_FINISH : BZ_RUN);
 
-        size_t have = _bufferCapacity - static_cast<size_t>(_zstream.avail_out);
+        size_t have = _bufferCapacity - static_cast<size_t>(_bzstream.avail_out);
 
         if (have > 0)
         {
           _stream->write(_outputBuffer, have);
           _bytesWritten += have;
         }
-      } while (_zstream.avail_out == 0);
+      } while (_bzstream.avail_out == 0);
     }
 
     void sync() override
@@ -138,13 +147,13 @@ class basic_deflate_encoder
       }
     }
 
-    bool zlib_suceeded(int errorCode)
+    bool bzip2_suceeded(int errorCode)
     {
       return ((_lastError = errorCode) >= 0);
     }
 
-    z_stream    _zstream;         // internal zlib structure
-    int         _lastError;       // last error of zlib operation
+    bz_stream _bzstream;        // internal bzip2 structure
+    int       _lastError;       // last error of bzip2 operation
 
     ostream_type* _stream;
 
@@ -156,6 +165,6 @@ class basic_deflate_encoder
     size_t _bytesWritten;
 };
 
-typedef basic_deflate_encoder<uint8_t, std::char_traits<uint8_t>>  byte_deflate_encoder;
-typedef basic_deflate_encoder<char, std::char_traits<char>>        deflate_encoder;
-typedef basic_deflate_encoder<wchar_t, std::char_traits<wchar_t>>  wdeflate_encoder;
+typedef basic_bzip2_encoder<uint8_t, std::char_traits<uint8_t>>  byte_bzip2_encoder;
+typedef basic_bzip2_encoder<char, std::char_traits<char>>        bzip2_encoder;
+typedef basic_bzip2_encoder<wchar_t, std::char_traits<wchar_t>>  wbzip2_encoder;

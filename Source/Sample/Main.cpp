@@ -56,7 +56,7 @@ TEST_METHOD(Sample_ZipFile)
   try
   {
     printf("[+] Compressing '%s'\n", fileIn1);
-    ZipFile::AddFile(zipFilename, fileIn1);
+    ZipFile::AddFile(zipFilename, fileIn1, LzmaMethod::Create());
 
     ListZipArchive();
 
@@ -192,20 +192,18 @@ TEST_METHOD(Sample_EXAMPLE)
   ZipArchiveEntry::Ptr entry = archive->CreateEntry(fileIn3);
   assert(entry != nullptr);
 
-  //entry->SetPassword("pass");
-  //
-  //// if this is not set, the input stream would be readen twice
-  //// this method is only useful for password protected files
-  //entry->UseDataDescriptor();
+  entry->SetPassword("pass");
 
-  DeflateMethod::Ptr ctx = std::make_shared<DeflateMethod>();
-  ctx->SetCompressionLevel(DeflateMethod::CompressionLevel::L0);
+  // if this is not set, the input stream would be readen twice
+  // this method is only useful for password protected files
+  entry->UseDataDescriptor();
 
+  StoreMethod::Ptr ctx = StoreMethod::Create();
   entry->SetCompressionStream(
     contentStream,
     ctx,
     ZipArchiveEntry::CompressionMode::Deferred
-    );
+  );
 
   // data from contentStream are pumped here
   ZipFile::SaveAndClose(archive, zipFilename);

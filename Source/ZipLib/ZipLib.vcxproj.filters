@@ -55,6 +55,9 @@
     <Filter Include="Source Files\detail">
       <UniqueIdentifier>{380a885f-3111-4777-a9f2-e6ced1c8b912}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\compression\bzip2">
+      <UniqueIdentifier>{97bbccd3-0914-492c-94c1-20dfd544f0fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ZipFile.h">
@@ -200,6 +203,21 @@
     </ClInclude>
     <ClInclude Include="compression\compression_interface.h">
       <Filter>Header Files\compression</Filter>
+    </ClInclude>
+    <ClInclude Include="compression\bzip2\bzip2_encoder.h">
+      <Filter>Header Files\compression\bzip2</Filter>
+    </ClInclude>
+    <ClInclude Include="compression\bzip2\bzip2_decoder.h">
+      <Filter>Header Files\compression\bzip2</Filter>
+    </ClInclude>
+    <ClInclude Include="compression\bzip2\bzip2_encoder_properties.h">
+      <Filter>Header Files\compression\bzip2</Filter>
+    </ClInclude>
+    <ClInclude Include="compression\bzip2\bzip2_decoder_properties.h">
+      <Filter>Header Files\compression\bzip2</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\Bzip2Method.h">
+      <Filter>Header Files\methods</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

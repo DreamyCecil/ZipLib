@@ -1,22 +1,22 @@
 #pragma once
 #include "../compression_interface.h"
 
-#include "deflate_decoder_properties.h"
+#include "bzip2_decoder_properties.h"
 
-#include "../../extlibs/zlib/zlib.h"
+#include "../../extlibs/bzip2/bzlib.h"
 
 #include <cstdint>
 
 template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class basic_deflate_decoder
+class basic_bzip2_decoder
   : public compression_decoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>
 {
   public:
     typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
     typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
-    basic_deflate_decoder()
-      : _lastError(Z_OK)
+    basic_bzip2_decoder()
+      : _lastError(BZ_OK)
       , _stream(nullptr)
       , _endOfStream(false)
       , _bufferCapacity(0)
@@ -30,18 +30,18 @@ class basic_deflate_decoder
 
     }
 
-    ~basic_deflate_decoder()
+    ~basic_bzip2_decoder()
     {
       if (is_init())
       {
-        inflateEnd(&_zstream);
+        BZ2_bzDecompressEnd(&_bzstream);
         uninit_buffers();
       }
     }
 
     void init(istream_type& stream) override
     {
-      init(stream, deflate_decoder_properties());
+      init(stream, bzip2_decoder_properties());
     }
 
     void init(istream_type& stream, compression_decoder_properties_interface& props) override
@@ -55,24 +55,25 @@ class basic_deflate_decoder
       _bytesRead = _bytesWritten = 0;
 
       // init buffers
-      deflate_decoder_properties& deflateProps = static_cast<deflate_decoder_properties&>(props);
-      _bufferCapacity = deflateProps.BufferCapacity;
+      bzip2_decoder_properties& bzip2Props = static_cast<bzip2_decoder_properties&>(props);
+      _bufferCapacity = bzip2Props.BufferCapacity;
 
       uninit_buffers();
       _inputBuffer = new ELEM_TYPE[_bufferCapacity];
       _outputBuffer = new ELEM_TYPE[_bufferCapacity];
 
-      // init deflate
-      _zstream.zalloc = nullptr;
-      _zstream.zfree = nullptr;
-      _zstream.opaque = nullptr;
+      // init bzip2
+      _bzstream.bzalloc = nullptr;
+      _bzstream.bzfree = nullptr;
+      _bzstream.opaque = nullptr;
 
-      _zstream.next_in = nullptr;
-      _zstream.next_out = nullptr;
-      _zstream.avail_in = 0;
-      _zstream.avail_out = uInt(-1); // force first load of data
+      _bzstream.next_in = nullptr;
+      _bzstream.next_out = nullptr;
+      _bzstream.avail_in = 0;
+      _bzstream.avail_out = (unsigned int)-1; // force first load of data
 
-      inflateInit2(&_zstream, -MAX_WBITS);
+      // no verbosity & do not use small memory model
+      _lastError = BZ2_bzDecompressInit(&_bzstream, 0, 0);
     }
 
     bool is_init() const override
@@ -104,7 +105,7 @@ class basic_deflate_decoder
     {
       // do not load any data until there
       // are something left
-      if (_zstream.avail_out != 0)
+      if (_bzstream.avail_out != 0)
       {
         // if all data has not been fetched and the stream is at the end,
         // it is an error
@@ -117,35 +118,35 @@ class basic_deflate_decoder
         read_next();
 
         // set input buffer and its size
-        _zstream.next_in = reinterpret_cast<Bytef*>(_inputBuffer);
-        _zstream.avail_in = static_cast<uInt>(_inputBufferSize);
+        _bzstream.next_in = reinterpret_cast<char*>(_inputBuffer);
+        _bzstream.avail_in = static_cast<unsigned int>(_inputBufferSize);
       }
 
       // zstream output
-      _zstream.next_out = reinterpret_cast<Bytef*>(_outputBuffer);
-      _zstream.avail_out = static_cast<uInt>(_bufferCapacity);
+      _bzstream.next_out = reinterpret_cast<char*>(_outputBuffer);
+      _bzstream.avail_out = static_cast<unsigned int>(_bufferCapacity);
 
       // inflate stream
-      if (!zlib_suceeded(inflate(&_zstream, Z_NO_FLUSH)))
+      if (!bzip2_suceeded(BZ2_bzDecompress(&_bzstream)))
       {
         return 0;
       }
 
       // associate output buffer
-      size_t bytesProcessed = _bufferCapacity - static_cast<size_t>(_zstream.avail_out);
+      size_t bytesProcessed = _bufferCapacity - static_cast<size_t>(_bzstream.avail_out);
 
       // increase amount of total written bytes
       _bytesWritten += bytesProcessed;
 
-      if (_lastError == Z_STREAM_END)
+      if (_lastError == BZ_STREAM_END)
       {
         _endOfStream = true;
 
         // if we read more than we should last time, move pointer to the correct position
-        if (_zstream.avail_in > 0)
+        if (_bzstream.avail_in > 0)
         {
           _stream->clear();
-          _stream->seekg(-static_cast<istream_type::off_type>(_zstream.avail_in), std::ios::cur);
+          _stream->seekg(-static_cast<istream_type::off_type>(_bzstream.avail_in), std::ios::cur);
         }
       }
 
@@ -184,13 +185,13 @@ class basic_deflate_decoder
       _endOfStream = _inputBufferSize != _bufferCapacity;
     }
 
-    bool zlib_suceeded(int errorCode)
+    bool bzip2_suceeded(int errorCode)
     {
       return ((_lastError = errorCode) >= 0);
     }
 
-    z_stream    _zstream;         // internal zlib structure
-    int         _lastError;       // last error of zlib operation
+    bz_stream   _bzstream;        // internal bzip2 structure
+    int         _lastError;       // last error of bzip2 operation
 
     istream_type* _stream;
     bool       _endOfStream;
@@ -205,6 +206,6 @@ class basic_deflate_decoder
     size_t _bytesWritten;
 };
 
-typedef basic_deflate_decoder<uint8_t, std::char_traits<uint8_t>>  byte_deflate_decoder;
-typedef basic_deflate_decoder<char, std::char_traits<char>>        deflate_decoder;
-typedef basic_deflate_decoder<wchar_t, std::char_traits<wchar_t>>  wdeflate_decoder;
+typedef basic_bzip2_decoder<uint8_t, std::char_traits<uint8_t>>  byte_bzip2_decoder;
+typedef basic_bzip2_decoder<char, std::char_traits<char>>        bzip2_decoder;
+typedef basic_bzip2_decoder<wchar_t, std::char_traits<wchar_t>>  wbzip2_decoder;

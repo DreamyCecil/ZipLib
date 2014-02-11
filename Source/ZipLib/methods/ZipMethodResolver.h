@@ -4,12 +4,14 @@
 #include "ICompressionMethod.h"
 
 #include "StoreMethod.h"
+#include "Bzip2Method.h"
 #include "DeflateMethod.h"
 #include "LzmaMethod.h"
 
 #define ZIP_METHOD_TABLE          \
   ZIP_METHOD_ADD(StoreMethod);    \
   ZIP_METHOD_ADD(DeflateMethod);  \
+  ZIP_METHOD_ADD(Bzip2Method);  \
   ZIP_METHOD_ADD(LzmaMethod);     \
 
 #define ZIP_METHOD_ADD(method_class)                                                            \

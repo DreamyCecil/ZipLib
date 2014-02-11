@@ -44,9 +44,9 @@ class ZipArchive
      *        with the ZipArchive.
      *
      * \param stream                The input stream of the zip archive content. Must be seekable.
-     * \param destroySimultaneously If true, it calls "delete stream" in the ZipArchive destructor.
+     * \param takeOwnership         If true, it calls "delete stream" in the ZipArchive destructor.
      */
-    static ZipArchive::Ptr Create(std::istream* stream, bool destroySimultaneously);
+    static ZipArchive::Ptr Create(std::istream* stream, bool takeOwnership);
 
     /**
      * \brief Destructor.
@@ -158,5 +158,5 @@ class ZipArchive
     detail::EndOfCentralDirectoryBlock _endOfCentralDirectoryBlock;
     std::vector<ZipArchiveEntry::Ptr> _entries;
     std::istream* _zipStream;
-    bool _destroySimultaneously;
+    bool _owningStream;
 };

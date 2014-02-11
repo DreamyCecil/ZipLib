@@ -22,11 +22,11 @@ ZipArchive::Ptr ZipArchive::Create(ZipArchive::Ptr&& other)
   result->_endOfCentralDirectoryBlock = other->_endOfCentralDirectoryBlock;
   result->_entries = std::move(other->_entries);
   result->_zipStream = other->_zipStream;
-  result->_destroySimultaneously = other->_destroySimultaneously;
+  result->_owningStream = other->_owningStream;
 
   // clean "other"
   other->_zipStream = nullptr;
-  other->_destroySimultaneously = false;
+  other->_owningStream = false;
 
   return result;
 }
@@ -36,7 +36,7 @@ ZipArchive::Ptr ZipArchive::Create(std::istream& stream)
   ZipArchive::Ptr result(new ZipArchive());
 
   result->_zipStream = &stream;
-  result->_destroySimultaneously = false;
+  result->_owningStream = false;
 
   result->ReadEndOfCentralDirectory();
   result->EnsureCentralDirectoryRead();
@@ -44,12 +44,12 @@ ZipArchive::Ptr ZipArchive::Create(std::istream& stream)
   return result;
 }
 
-ZipArchive::Ptr ZipArchive::Create(std::istream* stream, bool destroySimultaneously)
+ZipArchive::Ptr ZipArchive::Create(std::istream* stream, bool takeOwnership)
 {
   ZipArchive::Ptr result(new ZipArchive());
 
   result->_zipStream = stream;
-  result->_destroySimultaneously = stream != nullptr ? destroySimultaneously : false;
+  result->_owningStream = stream != nullptr ? takeOwnership : false;
 
   // jesus blew up a school bus when this metod has been implemented
   if (stream != nullptr)
@@ -63,7 +63,7 @@ ZipArchive::Ptr ZipArchive::Create(std::istream* stream, bool destroySimultaneou
 
 ZipArchive::ZipArchive()
   : _zipStream(nullptr)
-  , _destroySimultaneously(false)
+  , _owningStream(false)
 {
 
 }
@@ -78,11 +78,11 @@ ZipArchive& ZipArchive::operator = (ZipArchive&& other)
   _endOfCentralDirectoryBlock = other._endOfCentralDirectoryBlock;
   _entries = std::move(other._entries);
   _zipStream = other._zipStream;
-  _destroySimultaneously = other._destroySimultaneously;
+  _owningStream = other._owningStream;
 
   // clean "other"
   other._zipStream = nullptr;
-  other._destroySimultaneously = false;
+  other._owningStream = false;
   
   return *this;
 }
@@ -245,12 +245,12 @@ void ZipArchive::Swap(ZipArchive::Ptr other)
   std::swap(_endOfCentralDirectoryBlock, other->_endOfCentralDirectoryBlock);
   std::swap(_entries, other->_entries);
   std::swap(_zipStream, other->_zipStream);
-  std::swap(_destroySimultaneously, other->_destroySimultaneously);
+  std::swap(_owningStream, other->_owningStream);
 }
 
 void ZipArchive::InternalDestroy()
 {
-  if (_destroySimultaneously && _zipStream != nullptr) 
+  if (_owningStream && _zipStream != nullptr) 
   {
     delete _zipStream;
     _zipStream = nullptr;

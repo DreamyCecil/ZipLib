@@ -38,7 +38,8 @@ class basic_deflate_encoder
 
     void init(ostream_type& stream) override
     {
-      init(stream, deflate_encoder_properties());
+      deflate_encoder_properties props;
+      init(stream, props);
     }
 
     void init(ostream_type& stream, compression_encoder_properties_interface& props) override

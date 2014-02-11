@@ -41,7 +41,8 @@ class basic_deflate_decoder
 
     void init(istream_type& stream) override
     {
-      init(stream, deflate_decoder_properties());
+      deflate_decoder_properties props;
+      init(stream, props);
     }
 
     void init(istream_type& stream, compression_decoder_properties_interface& props) override
@@ -145,7 +146,7 @@ class basic_deflate_decoder
         if (_zstream.avail_in > 0)
         {
           _stream->clear();
-          _stream->seekg(-static_cast<istream_type::off_type>(_zstream.avail_in), std::ios::cur);
+          _stream->seekg(-static_cast<typename istream_type::off_type>(_zstream.avail_in), std::ios::cur);
         }
       }
 

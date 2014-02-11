@@ -35,7 +35,8 @@ class basic_lzma_encoder
 
     void init(ostream_type& stream) override
     {
-      init(stream, lzma_encoder_properties());
+      lzma_encoder_properties props;
+      init(stream, props);
     }
 
     void init(ostream_type& stream, compression_encoder_properties_interface& props) override

@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <chrono>
 #include <random>
+#include <cassert>
 
 #include "../../extlibs/zlib/zlib.h"
 

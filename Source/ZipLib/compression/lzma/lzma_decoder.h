@@ -43,7 +43,8 @@ class basic_lzma_decoder
 
     void init(istream_type& stream) override
     {
-      init(stream, lzma_decoder_properties());
+      lzma_decoder_properties props;
+      init(stream, props);
     }
 
     void init(istream_type& stream, compression_decoder_properties_interface& props) override

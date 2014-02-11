@@ -5,7 +5,7 @@
 #include <mutex>
 
 // forward declaration
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
+template <typename ELEM_TYPE_, typename TRAITS_TYPE_>
 class basic_lzma_encoder;
 
 namespace detail
@@ -15,8 +15,8 @@ namespace detail
     : public ISeqInStream
   {
     public:
-      template <typename ELEM_TYPE, typename TRAITS_TYPE>
-      friend class basic_lzma_encoder;
+      template <typename ELEM_TYPE_, typename TRAITS_TYPE_>
+      friend class ::basic_lzma_encoder;
 
       typedef std::condition_variable event_t;
       typedef std::mutex              mutex_t;

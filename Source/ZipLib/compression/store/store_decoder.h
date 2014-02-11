@@ -37,7 +37,8 @@ class basic_store_decoder
 
     void init(istream_type& stream) override
     {
-      init(stream, store_decoder_properties());
+      store_decoder_properties props;
+      init(stream, props);
     }
 
     void init(istream_type& stream, compression_decoder_properties_interface& props) override

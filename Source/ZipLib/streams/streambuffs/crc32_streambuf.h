@@ -81,7 +81,7 @@ class crc32_streambuf
 
       // setting all pointers to the same position forces calling of this method each time,
       // so crc32 really represents the checksum of what really has been read
-      this->setg(base, base, base);
+      this->setg(base, base, base + 1);
 
       _crc32 = crc32(_crc32, reinterpret_cast<Bytef*>(this->gptr()), static_cast<uInt>(sizeof(ELEM_TYPE)));
 

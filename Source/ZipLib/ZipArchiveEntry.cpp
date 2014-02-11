@@ -18,6 +18,17 @@
 #include <memory>
 #include <sstream>
 
+#ifndef WIN32
+namespace std
+{
+  template<class T, class... TYPES> inline
+  typename enable_if<!is_array<T>::value, unique_ptr<T>>::type make_unique(TYPES&&... args)
+  {
+    return (unique_ptr<T>(new T(std::forward<TYPES>(args)...)));
+  }
+}
+#endif
+
 namespace
 {
   bool IsValidFilename(const std::string& fullPath)

@@ -231,18 +231,18 @@ class ZipArchiveEntry
     /**
      * \brief Sets the input stream to fetch the data to compress from.
      *
-     * \param stream            The input stream to compress.
-     * \param method            (Optional) The method of compression.
-     * \param mode              (Optional) The mode of compression.
-     *                          If deferred mode is chosen, the data are compressed when the zip archive is about to be written.
-     *                          The stream instance must exist when the ZipArchive::WriteToStream method is called.
-     *                          The advantage of deferred compression mode is the compressed data needs not to be loaded
-     *                          into the memory, because they are streamed into the final output stream.
-     *                          
-     *                          If immediate mode is chosen, the data are compressed immediately into the memory buffer.
-     *                          It is not recommended to use this method for large files.
-     *                          The advantage of immediate mode is the input stream can be destroyed (i.e. by scope)
-     *                          even before the ZipArchive::WriteToStream method is called.
+     * \param stream  The input stream to compress.
+     * \param method  (Optional) The method of compression.
+     * \param mode    (Optional) The mode of compression.
+     *                If deferred mode is chosen, the data are compressed when the zip archive is about to be written.
+     *                The stream instance must exist when the ZipArchive::WriteToStream method is called.
+     *                The advantage of deferred compression mode is the compressed data needs not to be loaded
+     *                into the memory, because they are streamed into the final output stream.
+     *                
+     *                If immediate mode is chosen, the data are compressed immediately into the memory buffer.
+     *                It is not recommended to use this method for large files.
+     *                The advantage of immediate mode is the input stream can be destroyed (i.e. by scope)
+     *                even before the ZipArchive::WriteToStream method is called.
      *
      * \return  true if it succeeds, false if it fails.
      */
@@ -360,19 +360,19 @@ class ZipArchiveEntry
     uint8_t GetLastByteOfEncryptionHeader();
 
     //////////////////////////////////////////////////////////////////////////
-    ZipArchive*                     _archive;             //< pointer to the owning zip archive
+    ZipArchive*                     _archive;           //< pointer to the owning zip archive
 
-    std::shared_ptr<std::istream>   _rawStream;           //< stream of raw compressed data
-    std::shared_ptr<std::istream>   _compressionStream;   //< stream of uncompressed data
-    std::shared_ptr<std::istream>   _encryptionStream;    //< underlying encryption stream
-    std::shared_ptr<std::istream>   _archiveStream;       //< substream of owning zip archive file
+    std::shared_ptr<std::istream>   _rawStream;         //< stream of raw compressed data
+    std::shared_ptr<std::istream>   _compressionStream; //< stream of uncompressed data
+    std::shared_ptr<std::istream>   _encryptionStream;  //< underlying encryption stream
+    std::shared_ptr<std::istream>   _archiveStream;     //< substream of owning zip archive file
 
     // internal compression data
-    std::shared_ptr<std::iostream>  _immediateBuffer;     //< stream used in the immediate mode, stores compressed data in memory
-    std::istream*                   _inputStream;         //< input stream
+    std::shared_ptr<std::iostream>  _immediateBuffer;   //< stream used in the immediate mode, stores compressed data in memory
+    std::istream*                   _inputStream;       //< input stream
 
-    ICompressionMethod::Ptr         _compressionMethod;   //< compression method
-    CompressionMode                 _compressionMode;     //< compression mode, either deferred or immediate
+    ICompressionMethod::Ptr         _compressionMethod; //< compression method
+    CompressionMode                 _compressionMode;   //< compression mode, either deferred or immediate
 
     std::string _name;
 

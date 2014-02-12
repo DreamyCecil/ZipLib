@@ -1,6 +1,8 @@
+#ifdef _MSC_VER
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
+#endif
 
 #include "../ZipLib/ZipFile.h"
 #include "../ZipLib/streams/memstream.h"
@@ -215,7 +217,9 @@ TEST_METHOD(Sample_EXAMPLE)
 
 int main()
 {
+#ifdef _MSC_VER
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
 
   // delete archive before this sample
   remove(zipFilename);

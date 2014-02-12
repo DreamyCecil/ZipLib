@@ -18,17 +18,6 @@
 #include <memory>
 #include <sstream>
 
-#ifndef WIN32
-namespace std
-{
-  template<class T, class... TYPES> inline
-  typename enable_if<!is_array<T>::value, unique_ptr<T>>::type make_unique(TYPES&&... args)
-  {
-    return (unique_ptr<T>(new T(std::forward<TYPES>(args)...)));
-  }
-}
-#endif
-
 namespace
 {
   bool IsValidFilename(const std::string& fullPath)
@@ -370,7 +359,7 @@ std::istream* ZipArchiveEntry::GetDecompressionStream()
   if (this->CanExtract() && _archiveStream == nullptr && _encryptionStream == nullptr)
   {
     auto offsetOfCompressedData = this->SeekToCompressedData();
-    bool needsPassword = !!(uint16_t(this->GetGeneralPurposeBitFlag()) & uint16_t(BitFlag::Encrypted));
+    bool needsPassword = !!(this->GetGeneralPurposeBitFlag() & BitFlag::Encrypted);
     bool needsDecompress = this->GetCompressionMethod() != StoreMethod::CompressionMethod;
 
     if (needsPassword && _password.empty())
@@ -716,7 +705,8 @@ void ZipArchiveEntry::InternalCompressStream(std::istream& inputStream, std::ost
   {
     this->SetGeneralPurposeBitFlag(BitFlag::Encrypted);
 
-    cryptoStream = std::make_unique<zip_cryptostream>();
+    // std::make_unique<zip_cryptostream>();
+    cryptoStream = std::unique_ptr<zip_cryptostream>(new zip_cryptostream());
 
     cryptoStream->init(outputStream, _password.c_str());
     cryptoStream->set_final_byte(this->GetLastByteOfEncryptionHeader());

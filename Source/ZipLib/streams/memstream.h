@@ -3,10 +3,6 @@
 #include <cstdint>
 #include "streambuffs/mem_streambuf.h"
 
-#ifdef _MSC_VER
-# pragma warning(disable : 4250)
-#endif
-
 /**
  * \brief Basic input memory stream.
  *        Creates input stream around the memory buffer.

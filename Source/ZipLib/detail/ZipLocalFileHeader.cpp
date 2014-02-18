@@ -13,7 +13,6 @@ ZipLocalFileHeader::ZipLocalFileHeader()
   Signature = SignatureConstant;
 }
 
-
 void ZipLocalFileHeader::SyncWithCentralDirectoryFileHeader(ZipCentralDirectoryFileHeader& cdfh)
 {
   VersionNeededToExtract = cdfh.VersionNeededToExtract;

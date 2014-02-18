@@ -210,6 +210,12 @@
     <ClInclude Include="methods\Bzip2Method.h">
       <Filter>Header Files\methods</Filter>
     </ClInclude>
+    <ClInclude Include="streams\streambuffs\null_streambuf.h">
+      <Filter>Header Files\streams\streambuffs</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\nullstream.h">
+      <Filter>Header Files\streams</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZipFile.cpp">

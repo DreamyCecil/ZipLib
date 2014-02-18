@@ -8,6 +8,7 @@
 #include "streams/zip_cryptostream.h"
 #include "streams/compression_encoder_stream.h"
 #include "streams/compression_decoder_stream.h"
+#include "streams/nullstream.h"
 
 #include "utils/stream_utils.h"
 #include "utils/time_utils.h"
@@ -454,7 +455,6 @@ bool ZipArchiveEntry::SetCompressionStream(std::istream& stream, ICompressionMet
   return true;
 }
 
-
 void ZipArchiveEntry::UnsetCompressionStream()
 {
   if (!this->HasCompressionStream())
@@ -746,11 +746,9 @@ void ZipArchiveEntry::FigureCrc32()
   crc32stream crc32Stream;
   crc32Stream.init(*_inputStream);
 
-  crc32stream::char_type dummy[1 << 15]; // 32k
-  while (!crc32Stream.eof() && !crc32Stream.fail())
-  {
-    crc32Stream.read(dummy, sizeof(dummy) / sizeof(dummy[0]));
-  }
+  // just force to read all from crc32stream
+  nullstream nulldev;
+  utils::stream::copy(crc32Stream, nulldev);
 
   // seek back
   _inputStream->clear();

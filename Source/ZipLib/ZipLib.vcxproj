@@ -55,11 +55,13 @@
     <ClInclude Include="streams\compression_encoder_stream.h" />
     <ClInclude Include="streams\crc32stream.h" />
     <ClInclude Include="streams\memstream.h" />
+    <ClInclude Include="streams\nullstream.h" />
     <ClInclude Include="streams\serialization.h" />
     <ClInclude Include="streams\streambuffs\compression_decoder_streambuf.h" />
     <ClInclude Include="streams\streambuffs\compression_encoder_streambuf.h" />
     <ClInclude Include="streams\streambuffs\crc32_streambuf.h" />
     <ClInclude Include="streams\streambuffs\mem_streambuf.h" />
+    <ClInclude Include="streams\streambuffs\null_streambuf.h" />
     <ClInclude Include="streams\streambuffs\sub_streambuf.h" />
     <ClInclude Include="streams\streambuffs\tee_streambuff.h" />
     <ClInclude Include="streams\streambuffs\zip_crypto_streambuf.h" />

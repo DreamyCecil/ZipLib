@@ -1,32 +1,42 @@
-EXE     = Bin/zipsample
-SO      = Bin/libzip.so
+# Final names of binaries
+EXECUTABLE = Bin/zipsample
+SO_LIBRARY = Bin/libzip.so
 
-#####################
-
+# C & C++ compiler
 #CC       = gcc
 #CXX      = g++-4.8
-CC       = clang
-CXX      = clang++
-CFLAGS   = -fPIC -Wno-enum-conversion -O3
-CXXFLAGS = -fPIC -std=c++11 -O3
-LDFLAGS  = -pthread
-SRCSZL   = $(wildcard Source/ZipLib/extlibs/zlib/*.c)
-SRCSLZ   = $(wildcard Source/ZipLib/extlibs/lzma/unix/*.c)
-SRCSBZ   = $(wildcard Source/ZipLib/extlibs/bzip2/*.c)
-SRCS     = $(wildcard Source/ZipLib/*.cpp)
-SRCSDET  = $(wildcard Source/ZipLib/detail/*.cpp)
-OBJS     = $(patsubst %.cpp,%.o,$(SRCS))
-OBJSDET  = $(patsubst %.cpp,%.o,$(SRCSDET))
-OBJSZL   = $(patsubst %.c,%.o,$(SRCSZL))
-OBJSLZ   = $(patsubst %.c,%.o,$(SRCSLZ))
-OBJSBZ   = $(patsubst %.c,%.o,$(SRCSBZ))
+CC        = clang
+CXX       = clang++
+CFLAGS    = -fPIC -Wno-enum-conversion -O3
+CXXFLAGS  = -fPIC -std=c++11 -O3
 
-all: $(EXE) $(SO)
+# Linker flags
+LDFLAGS   = -pthread
 
-$(EXE): $(OBJSZL) $(OBJSLZ) $(OBJSBZ) $(OBJS) $(OBJSDET)
+# Sources of external libraries
+SRC_ZLIB  = $(wildcard Source/ZipLib/extlibs/zlib/*.c)
+SRC_LZMA  = $(wildcard Source/ZipLib/extlibs/lzma/unix/*.c)
+SRC_BZIP2 = $(wildcard Source/ZipLib/extlibs/bzip2/*.c)
+
+# ZipLib sources
+SRC = \
+		$(wildcard Source/ZipLib/*.cpp) 			 \
+		$(wildcard Source/ZipLib/detail/*.cpp)
+
+# Object files			
+OBJS = \
+		$(SRC:.cpp=.o)	  \
+		$(SRC_ZLIB:.c=.o) \
+		$(SRC_LZMA:.c=.o) \
+		$(SRC_BZIP2:.c=.o)
+
+# Rules
+all: $(EXECUTABLE) $(SO_LIBRARY)
+
+$(EXECUTABLE): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) Source/Sample/Main.cpp -o $@ $^
 
-$(SO): $(OBJSZL) $(OBJSLZ) $(OBJSBZ) $(OBJS) $(OBJSDET)
+$(SO_LIBRARY): $(OBJS)
 	$(CXX) $(LDFLAGS) -shared -o $@ $^
 
 %.o: %.cpp
@@ -36,7 +46,7 @@ $(SO): $(OBJSZL) $(OBJSLZ) $(OBJSBZ) $(OBJS) $(OBJSDET)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf Source/ZipLib/extlibs/zlib/*.o Source/ZipLib/detail/*.o Source/ZipLib/extlibs/lzma/unix/*.o Source/ZipLib/extlibs/bzip2/*.o Source/ZipLib/*.o ziplib.tar.gz $(SO) $(EXE) Bin/*.zip Bin/out*
+	rm -rf `find Source -name '*.o'` ziplib.tar.gz Bin/*.zip Bin/out* $(EXECUTABLE) $(SO_LIBRARY)
 
 tarball:
 	tar -zcvf ziplib.tar.gz *

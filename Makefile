@@ -20,14 +20,14 @@ SRC_BZIP2 = $(wildcard Source/ZipLib/extlibs/bzip2/*.c)
 
 # ZipLib sources
 SRC = \
-		$(wildcard Source/ZipLib/*.cpp) 			 \
+		$(wildcard Source/ZipLib/*.cpp)        \
 		$(wildcard Source/ZipLib/detail/*.cpp)
 
 # Object files			
 OBJS = \
-		$(SRC:.cpp=.o)	  \
-		$(SRC_ZLIB:.c=.o) \
-		$(SRC_LZMA:.c=.o) \
+		$(SRC:.cpp=.o)	   \
+		$(SRC_ZLIB:.c=.o)  \
+		$(SRC_LZMA:.c=.o)  \
 		$(SRC_BZIP2:.c=.o)
 
 # Rules

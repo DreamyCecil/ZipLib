@@ -37,15 +37,15 @@ void ListZipArchive(const char* zipArchiveName = zipFilename)
   size_t entries = archive->GetEntriesCount();
 
   printf("[o] Listing archive (comment: '%s'):\n", archive->GetComment().c_str());
-  printf("[o] Entries count: %u\n", entries);
+  printf("[o] Entries count: %lu\n", entries);
 
   for (size_t i = 0; i < entries; ++i)
   {
     auto entry = archive->GetEntry(int(i));
 
     printf("[o] -- %s\n", entry->GetFullName().c_str());
-    printf("[o]   >> uncompressed size: %u\n", entry->GetSize());
-    printf("[o]   >> compressed size: %u\n", entry->GetCompressedSize());
+    printf("[o]   >> uncompressed size: %lu\n", entry->GetSize());
+    printf("[o]   >> compressed size: %lu\n", entry->GetCompressedSize());
     printf("[o]   >> password protected: %s\n", entry->IsPasswordProtected() ? "yes" : "no");
     printf("[o]   >> compression method: %s\n", entry->GetCompressionMethod() == DeflateMethod::CompressionMethod ? "DEFLATE" : "stored");
     printf("[o]   >> comment: %s\n", entry->GetComment().c_str());

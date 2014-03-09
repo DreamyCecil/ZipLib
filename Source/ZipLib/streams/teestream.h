@@ -42,8 +42,8 @@ class basic_teestream
     }
 
   private:
-    basic_teestream(const basic_teestream&);
-    basic_teestream& operator = (const basic_teestream&);
+    basic_teestream(const basic_teestream&) = delete;
+    basic_teestream& operator = (const basic_teestream&) = delete;
 
     tee_streambuf<ELEM_TYPE, TRAITS_TYPE> _teeStreambuf;
 };

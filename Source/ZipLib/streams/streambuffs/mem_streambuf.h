@@ -45,7 +45,7 @@ class mem_streambuf
       if (!traits_type::eq_int_type(c, traits_type::eof()) &&
           this->pptr() < this->epptr()) 
       {
-        *this->pptr() = c;
+        *this->pptr() = traits_type::to_char_type(c);
         this->pbump(1); // shift pptr() by 1
         return c;       // return value must not be EOF
       }

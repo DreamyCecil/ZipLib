@@ -2,9 +2,7 @@
 #include <streambuf>
 #include <ostream>
 #include <cstdint>
-#include <thread>
 #include <memory>
-#include <condition_variable>
 
 #include "../../compression/compression_interface.h"
 
@@ -93,7 +91,7 @@ class compression_encoder_streambuf
       // and increment current pointer
       if (!is_eof)
       {
-        *this->pptr() = c;
+        *this->pptr() = traits_type::to_char_type(c);
         this->pbump(1);
       }
 

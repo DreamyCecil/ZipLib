@@ -14,15 +14,15 @@ class basic_imemstream
   : public std::basic_istream<ELEM_TYPE, TRAITS_TYPE>
 {
   public:
-    basic_imemstream(ELEM_TYPE* buffer, size_t length)
+    basic_imemstream(const ELEM_TYPE* buffer, size_t length)
       : std::basic_istream<ELEM_TYPE, TRAITS_TYPE>(&_memStreambuf)
-      , _memStreambuf(buffer, length)
+      , _memStreambuf(const_cast<ELEM_TYPE*>(buffer), length)
     {
 
     }
 
     template <size_t N>
-    basic_imemstream(ELEM_TYPE (&buffer)[N])
+    basic_imemstream(const ELEM_TYPE (&buffer)[N])
       : basic_imemstream(buffer, N)
     {
 

@@ -12,7 +12,7 @@
 
 namespace utils { namespace time {
 
-void timestamp_to_datetime(time_t dateTime, uint16_t& date, uint16_t& time)
+static void timestamp_to_datetime(time_t dateTime, uint16_t& date, uint16_t& time)
 {
   tm timeStruct;
 
@@ -22,7 +22,7 @@ void timestamp_to_datetime(time_t dateTime, uint16_t& date, uint16_t& time)
   time = (timeStruct.tm_hour << 11) + (timeStruct.tm_min << 5) + (timeStruct.tm_sec >> 1);
 }
 
-time_t datetime_to_timestamp(uint16_t date, uint16_t time)
+static time_t datetime_to_timestamp(uint16_t date, uint16_t time)
 {
   tm timeStruct;
 

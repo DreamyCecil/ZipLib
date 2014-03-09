@@ -37,7 +37,7 @@ class compression_decoder_streambuf
 
     compression_decoder_streambuf(icompression_decoder_ptr_type compressionDecoder, compression_decoder_properties_interface& props, istream_type& stream)
     {
-      init(compressionDecoder, stream);
+      init(compressionDecoder, props, stream);
     }
 
     void init(icompression_decoder_ptr_type compressionDecoder, istream_type& stream)

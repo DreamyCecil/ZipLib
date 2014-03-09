@@ -48,8 +48,8 @@ struct ZipCentralDirectoryFileHeader
   };
 
   std::string Filename;
-  std::string FileComment;
   std::vector<ZipGenericExtraField> ExtraFields;
+  std::string FileComment;
 
   ZipCentralDirectoryFileHeader();
 

@@ -60,7 +60,6 @@ bool ZipCentralDirectoryFileHeader::Deserialize(std::istream& stream)
   }
 
   deserialize(stream, Filename, FilenameLength);
-  deserialize(stream, FileComment, FileCommentLength);
 
   if (ExtraFieldLength > 0)
   {
@@ -73,6 +72,8 @@ bool ZipCentralDirectoryFileHeader::Deserialize(std::istream& stream)
       ExtraFields.push_back(extraField);
     }
   }
+
+  deserialize(stream, FileComment, FileCommentLength);
 
   return true;
 }
@@ -114,7 +115,6 @@ void ZipCentralDirectoryFileHeader::Serialize(std::ostream& stream)
   }
 
   serialize(stream, Filename);
-  serialize(stream, FileComment);
 
   if (ExtraFieldLength > 0)
   {
@@ -123,6 +123,8 @@ void ZipCentralDirectoryFileHeader::Serialize(std::ostream& stream)
       extraField.Serialize(stream);
     }
   }
+
+  serialize(stream, FileComment);
 }
 
 }

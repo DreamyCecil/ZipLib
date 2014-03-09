@@ -94,6 +94,8 @@ class ICompressionMethod
     }
 
   protected:
+    ICompressionMethod() { }
+
     void SetEncoder(encoder_t encoder) { _encoder = encoder; }
     void SetDecoder(decoder_t decoder) { _decoder = decoder; }
 

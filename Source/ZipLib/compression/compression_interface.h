@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <algorithm>
+#include <cstdint>
 
 struct compression_properties_interface
 {

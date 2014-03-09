@@ -19,7 +19,6 @@ class Bzip2Method :
 
     enum class BlockSize : int
     {
-      B0   = 0,
       B100 = 1,
       B200 = 2,
       B300 = 3,
@@ -30,7 +29,6 @@ class Bzip2Method :
       B800 = 8,
       B900 = 9,
 
-      Stored = B0,
       Fastest = B100,
       Default = B600,
       Best = B900
@@ -40,11 +38,7 @@ class Bzip2Method :
     void SetBufferCapacity(size_t bufferCapacity) { _encoderProps.BufferCapacity = bufferCapacity; }
 
     BlockSize GetBlockSize() const { return static_cast<BlockSize>(_encoderProps.BlockSize); }
-    void SetBlockSize(BlockSize compressionLevel)
-    {
-      this->SetIsStored(compressionLevel == BlockSize::B0);
-      _encoderProps.BlockSize = static_cast<int>(compressionLevel);
-    }
+    void SetBlockSize(BlockSize compressionLevel) { _encoderProps.BlockSize = static_cast<int>(compressionLevel); }
 
   private:
     bzip2_encoder_properties _encoderProps;

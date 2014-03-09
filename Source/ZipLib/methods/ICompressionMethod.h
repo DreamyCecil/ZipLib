@@ -6,49 +6,49 @@
 
 #include <memory>
 
-#define ZIP_METHOD_CLASS_PROLOGUE(                                                                                    \
-    method_class,                                                                                                     \
-    encoder_class, decoder_class,                                                                                     \
-    encoder_props_member, decoder_props_member,                                                                       \
-    compression_method, version_needed_to_extract)                                                                    \
-                                                                                                                      \
-  typedef std::shared_ptr<method_class> Ptr;                                                                          \
-                                                                                                                      \
-  static const uint16_t CompressionMethod = compression_method;                                                       \
-  static const uint16_t VersionNeededToExtract = version_needed_to_extract;                                           \
-                                                                                                                      \
-  method_class()                                                                                                      \
-  {                                                                                                                   \
-    this->SetEncoder(std::make_shared<encoder_class>());                                                              \
-    this->SetDecoder(std::make_shared<decoder_class>());                                                              \
-  }                                                                                                                   \
-                                                                                                                      \
-  static Ptr Create()                                                                                                 \
-  {                                                                                                                   \
-    return std::make_shared<method_class>();                                                                          \
-  }                                                                                                                   \
-                                                                                                                      \
-  compression_encoder_properties_interface& GetEncoderProperties() override                                           \
-  {                                                                                                                   \
-    encoder_props_member.normalize();                                                                                 \
-    return encoder_props_member;                                                                                      \
-  }                                                                                                                   \
-                                                                                                                      \
-  compression_decoder_properties_interface& GetDecoderProperties() override                                           \
-  {                                                                                                                   \
-    decoder_props_member.normalize();                                                                                 \
-    return decoder_props_member;                                                                                      \
-  }                                                                                                                   \
-                                                                                                                      \
-  const ZipMethodDescriptor& GetZipMethodDescriptor() const override                                                  \
-  {                                                                                                                   \
-    return this->GetIsStored() ? ICompressionMethod::GetZipMethodDescriptorStatic() : GetZipMethodDescriptorStatic(); \
-  }                                                                                                                   \
-                                                                                                                      \
-  static const ZipMethodDescriptor& GetZipMethodDescriptorStatic()                                                    \
-  {                                                                                                                   \
-    static ZipMethodDescriptor zmd(CompressionMethod, VersionNeededToExtract);                                         \
-    return zmd;                                                                                                       \
+#define ZIP_METHOD_CLASS_PROLOGUE(                                              \
+    method_class,                                                               \
+    encoder_class, decoder_class,                                               \
+    encoder_props_member, decoder_props_member,                                 \
+    compression_method, version_needed_to_extract)                              \
+                                                                                \
+  typedef std::shared_ptr<method_class> Ptr;                                    \
+                                                                                \
+  static const uint16_t CompressionMethod = compression_method;                 \
+  static const uint16_t VersionNeededToExtract = version_needed_to_extract;     \
+                                                                                \
+  method_class()                                                                \
+  {                                                                             \
+    this->SetEncoder(std::make_shared<encoder_class>());                        \
+    this->SetDecoder(std::make_shared<decoder_class>());                        \
+  }                                                                             \
+                                                                                \
+  static Ptr Create()                                                           \
+  {                                                                             \
+    return std::make_shared<method_class>();                                    \
+  }                                                                             \
+                                                                                \
+  compression_encoder_properties_interface& GetEncoderProperties() override     \
+  {                                                                             \
+    encoder_props_member.normalize();                                           \
+    return encoder_props_member;                                                \
+  }                                                                             \
+                                                                                \
+  compression_decoder_properties_interface& GetDecoderProperties() override     \
+  {                                                                             \
+    decoder_props_member.normalize();                                           \
+    return decoder_props_member;                                                \
+  }                                                                             \
+                                                                                \
+  const ZipMethodDescriptor& GetZipMethodDescriptor() const override            \
+  {                                                                             \
+    return GetZipMethodDescriptorStatic();                                      \
+  }                                                                             \
+                                                                                \
+  static const ZipMethodDescriptor& GetZipMethodDescriptorStatic()              \
+  {                                                                             \
+    static ZipMethodDescriptor zmd(CompressionMethod, VersionNeededToExtract);  \
+    return zmd;                                                                 \
   }
 
 struct ZipMethodDescriptor
@@ -79,10 +79,8 @@ class ICompressionMethod
     typedef std::shared_ptr<compression_encoder_interface> encoder_t;
     typedef std::shared_ptr<compression_decoder_interface> decoder_t;
 
-    ICompressionMethod() : _isStored(false) { }
-
-    encoder_t GetEncoder() const { return _isStored ? this->GetStoreEncoder() : _encoder; }
-    decoder_t GetDecoder() const { return _isStored ? this->GetStoreDecoder() : _decoder; }
+    encoder_t GetEncoder() const { return _encoder; }
+    decoder_t GetDecoder() const { return _decoder; }
 
     virtual compression_encoder_properties_interface& GetEncoderProperties() = 0;
     virtual compression_decoder_properties_interface& GetDecoderProperties() = 0;
@@ -96,23 +94,10 @@ class ICompressionMethod
     }
 
   protected:
-    typedef std::shared_ptr<store_encoder>  store_encoder_t;
-    typedef std::shared_ptr<store_decoder>  store_decoder_t;
-
     void SetEncoder(encoder_t encoder) { _encoder = encoder; }
     void SetDecoder(decoder_t decoder) { _decoder = decoder; }
-
-    store_encoder_t GetStoreEncoder() const { return _storeEncoder ? _storeEncoder : _storeEncoder = std::make_shared<store_encoder>(); }
-    store_decoder_t GetStoreDecoder() const { return _storeDecoder ? _storeDecoder : _storeDecoder = std::make_shared<store_decoder>(); }
-
-    bool GetIsStored() const { return _isStored; }
-    void SetIsStored(bool isStored = true) { _isStored = isStored; }
 
   private:
     encoder_t _encoder;
     decoder_t _decoder;
-
-    mutable store_encoder_t _storeEncoder;
-    mutable store_decoder_t _storeDecoder;
-    bool _isStored;
 };

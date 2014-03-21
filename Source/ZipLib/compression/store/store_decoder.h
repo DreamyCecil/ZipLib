@@ -102,10 +102,7 @@ class basic_store_decoder
   private:
     void uninit_buffers()
     {
-      if (_outputBuffer != nullptr)
-      {
-        delete[] _outputBuffer;
-      }
+      delete[] _outputBuffer;
     }
 
     istream_type* _stream;

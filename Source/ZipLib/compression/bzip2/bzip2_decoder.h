@@ -160,15 +160,8 @@ class basic_bzip2_decoder
   private:
     void uninit_buffers()
     {
-      if (_inputBuffer != nullptr)
-      {
-        delete[] _inputBuffer;
-      }
-
-      if (_outputBuffer != nullptr)
-      {
-        delete[] _outputBuffer;
-      }
+      delete[] _inputBuffer;
+      delete[] _outputBuffer;
     }
 
     void read_next()

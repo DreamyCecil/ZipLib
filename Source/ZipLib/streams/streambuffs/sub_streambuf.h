@@ -51,10 +51,7 @@ class sub_streambuf :
 
     virtual ~sub_streambuf()
     {
-      if (_internalBuffer != nullptr)
-      {
-        delete[] _internalBuffer;
-      }
+      delete[] _internalBuffer;
     }
 
   protected:

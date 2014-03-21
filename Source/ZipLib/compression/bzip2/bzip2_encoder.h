@@ -133,15 +133,8 @@ class basic_bzip2_encoder
   private:
     void uninit_buffers()
     {
-      if (_inputBuffer != nullptr)
-      {
-        delete[] _inputBuffer;
-      }
-
-      if (_outputBuffer != nullptr)
-      {
-        delete[] _outputBuffer;
-      }
+      delete[] _inputBuffer;
+      delete[] _outputBuffer;
     }
 
     bool bzip2_suceeded(int errorCode)

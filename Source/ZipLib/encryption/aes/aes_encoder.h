@@ -99,10 +99,7 @@ class basic_aes_encoder
 
     void uninit_buffers()
     {
-      if (_inputBuffer != nullptr)
-      {
-        delete[] _inputBuffer;
-      }
+      delete[] _inputBuffer;
     }
 
     ELEM_TYPE* _inputBuffer;

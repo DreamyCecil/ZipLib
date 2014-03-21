@@ -99,15 +99,8 @@ class basic_store_encoder
   private:
     void uninit_buffers()
     {
-      if (_inputBuffer != nullptr)
-      {
-        delete[] _inputBuffer;
-      }
-
-      if (_outputBuffer != nullptr)
-      {
-        delete[] _outputBuffer;
-      }
+      delete[] _inputBuffer;
+      delete[] _outputBuffer;
     }
 
     ostream_type* _stream;

@@ -1,11 +1,8 @@
 #pragma once
-#include "detail/ZipLocalFileHeader.h"
-#include "detail/ZipCentralDirectoryFileHeader.h"
+#include "detail/ZipArchiveEntryInfo.h"
 
-#include "methods/ICompressionMethod.h"
-#include "methods/StoreMethod.h"
-#include "methods/DeflateMethod.h"
-#include "methods/LzmaMethod.h"
+#include "methods/CompressionMethod.h"
+#include "methods/compression/DeflateMethod.h"
 
 #include "streams/substream.h"
 #include "utils/enum_utils.h"
@@ -44,18 +41,18 @@ class ZipArchiveEntry
      */
     enum class Attributes : uint32_t
     {
-      None = 0,
-      ReadOnly = 1,
-      Hidden = 2,
-      System = 4,
-      Directory = 16,
-      Archive = 32,
-      Device = 64,
-      Normal = 128,
-      Temporary = 256,
-      SparseFile = 512,
-      ReparsePoint = 1024,
-      Compressed = 2048,
+      None          = 0,
+      ReadOnly      = 1,
+      Hidden        = 2,
+      System        = 4,
+      Directory     = 16,
+      Archive       = 32,
+      Device        = 64,
+      Normal        = 128,
+      Temporary     = 256,
+      SparseFile    = 512,
+      ReparsePoint  = 1024,
+      Compressed    = 2048,
     };
 
     MARK_AS_TYPED_ENUMFLAGS_FRIEND(Attributes);
@@ -149,22 +146,7 @@ class ZipArchiveEntry
      *
      * \return  true if password protected, false if not.
      */
-    bool IsPasswordProtected() const;
-
-    /**
-     * \brief Gets the password of the zip entry. If the password is empty string, the password is not set.
-     *
-     * \return  The password.
-     */
-    const std::string& GetPassword() const;
-
-    /**
-     * \brief Sets a password of the zip entry. If the password is empty string, the password is not set.
-     *        Use before GetDecompressionStream or SetCompressionStream.
-     *
-     * \param password  The password.
-     */
-    void SetPassword(const std::string& password);
+    bool IsEncrypted() const;
 
     /**
      * \brief Gets CRC 32 of the file.
@@ -246,7 +228,7 @@ class ZipArchiveEntry
      *
      * \return  true if it succeeds, false if it fails.
      */
-    bool SetCompressionStream(std::istream& stream, ICompressionMethod::Ptr method = DeflateMethod::Create(), CompressionMode mode = CompressionMode::Deferred);
+    bool SetCompressionStream(std::istream& stream, CompressionMethod::Ptr method = DeflateMethod::Create(), CompressionMode mode = CompressionMode::Deferred);
 
     /**
      * \brief Sets compression stream to be null and unsets the password. The entry would contain no data with zero size.
@@ -262,11 +244,19 @@ class ZipArchiveEntry
 
     /**
      * \brief Gets decompression stream.
-     *        If the file is encrypted and correct password is not provided, it returns nullptr.
+     *        If the file is encrypted it returns nullptr.
      *
      * \return  null if it fails, else the decompression stream.
      */
     std::istream* GetDecompressionStream();
+
+    /**
+     * \brief Gets decompression stream with password. If the password is empty string, the password is not set.
+     *        If the file is not encrypted and password is provided it returns nullptr.
+     *
+     * \param password  The password.
+     */
+    std::istream* GetDecompressionStream(const std::string& password);
 
     /**
      * \brief Query if the GetRawStream method has been already called.
@@ -297,6 +287,10 @@ class ZipArchiveEntry
      */
     void Remove();
 
+    uint8_t GetLastByteOfEncryptionHeader();
+
+    detail::ZipArchiveEntryInfo& GetInternalInfo() { return _entryInfo; }
+
   private:
     static const uint16_t VERSION_MADEBY_DEFAULT            = 63;
                                                             
@@ -304,47 +298,19 @@ class ZipArchiveEntry
     static const uint16_t VERSION_NEEDED_EXPLICIT_DIRECTORY = 20;
     static const uint16_t VERSION_NEEDED_ZIP64              = 45;
 
-    enum class BitFlag : uint16_t
-    {
-      None = 0,
-      Encrypted = 1,
-      DataDescriptor = 8,
-      UnicodeFileName = 0x800
-    };
-
-    MARK_AS_TYPED_ENUMFLAGS_FRIEND(BitFlag);
-
     ZipArchiveEntry();
-    ZipArchiveEntry(const ZipArchiveEntry&);
-    ZipArchiveEntry& operator = (ZipArchiveEntry&);
+    ZipArchiveEntry(const ZipArchiveEntry&) = delete;
+    ZipArchiveEntry& operator = (ZipArchiveEntry&) = delete;
 
     // static methods
     static ZipArchiveEntry::Ptr CreateNew(ZipArchive* zipArchive, const std::string& fullPath);
     static ZipArchiveEntry::Ptr CreateExisting(ZipArchive* zipArchive, detail::ZipCentralDirectoryFileHeader& cd);
 
     // methods
-    void SetCompressionMethod(uint16_t value);
-
-    BitFlag GetGeneralPurposeBitFlag() const;
-    void SetGeneralPurposeBitFlag(BitFlag value, bool set = true);
-
-    uint16_t GetVersionToExtract() const;
-    void SetVersionToExtract(uint16_t value);
-
-    uint16_t GetVersionMadeBy() const;
-    void SetVersionMadeBy(uint16_t value);
-
-    int32_t GetOffsetOfLocalHeader() const;
-    void SetOffsetOfLocalHeader(int32_t value);
-
     bool HasCompressionStream() const;
 
     void FetchLocalFileHeader();
     void CheckFilenameCorrection();
-    void FixVersionToExtractAtLeast(uint16_t value);
-
-    void SyncLFH_with_CDFH();
-    void SyncCDFH_with_LFH();
 
     std::ios::pos_type GetOffsetOfCompressedData();
     std::ios::pos_type SeekToCompressedData();
@@ -357,7 +323,6 @@ class ZipArchiveEntry
 
     // for encryption
     void FigureCrc32();
-    uint8_t GetLastByteOfEncryptionHeader();
 
     //////////////////////////////////////////////////////////////////////////
     ZipArchive*                     _archive;           //< pointer to the owning zip archive
@@ -371,7 +336,7 @@ class ZipArchiveEntry
     std::shared_ptr<std::iostream>  _immediateBuffer;   //< stream used in the immediate mode, stores compressed data in memory
     std::istream*                   _inputStream;       //< input stream
 
-    ICompressionMethod::Ptr         _compressionMethod; //< compression method
+    CompressionMethod::Ptr         _compressionMethod; //< compression method
     CompressionMode                 _compressionMode;   //< compression mode, either deferred or immediate
 
     std::string _name;
@@ -381,11 +346,10 @@ class ZipArchiveEntry
     bool _isNewOrChanged;
     bool _hasLocalFileHeader;
 
-    detail::ZipLocalFileHeader _localFileHeader;
-    detail::ZipCentralDirectoryFileHeader _centralDirectoryFileHeader;
+    detail::ZipArchiveEntryInfo _entryInfo;
 
     std::ios::pos_type _offsetOfCompressedData;
     std::ios::pos_type _offsetOfSerializedLocalFileHeader;
 
-    std::string _password;
+    std::string _password;    //< password used (for decompression only)
 };

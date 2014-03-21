@@ -1,22 +1,21 @@
 #pragma once
-#include "ICompressionMethod.h"
-#include "../compression/bzip2/bzip2_encoder.h"
-#include "../compression/bzip2/bzip2_decoder.h"
+#include "../MethodTemplate.h"
+#include "../../compression/bzip2/bzip2_encoder.h"
+#include "../../compression/bzip2/bzip2_decoder.h"
 
 #include <memory>
 
 class Bzip2Method :
-  public ICompressionMethod
-{
-  public:
-    ZIP_METHOD_CLASS_PROLOGUE(
+  public CompressionMethodTemplate
+  <
       Bzip2Method,
       bzip2_encoder, bzip2_decoder,
-      _encoderProps, _decoderProps,
+      bzip2_encoder_properties, bzip2_decoder_properties,
       /* CompressionMethod */ 12,
       /* VersionNeededToExtract */ 46
-    );
-
+  >
+{
+  public:
     enum class BlockSize : int
     {
       B100 = 1,
@@ -39,8 +38,4 @@ class Bzip2Method :
 
     BlockSize GetBlockSize() const { return static_cast<BlockSize>(_encoderProps.BlockSize); }
     void SetBlockSize(BlockSize compressionLevel) { _encoderProps.BlockSize = static_cast<int>(compressionLevel); }
-
-  private:
-    bzip2_encoder_properties _encoderProps;
-    bzip2_decoder_properties _decoderProps;
 };

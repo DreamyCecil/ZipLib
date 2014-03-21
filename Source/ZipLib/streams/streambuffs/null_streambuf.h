@@ -20,7 +20,7 @@ class null_streambuf
     }
 
   protected:
-    std::streamsize xsgetn(char_type* s, std::streamsize count) override
+    std::streamsize xsgetn(char_type* ptr, std::streamsize count) override
     {
       return 0;
     }

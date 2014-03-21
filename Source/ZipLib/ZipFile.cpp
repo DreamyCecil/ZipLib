@@ -1,5 +1,6 @@
 #include "ZipFile.h"
 
+#include "methods/encryption/ZipCryptoMethod.h"
 #include "utils/stream_utils.h"
 
 #include <fstream>
@@ -86,22 +87,22 @@ bool ZipFile::IsInArchive(const std::string& zipPath, const std::string& fileNam
   return zipArchive->GetEntry(fileName) != nullptr;
 }
 
-void ZipFile::AddFile(const std::string& zipPath, const std::string& fileName, ICompressionMethod::Ptr method)
+void ZipFile::AddFile(const std::string& zipPath, const std::string& fileName, CompressionMethod::Ptr method)
 {
   AddFile(zipPath, fileName, GetFilenameFromPath(fileName), method);
 }
 
-void ZipFile::AddFile(const std::string& zipPath, const std::string& fileName, const std::string& inArchiveName, ICompressionMethod::Ptr method)
+void ZipFile::AddFile(const std::string& zipPath, const std::string& fileName, const std::string& inArchiveName, CompressionMethod::Ptr method)
 {
   AddEncryptedFile(zipPath, fileName, inArchiveName, std::string(), method);
 }
 
-void ZipFile::AddEncryptedFile(const std::string& zipPath, const std::string& fileName, const std::string& password, ICompressionMethod::Ptr method)
+void ZipFile::AddEncryptedFile(const std::string& zipPath, const std::string& fileName, const std::string& password, CompressionMethod::Ptr method)
 {
   AddEncryptedFile(zipPath, fileName, GetFilenameFromPath(fileName), std::string(), method);
 }
 
-void ZipFile::AddEncryptedFile(const std::string& zipPath, const std::string& fileName, const std::string& inArchiveName, const std::string& password, ICompressionMethod::Ptr method)
+void ZipFile::AddEncryptedFile(const std::string& zipPath, const std::string& fileName, const std::string& inArchiveName, const std::string& password, CompressionMethod::Ptr method)
 {
   std::string tmpName = MakeTempFilename(zipPath);
 
@@ -127,7 +128,10 @@ void ZipFile::AddEncryptedFile(const std::string& zipPath, const std::string& fi
 
     if (!password.empty())
     {
-      fileEntry->SetPassword(password);
+      auto encryptionCtx = ZipCryptoMethod::Create();
+      encryptionCtx->SetPassword(password);
+
+      method->SetEncryptionMethod(encryptionCtx);
       fileEntry->UseDataDescriptor();
     }
 
@@ -187,12 +191,7 @@ void ZipFile::ExtractEncryptedFile(const std::string& zipPath, const std::string
     throw std::runtime_error("file is not contained in zip file");
   }
 
-  if (!password.empty())
-  {
-    entry->SetPassword(password);
-  }
-
-  std::istream* dataStream = entry->GetDecompressionStream();
+  std::istream* dataStream = entry->GetDecompressionStream(password);
 
   if (dataStream == nullptr)
   {

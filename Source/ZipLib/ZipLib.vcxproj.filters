@@ -49,6 +49,42 @@
     <Filter Include="Header Files\compression\bzip2">
       <UniqueIdentifier>{97bbccd3-0914-492c-94c1-20dfd544f0fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\encryption">
+      <UniqueIdentifier>{52069f13-57d3-4b4d-ac46-d9dc112c8d27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\encryption\aes">
+      <UniqueIdentifier>{f250e3f1-0b60-4235-b838-2f90a4ed1ef3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\encryption\zipcrypto">
+      <UniqueIdentifier>{035b2895-bf36-4c18-bb56-cf2ae6b98558}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\encryption\zipcrypto\detail">
+      <UniqueIdentifier>{d112a17f-8de4-44f1-b7bd-2bcc3f4e49d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\methods\encryption">
+      <UniqueIdentifier>{36094c46-e105-493d-a367-a4a5d3806ca9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\encryption\aes\detail">
+      <UniqueIdentifier>{75424ebc-e7ce-4280-bb0c-90a7a2530246}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\methods">
+      <UniqueIdentifier>{e487d2ec-485f-4801-9540-de0ecfe0bbaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\methods\compression">
+      <UniqueIdentifier>{d05db793-9bf2-4b03-b076-d7883f9957e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\encryption">
+      <UniqueIdentifier>{3c8ee2cb-6481-40f9-acc7-b494b8053612}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\encryption\aes">
+      <UniqueIdentifier>{12b290ca-3828-42ff-bd29-e518b3cc1e4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\encryption\aes\detail">
+      <UniqueIdentifier>{303f267d-4e89-4be2-a35c-9f6e5cae9a78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\methods\encryption\detail">
+      <UniqueIdentifier>{fdd8531d-8da9-439a-bde5-24b55515a5c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ZipFile.h">
@@ -120,9 +156,6 @@
     <ClInclude Include="streams\teestream.h">
       <Filter>Header Files\streams</Filter>
     </ClInclude>
-    <ClInclude Include="streams\zip_cryptostream.h">
-      <Filter>Header Files\streams</Filter>
-    </ClInclude>
     <ClInclude Include="streams\streambuffs\compression_decoder_streambuf.h">
       <Filter>Header Files\streams\streambuffs</Filter>
     </ClInclude>
@@ -141,9 +174,6 @@
     <ClInclude Include="streams\streambuffs\tee_streambuff.h">
       <Filter>Header Files\streams\streambuffs</Filter>
     </ClInclude>
-    <ClInclude Include="streams\streambuffs\zip_crypto_streambuf.h">
-      <Filter>Header Files\streams\streambuffs</Filter>
-    </ClInclude>
     <ClInclude Include="utils\enum_utils.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
@@ -158,15 +188,6 @@
     </ClInclude>
     <ClInclude Include="compression\store\store_decoder_properties.h">
       <Filter>Header Files\compression\store</Filter>
-    </ClInclude>
-    <ClInclude Include="methods\DeflateMethod.h">
-      <Filter>Header Files\methods</Filter>
-    </ClInclude>
-    <ClInclude Include="methods\LzmaMethod.h">
-      <Filter>Header Files\methods</Filter>
-    </ClInclude>
-    <ClInclude Include="methods\StoreMethod.h">
-      <Filter>Header Files\methods</Filter>
     </ClInclude>
     <ClInclude Include="methods\ZipMethodResolver.h">
       <Filter>Header Files\methods</Filter>
@@ -189,9 +210,6 @@
     <ClInclude Include="utils\time_utils.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
-    <ClInclude Include="methods\ICompressionMethod.h">
-      <Filter>Header Files\methods</Filter>
-    </ClInclude>
     <ClInclude Include="compression\compression_interface.h">
       <Filter>Header Files\compression</Filter>
     </ClInclude>
@@ -207,14 +225,122 @@
     <ClInclude Include="compression\bzip2\bzip2_decoder_properties.h">
       <Filter>Header Files\compression\bzip2</Filter>
     </ClInclude>
-    <ClInclude Include="methods\Bzip2Method.h">
-      <Filter>Header Files\methods</Filter>
-    </ClInclude>
     <ClInclude Include="streams\streambuffs\null_streambuf.h">
       <Filter>Header Files\streams\streambuffs</Filter>
     </ClInclude>
     <ClInclude Include="streams\nullstream.h">
       <Filter>Header Files\streams</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\zipcrypto\zipcrypto_encoder.h">
+      <Filter>Header Files\encryption\zipcrypto</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\zipcrypto\zipcrypto_decoder.h">
+      <Filter>Header Files\encryption\zipcrypto</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\encryption_interface.h">
+      <Filter>Header Files\encryption</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\zipcrypto\zipcrypto_encoder_properties.h">
+      <Filter>Header Files\encryption\zipcrypto</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\streambuffs\encryption_decoder_streambuf.h">
+      <Filter>Header Files\streams\streambuffs</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\streambuffs\encryption_encoder_streambuf.h">
+      <Filter>Header Files\streams\streambuffs</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\encryption_encoder_stream.h">
+      <Filter>Header Files\streams</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\encryption_decoder_stream.h">
+      <Filter>Header Files\streams</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\zipcrypto\zipcrypto_decoder_properties.h">
+      <Filter>Header Files\encryption\zipcrypto</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\zipcrypto\detail\zipcrypto_keys.h">
+      <Filter>Header Files\encryption\zipcrypto\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\zipcrypto\detail\encryption_header.h">
+      <Filter>Header Files\encryption\zipcrypto\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\zipcrypto\detail\zipcrypto_encryption_header.h">
+      <Filter>Header Files\encryption\zipcrypto\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\zipcrypto\detail\zipcrypto.h">
+      <Filter>Header Files\encryption\zipcrypto\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\ZipMethodDescriptor.h">
+      <Filter>Header Files\methods</Filter>
+    </ClInclude>
+    <ClInclude Include="detail\ZipArchiveEntryInfo.h">
+      <Filter>Header Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="detail\ZipBitFlag.h">
+      <Filter>Header Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\aes\aes_encoder.h">
+      <Filter>Header Files\encryption\aes</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\aes\aes_encoder_properties.h">
+      <Filter>Header Files\encryption\aes</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\aes\aes_decoder.h">
+      <Filter>Header Files\encryption\aes</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\aes\aes_decoder_properties.h">
+      <Filter>Header Files\encryption\aes</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\CompressionMethod.h">
+      <Filter>Header Files\methods</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\EncryptionMethod.h">
+      <Filter>Header Files\methods</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\MethodTemplate.h">
+      <Filter>Header Files\methods</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\ZipMethod.h">
+      <Filter>Header Files\methods</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\encryption\AesCryptoMethod.h">
+      <Filter>Header Files\methods\encryption</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\encryption\ZipCryptoMethod.h">
+      <Filter>Header Files\methods\encryption</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\compression\Bzip2Method.h">
+      <Filter>Header Files\methods\compression</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\compression\DeflateMethod.h">
+      <Filter>Header Files\methods\compression</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\compression\LzmaMethod.h">
+      <Filter>Header Files\methods\compression</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\compression\StoreMethod.h">
+      <Filter>Header Files\methods\compression</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\streambuffs\audit_streambuf.h">
+      <Filter>Header Files\streams\streambuffs</Filter>
+    </ClInclude>
+    <ClInclude Include="streams\auditstream.h">
+      <Filter>Header Files\streams</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\aes\common.h">
+      <Filter>Header Files\encryption\aes</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\encryption\detail\AesExtraField.h">
+      <Filter>Header Files\methods\encryption\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\aes\detail\aes_salt.h">
+      <Filter>Header Files\encryption\aes\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\aes\detail\aes_types.h">
+      <Filter>Header Files\encryption\aes\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\aes\detail\aes_impl.h">
+      <Filter>Header Files\encryption\aes\detail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -238,6 +364,15 @@
     </ClCompile>
     <ClCompile Include="detail\ZipLocalFileHeader.cpp">
       <Filter>Source Files\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="methods\CompressionMethod.cpp">
+      <Filter>Source Files\methods</Filter>
+    </ClCompile>
+    <ClCompile Include="methods\EncryptionMethod.cpp">
+      <Filter>Source Files\methods</Filter>
+    </ClCompile>
+    <ClCompile Include="encryption\aes\detail\aes_impl.cpp">
+      <Filter>Source Files\encryption\aes\detail</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

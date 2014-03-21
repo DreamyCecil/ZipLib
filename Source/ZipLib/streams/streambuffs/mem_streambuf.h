@@ -163,6 +163,7 @@ class mem_streambuf
         // neither read nor write buffer selected, fail
         off = BAD_OFFSET;
       }
+
       return (pos_type(off));
     }
 

@@ -82,6 +82,50 @@ class sub_streambuf :
 
       return traits_type::to_int_type(*this->gptr());
     }
+
+    pos_type seekpos(pos_type pos, std::ios::openmode which = std::ios::in | std::ios::out) override
+    {
+      static const off_type BAD_OFFSET(-1);
+
+      if ((_startPosition + pos) > _endPosition)
+      {
+        return pos_type(BAD_OFFSET);
+      }
+
+      // set new current position
+      _currentPosition = _startPosition + pos;
+
+      // invalidate stream buffer
+      ELEM_TYPE* endOfOutputBuffer = _internalBuffer + INTERNAL_BUFFER_SIZE;
+      this->setg(endOfOutputBuffer, endOfOutputBuffer, endOfOutputBuffer);
+
+      return pos_type(_inputStream->rdbuf()->pubseekpos(_startPosition + pos, which) - _startPosition);
+    }
+
+    pos_type seekoff(off_type off, std::ios::seekdir dir, std::ios::openmode which = std::ios::in | std::ios::out) override
+    {
+      static const off_type BAD_OFFSET(-1);
+      
+      if ( dir == std::ios::beg && (_startPosition   + off) > _endPosition 
+        || dir == std::ios::cur && (_currentPosition + off) > _endPosition
+        || dir == std::ios::end && (_endPosition     + off) > _endPosition)
+      {
+        return pos_type(BAD_OFFSET);
+      }
+
+      auto adjust = dir == std::ios::beg ? _startPosition :
+                    dir == std::ios::cur ? _currentPosition :
+                    dir == std::ios::end ? _endPosition : 0;
+
+      // invalidate stream buffer
+      ELEM_TYPE* endOfOutputBuffer = _internalBuffer + INTERNAL_BUFFER_SIZE;
+      this->setg(endOfOutputBuffer, endOfOutputBuffer, endOfOutputBuffer);
+
+      // set new current position
+      _currentPosition = adjust + off;
+
+      return pos_type(_inputStream->rdbuf()->pubseekpos(adjust + off, which) - _startPosition);
+    }
     
   private:
     enum : size_t

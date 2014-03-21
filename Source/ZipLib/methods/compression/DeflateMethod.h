@@ -1,22 +1,21 @@
 #pragma once
-#include "ICompressionMethod.h"
-#include "../compression/deflate/deflate_encoder.h"
-#include "../compression/deflate/deflate_decoder.h"
+#include "../MethodTemplate.h"
+#include "../../compression/deflate/deflate_encoder.h"
+#include "../../compression/deflate/deflate_decoder.h"
 
 #include <memory>
 
 class DeflateMethod :
-  public ICompressionMethod
+  public CompressionMethodTemplate
+  <
+    DeflateMethod,
+    deflate_encoder, deflate_decoder,
+    deflate_encoder_properties, deflate_decoder_properties,
+    /* CompressionMethod */ 8,
+    /* VersionNeededToExtract */ 20
+  >
 {
   public:
-    ZIP_METHOD_CLASS_PROLOGUE(
-      DeflateMethod,
-      deflate_encoder, deflate_decoder,
-      _encoderProps, _decoderProps,
-      /* CompressionMethod */ 8,
-      /* VersionNeededToExtract */ 20
-    );
-
     enum class CompressionLevel : int
     {
       L1 = 1,
@@ -39,8 +38,4 @@ class DeflateMethod :
 
     CompressionLevel GetCompressionLevel() const { return static_cast<CompressionLevel>(_encoderProps.CompressionLevel); }
     void SetCompressionLevel(CompressionLevel compressionLevel) { _encoderProps.CompressionLevel = static_cast<int>(compressionLevel); }
-
-  private:
-    deflate_encoder_properties _encoderProps;
-    deflate_decoder_properties _decoderProps;
 };

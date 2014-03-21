@@ -1,22 +1,21 @@
 #pragma once
-#include "ICompressionMethod.h"
-#include "../compression/lzma/lzma_encoder.h"
-#include "../compression/lzma/lzma_decoder.h"
+#include "../MethodTemplate.h"
+#include "../../compression/lzma/lzma_encoder.h"
+#include "../../compression/lzma/lzma_decoder.h"
 
 #include <memory>
 
 class LzmaMethod :
-  public ICompressionMethod
+  public CompressionMethodTemplate
+  <
+    LzmaMethod,
+    lzma_encoder, lzma_decoder,
+    lzma_encoder_properties, lzma_decoder_properties,
+    /* CompressionMethod */ 14,
+    /* VersionNeededToExtract */ 63
+  >
 {
   public:
-    ZIP_METHOD_CLASS_PROLOGUE(
-      LzmaMethod,
-      lzma_encoder, lzma_decoder,
-      _encoderProps, _decoderProps,
-      /* CompressionMethod */ 14,
-      /* VersionNeededToExtract */ 63
-    );
-
     enum class CompressionLevel : int
     {
       L1 = 1,
@@ -39,8 +38,4 @@ class LzmaMethod :
 
     CompressionLevel GetCompressionLevel() const { return static_cast<CompressionLevel>(_encoderProps.CompressionLevel); }
     void SetCompressionLevel(CompressionLevel compressionLevel) { _encoderProps.CompressionLevel = static_cast<int>(compressionLevel); }
-
-  private:
-    lzma_encoder_properties _encoderProps;
-    lzma_decoder_properties _decoderProps;
 };

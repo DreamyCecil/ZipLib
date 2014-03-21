@@ -56,6 +56,7 @@ struct ZipCentralDirectoryFileHeader
   private:
     friend class ::ZipArchive;
     friend class ::ZipArchiveEntry;
+    friend struct ZipArchiveEntryInfo;
 
     void SyncWithLocalFileHeader(ZipLocalFileHeader& lfh);
 

@@ -1,14 +1,16 @@
 #include "ZipArchiveEntry.h"
 #include "ZipArchive.h"
 
-#include "detail/ZipLocalFileHeader.h"
-
 #include "methods/ZipMethodResolver.h"
 
-#include "streams/zip_cryptostream.h"
+#include "streams/encryption_encoder_stream.h"
+#include "streams/encryption_decoder_stream.h"
+
 #include "streams/compression_encoder_stream.h"
 #include "streams/compression_decoder_stream.h"
+
 #include "streams/nullstream.h"
+#include "streams/auditstream.h"
 
 #include "utils/stream_utils.h"
 #include "utils/time_utils.h"
@@ -18,6 +20,7 @@
 #include <algorithm>
 #include <memory>
 #include <sstream>
+#include "detail/ZipBitFlag.h"
 
 namespace
 {
@@ -96,14 +99,14 @@ ZipArchiveEntry::Ptr ZipArchiveEntry::CreateNew(ZipArchive* zipArchive, const st
     result->_archive = zipArchive;
     result->_isNewOrChanged = true;
     result->SetAttributes(Attributes::Archive);
-    result->SetVersionToExtract(VERSION_NEEDED_DEFAULT);
-    result->SetVersionMadeBy(VERSION_MADEBY_DEFAULT);
+    result->_entryInfo.CentralDirectoryFileHeader.VersionNeededToExtract = VERSION_NEEDED_DEFAULT;
+    result->_entryInfo.SetVersionMadeBy(VERSION_MADEBY_DEFAULT);
     result->SetLastWriteTime(time(nullptr));
   
     result->SetFullName(fullPath);
 
-    result->SetCompressionMethod(StoreMethod::CompressionMethod);
-    result->SetGeneralPurposeBitFlag(BitFlag::None);
+    result->_entryInfo.SetCompressionMethod(StoreMethod::CompressionMethod);
+    result->_entryInfo.SetGeneralPurposeBitFlag(detail::ZipBitFlag::None);
   }
 
   return result;
@@ -120,7 +123,7 @@ ZipArchiveEntry::Ptr ZipArchiveEntry::CreateExisting(ZipArchive* zipArchive, det
     result.reset(new ZipArchiveEntry());
 
     result->_archive                    = zipArchive;
-    result->_centralDirectoryFileHeader = cd;
+    result->_entryInfo.CentralDirectoryFileHeader = cd;
     result->_originallyInArchive        = true;
     result->CheckFilenameCorrection();
 
@@ -140,7 +143,7 @@ ZipArchiveEntry::Ptr ZipArchiveEntry::CreateExisting(ZipArchive* zipArchive, det
 
 const std::string& ZipArchiveEntry::GetFullName() const
 {
-  return _centralDirectoryFileHeader.Filename;
+  return _entryInfo.CentralDirectoryFileHeader.Filename;
 }
 
 void ZipArchiveEntry::SetFullName(const std::string& fullName)
@@ -169,7 +172,7 @@ void ZipArchiveEntry::SetFullName(const std::string& fullName)
     correctFilename += filename[i];
   }
 
-  _centralDirectoryFileHeader.Filename = correctFilename;
+  _entryInfo.CentralDirectoryFileHeader.Filename = correctFilename;
   _name = GetFilenameFromPath(correctFilename);
 
   this->SetAttributes(isDirectory ? Attributes::Directory : Attributes::Archive);
@@ -210,32 +213,32 @@ void ZipArchiveEntry::SetName(const std::string& name)
 
 const std::string& ZipArchiveEntry::GetComment() const
 {
-  return _centralDirectoryFileHeader.FileComment;
+  return _entryInfo.GetComment();
 }
 
 void ZipArchiveEntry::SetComment(const std::string& comment)
 {
-  _centralDirectoryFileHeader.FileComment = comment;
+  _entryInfo.SetComment(comment);
 }
 
 time_t ZipArchiveEntry::GetLastWriteTime() const
 {
-  return utils::time::datetime_to_timestamp(_centralDirectoryFileHeader.LastModificationDate, _centralDirectoryFileHeader.LastModificationTime);
+  return _entryInfo.GetLastWriteTime();
 }
 
 void ZipArchiveEntry::SetLastWriteTime(time_t modTime)
 {
-  utils::time::timestamp_to_datetime(modTime, _centralDirectoryFileHeader.LastModificationDate, _centralDirectoryFileHeader.LastModificationTime);
+  _entryInfo.SetLastWriteTime(modTime);
 }
 
 ZipArchiveEntry::Attributes ZipArchiveEntry::GetAttributes() const
 {
-  return static_cast<Attributes>(_centralDirectoryFileHeader.ExternalFileAttributes);
+  return static_cast<Attributes>(_entryInfo.CentralDirectoryFileHeader.ExternalFileAttributes);
 }
 
 uint16_t ZipArchiveEntry::GetCompressionMethod() const
 {
-  return _centralDirectoryFileHeader.CompressionMethod;
+  return _entryInfo.CentralDirectoryFileHeader.CompressionMethod;
 }
 
 void ZipArchiveEntry::SetAttributes(Attributes value)
@@ -248,9 +251,10 @@ void ZipArchiveEntry::SetAttributes(Attributes value)
   {
     newVal &= ~Attributes::Directory;
 
-    if (IsDirectoryPath(_centralDirectoryFileHeader.Filename))
+    // if path ends with '/', remove it
+    if (IsDirectoryPath(_entryInfo.CentralDirectoryFileHeader.Filename))
     {
-      _centralDirectoryFileHeader.Filename.pop_back();
+      _entryInfo.CentralDirectoryFileHeader.Filename.pop_back();
     }
   }
 
@@ -259,9 +263,10 @@ void ZipArchiveEntry::SetAttributes(Attributes value)
   {
     newVal &= ~Attributes::Archive;
 
-    if (!IsDirectoryPath(_centralDirectoryFileHeader.Filename))
+    // if path does not end with '/', add it 
+    if (!IsDirectoryPath(_entryInfo.CentralDirectoryFileHeader.Filename))
     {
-      _centralDirectoryFileHeader.Filename += '/';
+      _entryInfo.CentralDirectoryFileHeader.Filename += '/';
     }
   }
 
@@ -269,54 +274,37 @@ void ZipArchiveEntry::SetAttributes(Attributes value)
   // are set to 0 and do not include any stream
   if (!!(newVal & Attributes::Directory))
   {
-    _centralDirectoryFileHeader.Crc32 = 0;
-    _centralDirectoryFileHeader.CompressedSize = 0;
-    _centralDirectoryFileHeader.UncompressedSize = 0;
+    _entryInfo.CentralDirectoryFileHeader.Crc32 = 0;
+    _entryInfo.CentralDirectoryFileHeader.CompressedSize = 0;
+    _entryInfo.CentralDirectoryFileHeader.UncompressedSize = 0;
   }
 
-  _centralDirectoryFileHeader.ExternalFileAttributes = static_cast<uint32_t>(newVal);
+  _entryInfo.CentralDirectoryFileHeader.ExternalFileAttributes = static_cast<uint32_t>(newVal);
 }
 
-bool ZipArchiveEntry::IsPasswordProtected() const
+bool ZipArchiveEntry::IsEncrypted() const
 {
-  return !!(this->GetGeneralPurposeBitFlag() & BitFlag::Encrypted);
-}
-
-const std::string& ZipArchiveEntry::GetPassword() const
-{
-  return _password;
-}
-
-void ZipArchiveEntry::SetPassword(const std::string& password)
-{
-  _password = password;
-
-  // allow unset password only for empty files
-  if (!_originallyInArchive || (_hasLocalFileHeader && this->GetSize() == 0))
-  {
-    this->SetGeneralPurposeBitFlag(BitFlag::Encrypted, !_password.empty());
-  }
+  return !!(_entryInfo.GetGeneralPurposeBitFlag() & detail::ZipBitFlag::Encrypted);
 }
 
 uint32_t ZipArchiveEntry::GetCrc32() const
 {
-  return _centralDirectoryFileHeader.Crc32;
+  return _entryInfo.CentralDirectoryFileHeader.Crc32;
 }
 
 size_t ZipArchiveEntry::GetSize() const
 {
-  return static_cast<size_t>(_centralDirectoryFileHeader.UncompressedSize);
+  return static_cast<size_t>(_entryInfo.CentralDirectoryFileHeader.UncompressedSize);
 }
 
 size_t ZipArchiveEntry::GetCompressedSize() const
 {
-  return static_cast<size_t>(_centralDirectoryFileHeader.CompressedSize);
+  return static_cast<size_t>(_entryInfo.CentralDirectoryFileHeader.CompressedSize);
 }
-
 
 bool ZipArchiveEntry::CanExtract() const
 {
-  return (this->GetVersionToExtract() <= VERSION_MADEBY_DEFAULT);
+  return (_entryInfo.CentralDirectoryFileHeader.VersionNeededToExtract <= VERSION_MADEBY_DEFAULT);
 }
 
 bool ZipArchiveEntry::IsDirectory() const
@@ -326,12 +314,12 @@ bool ZipArchiveEntry::IsDirectory() const
 
 bool ZipArchiveEntry::IsUsingDataDescriptor() const
 {
-  return !!(this->GetGeneralPurposeBitFlag() & BitFlag::DataDescriptor);
+  return !!(_entryInfo.GetGeneralPurposeBitFlag() & detail::ZipBitFlag::DataDescriptor);
 }
 
 void ZipArchiveEntry::UseDataDescriptor(bool use)
 {
-  this->SetGeneralPurposeBitFlag(BitFlag::DataDescriptor, use);
+  _entryInfo.SetGeneralPurposeBitFlag(detail::ZipBitFlag::DataDescriptor, use);
 }
 
 std::istream* ZipArchiveEntry::GetRawStream()
@@ -354,49 +342,65 @@ std::istream* ZipArchiveEntry::GetRawStream()
 
 std::istream* ZipArchiveEntry::GetDecompressionStream()
 {
+  return this->GetDecompressionStream(std::string());
+}
+
+std::istream* ZipArchiveEntry::GetDecompressionStream(const std::string& password)
+{
   std::shared_ptr<std::istream> intermediateStream;
+
+  _password = password;
 
   // there shouldn't be opened another stream
   if (this->CanExtract() && _archiveStream == nullptr && _encryptionStream == nullptr)
   {
     auto offsetOfCompressedData = this->SeekToCompressedData();
-    bool needsPassword = !!(this->GetGeneralPurposeBitFlag() & BitFlag::Encrypted);
+    bool needsPassword = !!(_entryInfo.GetGeneralPurposeBitFlag() & detail::ZipBitFlag::Encrypted);
     bool needsDecompress = this->GetCompressionMethod() != StoreMethod::CompressionMethod;
 
     if (needsPassword && _password.empty())
     {
-      // we need password, but we does not have it
+      // we need password, but we do not have it
       return nullptr;
     }
 
     // make correctly-ended substream of the input stream
     intermediateStream = _archiveStream = std::make_shared<isubstream>(*_archive->_zipStream, offsetOfCompressedData, this->GetCompressedSize());
 
-    if (needsPassword)
-    {
-      std::shared_ptr<zip_cryptostream> cryptoStream = std::make_shared<zip_cryptostream>(*intermediateStream, _password.c_str());
-      cryptoStream->set_final_byte(this->GetLastByteOfEncryptionHeader());
-      bool hasCorrectPassword = cryptoStream->prepare_for_decryption();
+    CompressionMethod::Ptr zipMethod = ZipMethodResolver::GetZipMethodInstance(this->shared_from_this());
 
-      // set it here, because in case the hasCorrectPassword is false
-      // the method CloseDecompressionStream() will properly delete the stream
-      intermediateStream = _encryptionStream = cryptoStream;
+    if (zipMethod != nullptr)
+    {
+      std::shared_ptr<encryption_decoder_stream> cryptoStream;
+      bool hasCorrectPassword = true;
+
+      if (auto encryptionMethod = zipMethod->GetEncryptionMethod())
+      {
+        encryptionMethod->SetPassword(_password);
+//         encryptionMethod->OnCompressionBegin(this->shared_from_this());
+
+        cryptoStream = std::make_shared<encryption_decoder_stream>(
+          encryptionMethod->GetDecoder(),
+          encryptionMethod->GetDecoderProperties(),
+          *intermediateStream);
+
+        // set it here, because in case the hasCorrectPassword is false
+        // the method CloseDecompressionStream() will properly delete the stream
+        intermediateStream = _encryptionStream = cryptoStream;
+
+        hasCorrectPassword = encryptionMethod->GetDecoder()->has_correct_password();
+      }
 
       if (!hasCorrectPassword)
       {
         this->CloseDecompressionStream();
         return nullptr;
       }
-    }
 
-    if (needsDecompress)
-    {
-      ICompressionMethod::Ptr zipMethod = ZipMethodResolver::GetZipMethodInstance(this->GetCompressionMethod());
-
-      if (zipMethod != nullptr)
-      {
-        intermediateStream = _compressionStream = std::make_shared<compression_decoder_stream>(zipMethod->GetDecoder(), zipMethod->GetDecoderProperties(), *intermediateStream);
-      }
+      intermediateStream = _compressionStream = std::make_shared<compression_decoder_stream>(
+        zipMethod->GetDecoder(),
+        zipMethod->GetDecoderProperties(),
+        *intermediateStream);
     }
   }
 
@@ -426,7 +430,7 @@ void ZipArchiveEntry::CloseDecompressionStream()
   _immediateBuffer.reset();
 }
 
-bool ZipArchiveEntry::SetCompressionStream(std::istream& stream, ICompressionMethod::Ptr method /* = DeflateMethod::Create() */, CompressionMode mode /* = CompressionMode::Deferred */)
+bool ZipArchiveEntry::SetCompressionStream(std::istream& stream, CompressionMethod::Ptr method /* = DeflateMethod::Create() */, CompressionMode mode /* = CompressionMode::Deferred */)
 {
   // if _inputStream is set, we already have some stream to compress
   // so we discard it
@@ -440,7 +444,7 @@ bool ZipArchiveEntry::SetCompressionStream(std::istream& stream, ICompressionMet
   _inputStream = &stream;
   _compressionMethod = method;
   _compressionMode = mode;
-  this->SetCompressionMethod(method->GetZipMethodDescriptor().GetCompressionMethod());
+  _entryInfo.SetCompressionMethod(method->GetFinalMethodDescriptor().CompressionMethod);
 
   if (_inputStream != nullptr && _compressionMode == CompressionMode::Immediate)
   {
@@ -463,7 +467,6 @@ void ZipArchiveEntry::UnsetCompressionStream()
   }
 
   this->UnloadCompressionData();
-  this->SetPassword(std::string());
 }
 
 void ZipArchiveEntry::Remove()
@@ -480,58 +483,6 @@ void ZipArchiveEntry::Remove()
 //////////////////////////////////////////////////////////////////////////
 // private getters & setters
 
-void ZipArchiveEntry::SetCompressionMethod(uint16_t value)
-{
-  _centralDirectoryFileHeader.CompressionMethod = value;
-}
-
-ZipArchiveEntry::BitFlag ZipArchiveEntry::GetGeneralPurposeBitFlag() const
-{
-  return static_cast<BitFlag>(_centralDirectoryFileHeader.GeneralPurposeBitFlag);
-}
-
-void ZipArchiveEntry::SetGeneralPurposeBitFlag(BitFlag value, bool set)
-{
-  if (set)
-  {
-    _centralDirectoryFileHeader.GeneralPurposeBitFlag |= static_cast<uint16_t>(value);
-  }
-  else
-  {
-    _centralDirectoryFileHeader.GeneralPurposeBitFlag &= static_cast<uint16_t>(~value);
-  }
-}
-
-uint16_t ZipArchiveEntry::GetVersionToExtract() const
-{
-  return _centralDirectoryFileHeader.VersionNeededToExtract;
-}
-
-void ZipArchiveEntry::SetVersionToExtract(uint16_t value)
-{
-  _centralDirectoryFileHeader.VersionNeededToExtract = value;
-}
-
-uint16_t ZipArchiveEntry::GetVersionMadeBy() const
-{
-  return _centralDirectoryFileHeader.VersionMadeBy;
-}
-
-void ZipArchiveEntry::SetVersionMadeBy(uint16_t value)
-{
-  _centralDirectoryFileHeader.VersionMadeBy = value;
-}
-
-int32_t ZipArchiveEntry::GetOffsetOfLocalHeader() const
-{
-  return _centralDirectoryFileHeader.RelativeOffsetOfLocalHeader;
-}
-
-void ZipArchiveEntry::SetOffsetOfLocalHeader(int32_t value)
-{
-  _centralDirectoryFileHeader.RelativeOffsetOfLocalHeader = static_cast<int32_t>(value);
-}
-
 bool ZipArchiveEntry::HasCompressionStream() const
 {
   return _inputStream != nullptr;
@@ -544,14 +495,14 @@ void ZipArchiveEntry::FetchLocalFileHeader()
 {
   if (!_hasLocalFileHeader && _originallyInArchive && _archive != nullptr)
   {
-    _archive->_zipStream->seekg(this->GetOffsetOfLocalHeader(), std::ios::beg);
-    _localFileHeader.Deserialize(*_archive->_zipStream);
+    _archive->_zipStream->seekg(_entryInfo.GetOffsetOfLocalHeader(), std::ios::beg);
+    _entryInfo.LocalFileHeader.Deserialize(*_archive->_zipStream);
 
     _offsetOfCompressedData = _archive->_zipStream->tellg();
   }
 
   // sync data
-  this->SyncLFH_with_CDFH();
+  _entryInfo.SyncWithCentralDirectoryFileHeader();
   _hasLocalFileHeader = true;
 }
 
@@ -561,28 +512,6 @@ void ZipArchiveEntry::CheckFilenameCorrection()
   // this is useful when the check is needed after
   // deserialization
   this->SetFullName(this->GetFullName());
-}
-
-void ZipArchiveEntry::FixVersionToExtractAtLeast(uint16_t value)
-{
-  if (this->GetVersionToExtract() < value)
-  {
-    this->SetVersionToExtract(value);
-  }
-}
-
-void ZipArchiveEntry::SyncLFH_with_CDFH()
-{
-  _localFileHeader.SyncWithCentralDirectoryFileHeader(_centralDirectoryFileHeader);
-}
-
-void ZipArchiveEntry::SyncCDFH_with_LFH()
-{
-  _centralDirectoryFileHeader.SyncWithLocalFileHeader(_localFileHeader);
-
-  this->FixVersionToExtractAtLeast(this->IsDirectory()
-    ? VERSION_NEEDED_EXPLICIT_DIRECTORY
-    : _compressionMethod->GetZipMethodDescriptor().GetVersionNeededToExtract());
 }
 
 std::ios::pos_type ZipArchiveEntry::GetOffsetOfCompressedData()
@@ -638,12 +567,12 @@ void ZipArchiveEntry::SerializeLocalFileHeader(std::ostream& stream)
 
   if (this->IsUsingDataDescriptor())
   {
-    _localFileHeader.CompressedSize = 0;
-    _localFileHeader.UncompressedSize = 0;
-    _localFileHeader.Crc32 = 0;
+    _entryInfo.LocalFileHeader.CompressedSize = 0;
+    _entryInfo.LocalFileHeader.UncompressedSize = 0;
+    _entryInfo.LocalFileHeader.Crc32 = 0;
   }
 
-  _localFileHeader.Serialize(stream);
+  _entryInfo.LocalFileHeader.Serialize(stream);
 
   // if this entry is a directory, it should not contain any data
   // nor crc.
@@ -661,14 +590,14 @@ void ZipArchiveEntry::SerializeLocalFileHeader(std::ostream& stream)
 
       if (this->IsUsingDataDescriptor())
       {
-        _localFileHeader.SerializeAsDataDescriptor(stream);
+        _entryInfo.LocalFileHeader.SerializeAsDataDescriptor(stream);
       }
       else
       {
         // actualize local file header
         // make non-seekable version?
         stream.seekp(_offsetOfSerializedLocalFileHeader);
-        _localFileHeader.Serialize(stream);
+        _entryInfo.LocalFileHeader.Serialize(stream);
         stream.seekp(this->GetCompressedSize(), std::ios::cur);
       }
     }
@@ -681,8 +610,8 @@ void ZipArchiveEntry::SerializeLocalFileHeader(std::ostream& stream)
 
 void ZipArchiveEntry::SerializeCentralDirectoryFileHeader(std::ostream& stream)
 {
-  _centralDirectoryFileHeader.RelativeOffsetOfLocalHeader = static_cast<int32_t>(_offsetOfSerializedLocalFileHeader);
-  _centralDirectoryFileHeader.Serialize(stream);
+  _entryInfo.CentralDirectoryFileHeader.RelativeOffsetOfLocalHeader = static_cast<int32_t>(_offsetOfSerializedLocalFileHeader);
+  _entryInfo.CentralDirectoryFileHeader.Serialize(stream);
 }
 
 void ZipArchiveEntry::UnloadCompressionData()
@@ -691,45 +620,57 @@ void ZipArchiveEntry::UnloadCompressionData()
   _immediateBuffer->clear();
   _inputStream = nullptr;
 
-  _centralDirectoryFileHeader.CompressedSize = 0;
-  _centralDirectoryFileHeader.UncompressedSize = 0;
-  _centralDirectoryFileHeader.Crc32 = 0;
+  _entryInfo.CentralDirectoryFileHeader.CompressedSize = 0;
+  _entryInfo.CentralDirectoryFileHeader.UncompressedSize = 0;
+  _entryInfo.CentralDirectoryFileHeader.Crc32 = 0;
 }
 
 void ZipArchiveEntry::InternalCompressStream(std::istream& inputStream, std::ostream& outputStream)
 {
-  std::ostream* intermediateStream = &outputStream;
-
-  std::unique_ptr<zip_cryptostream> cryptoStream;
-  if (!_password.empty())
-  {
-    this->SetGeneralPurposeBitFlag(BitFlag::Encrypted);
-
-    // std::make_unique<zip_cryptostream>();
-    cryptoStream = std::unique_ptr<zip_cryptostream>(new zip_cryptostream());
-
-    cryptoStream->init(outputStream, _password.c_str());
-    cryptoStream->set_final_byte(this->GetLastByteOfEncryptionHeader());
-    intermediateStream = cryptoStream.get();
-  }
+  iauditstream inputAuditStream(inputStream);
+  oauditstream outputAuditStream(outputStream);
 
   crc32stream crc32Stream;
-  crc32Stream.init(inputStream);
 
-  compression_encoder_stream compressionStream(
-    _compressionMethod->GetEncoder(),
-    _compressionMethod->GetEncoderProperties(),
-    *intermediateStream);
-  intermediateStream = &compressionStream;
-  utils::stream::copy(crc32Stream, *intermediateStream);
+  {
+    std::ostream* intermediateStream = &outputAuditStream;
 
-  intermediateStream->flush();
+    std::unique_ptr<encryption_encoder_stream> encryptionStream;
+    if (auto encryptionMethod = _compressionMethod->GetEncryptionMethod())
+    {
+      _entryInfo.SetGeneralPurposeBitFlag(detail::ZipBitFlag::Encrypted);
 
-  _localFileHeader.UncompressedSize = static_cast<uint32_t>(compressionStream.get_bytes_read());
-  _localFileHeader.CompressedSize   = static_cast<uint32_t>(compressionStream.get_bytes_written() + (!_password.empty() ? 12 : 0));
-  _localFileHeader.Crc32 = crc32Stream.get_crc32();
+      encryptionMethod->OnEncryptionBegin(this->shared_from_this());
 
-  this->SyncCDFH_with_LFH();
+      encryptionStream = std::unique_ptr<encryption_encoder_stream>(new encryption_encoder_stream(
+        encryptionMethod->GetEncoder(),
+        encryptionMethod->GetEncoderProperties(),
+        *intermediateStream));
+
+      intermediateStream = encryptionStream.get();
+    }
+
+    crc32Stream.init(inputAuditStream);
+
+    compression_encoder_stream compressionStream(
+      _compressionMethod->GetEncoder(),
+      _compressionMethod->GetEncoderProperties(),
+      *intermediateStream);
+    intermediateStream = &compressionStream;
+    utils::stream::copy(crc32Stream, *intermediateStream);
+
+    intermediateStream->flush();
+  }
+  _entryInfo.LocalFileHeader.UncompressedSize = static_cast<uint32_t>(inputAuditStream.get_bytes_read());
+  _entryInfo.LocalFileHeader.CompressedSize   = static_cast<uint32_t>(outputAuditStream.get_bytes_written());
+  _entryInfo.LocalFileHeader.Crc32 = crc32Stream.get_crc32();
+
+  _entryInfo.SyncWithLocalFileHeader();
+
+  // Fix VersionToExtract.
+  _entryInfo.FixVersionToExtractAtLeast(this->IsDirectory()
+    ? VERSION_NEEDED_EXPLICIT_DIRECTORY
+    : _compressionMethod->GetFinalMethodDescriptor().VersionNeededToExtract);
 }
 
 void ZipArchiveEntry::FigureCrc32()
@@ -754,12 +695,12 @@ void ZipArchiveEntry::FigureCrc32()
   _inputStream->clear();
   _inputStream->seekg(position);
 
-  _centralDirectoryFileHeader.Crc32 = crc32Stream.get_crc32();
+  _entryInfo.CentralDirectoryFileHeader.Crc32 = crc32Stream.get_crc32();
 }
 
 uint8_t ZipArchiveEntry::GetLastByteOfEncryptionHeader()
 {
-  if (!!(this->GetGeneralPurposeBitFlag() & BitFlag::DataDescriptor))
+  if (!!(_entryInfo.GetGeneralPurposeBitFlag() & detail::ZipBitFlag::DataDescriptor))
   {
     // In the case that bit 3 of the general purpose bit flag is set to
     // indicate the presence of a 'data descriptor' (signature
@@ -774,7 +715,7 @@ uint8_t ZipArchiveEntry::GetLastByteOfEncryptionHeader()
     // http://www.info-zip.org/pub/infozip/
 
     // Also, winzip insists on this!
-    return uint8_t((_centralDirectoryFileHeader.LastModificationTime >> 8) & 0xff);
+    return uint8_t((_entryInfo.CentralDirectoryFileHeader.LastModificationTime >> 8) & 0xff);
   }
   else
   {

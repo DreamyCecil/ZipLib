@@ -5,17 +5,19 @@
 
 struct compression_properties_interface
 {
+  template <typename T>
+  static inline T clamp(T minimum, T maximum, T value)
+  {
+    return std::min(std::max(minimum, value), maximum);
+  }
+
   virtual void normalize() = 0;
 };
 
 struct compression_encoder_properties_interface
   : compression_properties_interface
 {
-  template <typename T>
-  inline T clamp(T minimum, T maximum, T value)
-  {
-    return std::min(std::max(minimum, value), maximum);
-  }
+
 };
 
 struct compression_decoder_properties_interface

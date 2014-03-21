@@ -1,14 +1,25 @@
 #ifdef _MSC_VER
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+# define _CRTDBG_MAP_ALLOC
+
+# ifdef _DEBUG
+#   ifndef DBG_NEW
+#     define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#     define new DBG_NEW
+#   endif
+# endif  // _DEBUG
+
+# include <stdlib.h>
+# include <crtdbg.h>
 #endif
 
 #include "../ZipLib/ZipFile.h"
 #include "../ZipLib/streams/memstream.h"
-
-#include "../ZipLib/methods/Bzip2Method.h"
-
+#include "../ZipLib/methods/encryption/ZipCryptoMethod.h"
+#include "../ZipLib/methods/encryption/AesCryptoMethod.h"
+#include "../ZipLib/methods/compression/StoreMethod.h"
+#include "../ZipLib/methods/compression/DeflateMethod.h"
+#include "../ZipLib/methods/compression/Bzip2Method.h"
+#include "../ZipLib/methods/compression/LzmaMethod.h"
 #include <fstream>
 
 struct PrintMethodName
@@ -46,7 +57,7 @@ void ListZipArchive(const char* zipArchiveName = zipFilename)
     printf("[o] -- %s\n", entry->GetFullName().c_str());
     printf("[o]   >> uncompressed size: %lu\n", entry->GetSize());
     printf("[o]   >> compressed size: %lu\n", entry->GetCompressedSize());
-    printf("[o]   >> password protected: %s\n", entry->IsPasswordProtected() ? "yes" : "no");
+    printf("[o]   >> password protected: %s\n", entry->IsEncrypted() ? "yes" : "no");
     printf("[o]   >> compression method: %s\n", entry->GetCompressionMethod() == DeflateMethod::CompressionMethod ? "DEFLATE" : "stored");
     printf("[o]   >> comment: %s\n", entry->GetComment().c_str());
     printf("[o]   >> crc32: 0x%08X\n", entry->GetCrc32());
@@ -89,35 +100,41 @@ TEST_METHOD(Sample_ZipFile)
 TEST_METHOD(Sample_ZipArchive_Stream_Deferred_Comment)
 {
   ZipArchive::Ptr archive = ZipFile::Open(zipFilename);
-  archive->SetComment("archive comment");
+  //archive->SetComment("archive comment");
 
-  char content[] = "Content to add";
+  char content[] = { 'C', 'o', 'n', 't', 'e', 'n', 't', ' ', 't', 'o', ' ', 'a', 'd', 'd' };
   imemstream contentStream(content);
 
-  ZipArchiveEntry::Ptr entry = archive->CreateEntry(fileIn3);
+  ZipArchiveEntry::Ptr entry = archive->CreateEntry("out.txt");
   assert(entry != nullptr);
 
-  entry->SetPassword("pass");
+  //entry->SetPassword("pass");
+  //
+  //// if this is not set, the input stream would be readen twice
+  //// this method is only useful for password protected files
+  //entry->UseDataDescriptor();
 
-  // if this is not set, the input stream would be readen twice
-  // this method is only useful for password protected files
-  entry->UseDataDescriptor();
-
-  Bzip2Method::Ptr ctx = Bzip2Method::Create();
-  ctx->SetBlockSize(Bzip2Method::BlockSize::B600);
+  StoreMethod::Ptr ctx = StoreMethod::Create();
+  AesCryptoMethod::Ptr encryptionCtx = AesCryptoMethod::Create();
+  encryptionCtx->SetPassword("gogo");
+  ctx->SetEncryptionMethod(encryptionCtx);
 
   entry->SetCompressionStream(
     contentStream,
     ctx,
-    ZipArchiveEntry::CompressionMode::Deferred
+    ZipArchiveEntry::CompressionMode::Immediate
   );
 
-  entry->SetComment("entry comment");
+  //entry->SetComment("entry comment");
 
   // data from contentStream are pumped here
   ZipFile::SaveAndClose(archive, zipFilename);
 
   ListZipArchive();
+
+  //////////////////////////////////////////////////////////////////////////
+
+  ZipFile::ExtractEncryptedFile(zipFilename, "out.txt", "gogo");
 }
 
 TEST_METHOD(Sample_ZipArchive_Stream_Immediate_Store_Own_Save_Password_Protected)
@@ -171,13 +188,11 @@ TEST_METHOD(Sample_ZipArchive_Decompress_Password_Protected)
   assert(decompressStream == nullptr);
   
   printf("[+] Trying wrong pass...\n");
-  entry->SetPassword("wrongpass");
-  decompressStream = entry->GetDecompressionStream();
+  decompressStream = entry->GetDecompressionStream("wrongpass");
   assert(decompressStream == nullptr);
 
   printf("[+] Trying correct password...\n");
-  entry->SetPassword("pass");
-  decompressStream = entry->GetDecompressionStream();
+  decompressStream = entry->GetDecompressionStream("pass");
   assert(decompressStream != nullptr);
 
   std::string line;
@@ -195,8 +210,6 @@ TEST_METHOD(Sample_EXAMPLE)
 
   ZipArchiveEntry::Ptr entry = archive->CreateEntry(fileIn3);
   assert(entry != nullptr);
-
-  entry->SetPassword("pass");
 
   // if this is not set, the input stream would be readen twice
   // this method is only useful for password protected files
@@ -228,10 +241,10 @@ int main()
   remove(fileOut2);
   remove(fileOut3);
 
-  Sample_ZipFile();
+  //Sample_ZipFile();
   Sample_ZipArchive_Stream_Deferred_Comment();
-  Sample_ZipArchive_Stream_Immediate_Store_Own_Save_Password_Protected();
-  Sample_ZipArchive_Decompress_Password_Protected();
+  //Sample_ZipArchive_Stream_Immediate_Store_Own_Save_Password_Protected();
+  //Sample_ZipArchive_Decompress_Password_Protected();
   //Sample_EXAMPLE();
   return 0;
 }

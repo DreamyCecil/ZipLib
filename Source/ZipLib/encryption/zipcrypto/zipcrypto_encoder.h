@@ -102,12 +102,12 @@ class basic_zipcrypto_encoder
       delete[] _inputBuffer;
     }
 
-    ELEM_TYPE* _inputBuffer;
-    size_t     _bufferCapacity;
+    ELEM_TYPE* _inputBuffer = nullptr;
+    size_t     _bufferCapacity = 0;
 
-    ostream_type* _stream;
+    ostream_type* _stream = nullptr;
     detail::zipcrypto _zipcrypto;
-    bool _encryptionHeaderWritten;
+    bool _encryptionHeaderWritten = false;
 };
 
 typedef basic_zipcrypto_encoder<uint8_t, std::char_traits<uint8_t>> byte_zipcrypto_encoder;

@@ -4,13 +4,11 @@
 namespace detail {
 
   aes_impl::aes_impl()
-    : _isInitialized(false)
   {
 
   }
 
   aes_impl::aes_impl(const uint8_t* password, const aes_salt& salt, aes_passverify& passverify)
-    : _isInitialized(false)
   {
     passverify = init(password, salt);
   }

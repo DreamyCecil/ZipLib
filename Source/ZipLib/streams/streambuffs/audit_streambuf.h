@@ -17,20 +17,18 @@ class audit_streambuf
     typedef typename base_type::off_type  off_type;
 
     typedef base_type streambuf_type;
-    typedef std::basic_ios<ELEM_TYPE, TRAITS_TYPE> stream_type;
+    typedef std::basic_ios<ELEM_TYPE, TRAITS_TYPE>     stream_type;
+    typedef std::basic_istream<ELEM_TYPE, TRAITS_TYPE> istream_type;
+    typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_type;
+
 
     audit_streambuf()
-      : _streambuf(nullptr)
-      , _bytesRead(0)
-      , _bytesWritten(0)
     {
 
     }
 
     audit_streambuf(stream_type& stream)
       : _streambuf(stream.rdbuf())
-      , _bytesRead(0)
-      , _bytesWritten(0)
     {
 
     }
@@ -86,7 +84,7 @@ class audit_streambuf
     }
 
   private:
-    streambuf_type* _streambuf;
-    size_t _bytesRead;
-    size_t _bytesWritten;
+    streambuf_type* _streambuf = nullptr;
+    size_t          _bytesRead    = 0;
+    size_t          _bytesWritten = 0;
 };

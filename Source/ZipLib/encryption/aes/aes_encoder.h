@@ -15,9 +15,6 @@ class basic_aes_encoder
     typedef typename encryption_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     basic_aes_encoder()
-      : _inputBuffer(nullptr)
-      , _stream(nullptr)
-      , _encryptionHeaderWritten(false)
     {
 
     }
@@ -102,10 +99,10 @@ class basic_aes_encoder
       delete[] _inputBuffer;
     }
 
-    ELEM_TYPE* _inputBuffer;
-    size_t     _bufferCapacity;
+    ELEM_TYPE* _inputBuffer = nullptr;
+    size_t     _bufferCapacity = 0;
 
-    ostream_type* _stream;
+    ostream_type* _stream = nullptr;
 
     struct aes_context
     {
@@ -116,7 +113,7 @@ class basic_aes_encoder
     detail::aes_impl _aes;
     aes_context _aesContext;
 
-    bool _encryptionHeaderWritten;
+    bool _encryptionHeaderWritten = false;
 };
 
 typedef basic_aes_encoder<uint8_t, std::char_traits<uint8_t>> byte_aes_encoder;

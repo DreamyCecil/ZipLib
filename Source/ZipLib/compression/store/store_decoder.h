@@ -17,10 +17,6 @@ class basic_store_decoder
     typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     basic_store_decoder()
-      : _stream(nullptr)
-      , _bufferCapacity(0)
-      , _outputBufferSize(0)
-      , _outputBuffer(nullptr)
     {
 
     }
@@ -88,11 +84,11 @@ class basic_store_decoder
       delete[] _outputBuffer;
     }
 
-    istream_type* _stream;
+    istream_type* _stream         = nullptr;
 
-    size_t     _bufferCapacity;
-    size_t     _outputBufferSize; // how many bytes are written in the output buffer
-    ELEM_TYPE* _outputBuffer;     // pointer to the start of the output buffer
+    size_t     _bufferCapacity    = 0;
+    size_t     _outputBufferSize  = 0;        // how many bytes are written in the output buffer
+    ELEM_TYPE* _outputBuffer      = nullptr;  // pointer to the start of the output buffer
 };
 
 typedef basic_store_decoder<uint8_t, std::char_traits<uint8_t>>  byte_store_decoder;

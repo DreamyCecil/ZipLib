@@ -15,13 +15,17 @@ class tee_streambuf:
     typedef typename base_type::pos_type  pos_type;
     typedef typename base_type::off_type  off_type;
 
+    typedef std::basic_ios<ELEM_TYPE, TRAITS_TYPE>     stream_type;
+    typedef std::basic_istream<ELEM_TYPE, TRAITS_TYPE> istream_type;
+    typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_type;
+
     tee_streambuf& bind(base_type* sb)
     {
       _sbCollection.push_back(sb);
       return *this;
     }
 
-    tee_streambuf& bind(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream)
+    tee_streambuf& bind(ostream_type& stream)
     {
       _sbCollection.push_back(stream.rdbuf());
       return *this;

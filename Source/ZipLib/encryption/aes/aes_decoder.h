@@ -15,10 +15,6 @@ class basic_aes_decoder
     typedef typename encryption_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     basic_aes_decoder()
-      : _inputBuffer(nullptr)
-      , _stream(nullptr)
-      , _encryptionHeaderRead(false)
-      , _encryptionFooterRead(false)
     {
 
     }
@@ -141,10 +137,10 @@ class basic_aes_decoder
       delete[] _inputBuffer;
     }
 
-    ELEM_TYPE* _inputBuffer;
-    size_t     _bufferCapacity;
+    ELEM_TYPE* _inputBuffer = nullptr;
+    size_t     _bufferCapacity = 0;
 
-    istream_type* _stream;
+    istream_type* _stream = nullptr;
     std::unique_ptr<isubstream> _encryptedStream;
     std::unique_ptr<isubstream> _authCodeStream;
 
@@ -165,8 +161,8 @@ class basic_aes_decoder
     aes_context         _aesContext;
     aes_stored_context  _aesStoredContext;
 
-    bool _encryptionHeaderRead;
-    bool _encryptionFooterRead;
+    bool _encryptionHeaderRead = false;
+    bool _encryptionFooterRead = false;
 };
 
 typedef basic_aes_decoder<uint8_t, std::char_traits<uint8_t>> byte_aes_decoder;

@@ -17,15 +17,6 @@ class basic_lzma_decoder
     typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     basic_lzma_decoder()
-      : _inPos(0)
-      , _inProcessed(0)
-      , _outProcessed(0)
-      , _stream(nullptr)
-      , _bufferCapacity(0)
-      , _inputBufferSize(0)
-      , _outputBufferSize(0)
-      , _inputBuffer(nullptr)
-      , _outputBuffer(nullptr)
     {
       LzmaDec_Construct(&_handle);
     }
@@ -147,17 +138,17 @@ class basic_lzma_decoder
     CLzmaDec _handle;
     detail::lzma_alloc _alloc;
 
-    SizeT _inPos;
-    SizeT _inProcessed;
-    SizeT _outProcessed;
+    SizeT _inPos                  = 0;
+    SizeT _inProcessed            = 0;
+    SizeT _outProcessed           = 0;
 
-    istream_type* _stream;
+    istream_type* _stream         = nullptr;
 
-    size_t     _bufferCapacity;
-    size_t     _inputBufferSize;  // how many bytes are read in the input buffer
-    size_t     _outputBufferSize; // how many bytes are written in the output buffer
-    ELEM_TYPE* _inputBuffer;      // pointer to the start of the input buffer
-    ELEM_TYPE* _outputBuffer;     // pointer to the start of the output buffer
+    size_t     _bufferCapacity    = 0;
+    size_t     _inputBufferSize   = 0;        // how many bytes are read in the input buffer
+    size_t     _outputBufferSize  = 0;        // how many bytes are written in the output buffer
+    ELEM_TYPE* _inputBuffer       = nullptr;  // pointer to the start of the input buffer
+    ELEM_TYPE* _outputBuffer      = nullptr;  // pointer to the start of the output buffer
 };
 
 typedef basic_lzma_decoder<uint8_t, std::char_traits<uint8_t>>  byte_lzma_decoder;

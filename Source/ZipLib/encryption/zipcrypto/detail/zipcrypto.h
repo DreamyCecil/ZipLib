@@ -8,7 +8,6 @@ namespace detail {
   {
     public:
       zipcrypto()
-        : _finalByte(-1)
       {
 
       }
@@ -78,7 +77,7 @@ namespace detail {
     private:
       zipcrypto_keys              _keys;
       zipcrypto_encryption_header _encryptionHeader;
-      int                         _finalByte;
+      int                         _finalByte = -1;
   };
 
 }

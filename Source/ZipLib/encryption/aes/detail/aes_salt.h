@@ -22,8 +22,6 @@ namespace detail {
       typedef const uint8_t&  const_reference;
 
       aes_salt()
-        : _saltLength(0)
-        , _encryptionMode(aes_encryption_mode(-1))
       {
         memset(_salt, 0, sizeof(_salt));
       }
@@ -77,9 +75,9 @@ namespace detail {
 
     private:
       value_type  _salt[AES_MAX_SALT_LENGTH];
-      size_type   _saltLength;
+      size_type   _saltLength = 0;
 
-      aes_encryption_mode _encryptionMode;
+      aes_encryption_mode _encryptionMode = aes_encryption_mode(-1);
   };
 
 }

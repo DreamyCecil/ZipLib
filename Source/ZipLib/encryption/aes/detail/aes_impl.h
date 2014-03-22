@@ -32,7 +32,7 @@ namespace detail {
       fcrypt_ctx _ctx;
       prng_ctx _rng[1];
 
-      bool _isInitialized;
+      bool _isInitialized = false;
   };
 
 }

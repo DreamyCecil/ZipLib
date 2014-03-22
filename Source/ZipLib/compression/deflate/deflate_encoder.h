@@ -16,11 +16,6 @@ class basic_deflate_encoder
     typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     basic_deflate_encoder()
-      : _lastError(Z_OK)
-      , _stream(nullptr)
-      , _bufferCapacity(0)
-      , _inputBuffer(nullptr)
-      , _outputBuffer(nullptr)
     {
 
     }
@@ -124,14 +119,14 @@ class basic_deflate_encoder
       return ((_lastError = errorCode) >= 0);
     }
 
-    z_stream    _zstream;         // internal zlib structure
-    int         _lastError;       // last error of zlib operation
+    z_stream    _zstream;                   // internal zlib structure
+    int         _lastError      = Z_OK;     // last error of zlib operation
 
-    ostream_type* _stream;
+    ostream_type* _stream       = nullptr;
 
-    size_t     _bufferCapacity;
-    ELEM_TYPE* _inputBuffer;      // pointer to the start of the input buffer
-    ELEM_TYPE* _outputBuffer;     // pointer to the start of the output buffer
+    size_t     _bufferCapacity  = 0;
+    ELEM_TYPE* _inputBuffer     = nullptr;  // pointer to the start of the input buffer
+    ELEM_TYPE* _outputBuffer    = nullptr;  // pointer to the start of the output buffer
 };
 
 typedef basic_deflate_encoder<uint8_t, std::char_traits<uint8_t>>  byte_deflate_encoder;

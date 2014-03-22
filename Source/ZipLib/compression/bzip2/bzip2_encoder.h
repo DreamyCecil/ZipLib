@@ -16,11 +16,6 @@ class basic_bzip2_encoder
     typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     basic_bzip2_encoder()
-      : _lastError(BZ_OK)
-      , _stream(nullptr)
-      , _bufferCapacity(0)
-      , _inputBuffer(nullptr)
-      , _outputBuffer(nullptr)
     {
 
     }
@@ -124,14 +119,14 @@ class basic_bzip2_encoder
       return ((_lastError = errorCode) >= 0);
     }
 
-    bz_stream _bzstream;        // internal bzip2 structure
-    int       _lastError;       // last error of bzip2 operation
+    bz_stream _bzstream;                    // internal bzip2 structure
+    int       _lastError        = BZ_OK;    // last error of bzip2 operation
 
-    ostream_type* _stream;
+    ostream_type* _stream       = nullptr;
 
-    size_t     _bufferCapacity;
-    ELEM_TYPE* _inputBuffer;      // pointer to the start of the input buffer
-    ELEM_TYPE* _outputBuffer;     // pointer to the start of the output buffer
+    size_t     _bufferCapacity  = 0;
+    ELEM_TYPE* _inputBuffer     = nullptr;  // pointer to the start of the input buffer
+    ELEM_TYPE* _outputBuffer    = nullptr;  // pointer to the start of the output buffer
 };
 
 typedef basic_bzip2_encoder<uint8_t, std::char_traits<uint8_t>>  byte_bzip2_encoder;

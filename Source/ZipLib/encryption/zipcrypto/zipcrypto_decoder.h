@@ -15,9 +15,6 @@ class basic_zipcrypto_decoder
     typedef typename encryption_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     basic_zipcrypto_decoder()
-      : _inputBuffer(nullptr)
-      , _stream(nullptr)
-      , _encryptionHeaderRead(false)
     {
 
     }
@@ -110,12 +107,12 @@ class basic_zipcrypto_decoder
       delete[] _inputBuffer;
     }
 
-    ELEM_TYPE* _inputBuffer;
-    size_t     _bufferCapacity;
+    ELEM_TYPE* _inputBuffer = nullptr;
+    size_t     _bufferCapacity = 0;
 
-    istream_type* _stream;
+    istream_type* _stream = nullptr;
     detail::zipcrypto _zipcrypto;
-    bool _encryptionHeaderRead;
+    bool _encryptionHeaderRead = false;
 };
 
 typedef basic_zipcrypto_decoder<uint8_t, std::char_traits<uint8_t>> byte_zipcrypto_decoder;

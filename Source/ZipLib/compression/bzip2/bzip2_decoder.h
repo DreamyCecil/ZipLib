@@ -16,14 +16,6 @@ class basic_bzip2_decoder
     typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     basic_bzip2_decoder()
-      : _lastError(BZ_OK)
-      , _stream(nullptr)
-      , _endOfStream(false)
-      , _bufferCapacity(0)
-      , _inputBufferSize(0)
-      , _outputBufferSize(0)
-      , _inputBuffer(nullptr)
-      , _outputBuffer(nullptr)
     {
 
     }
@@ -165,17 +157,17 @@ class basic_bzip2_decoder
       return ((_lastError = errorCode) >= 0);
     }
 
-    bz_stream   _bzstream;        // internal bzip2 structure
-    int         _lastError;       // last error of bzip2 operation
+    bz_stream   _bzstream;                    // internal bzip2 structure
+    int         _lastError        = BZ_OK;    // last error of bzip2 operation
 
-    istream_type* _stream;
-    bool       _endOfStream;
+    istream_type* _stream         = nullptr;
+    bool       _endOfStream       = false;
 
-    size_t     _bufferCapacity;
-    size_t     _inputBufferSize;  // how many bytes are read in the input buffer
-    size_t     _outputBufferSize; // how many bytes are written in the output buffer
-    ELEM_TYPE* _inputBuffer;      // pointer to the start of the input buffer
-    ELEM_TYPE* _outputBuffer;     // pointer to the start of the output buffer
+    size_t     _bufferCapacity    = 0;
+    size_t     _inputBufferSize   = 0;        // how many bytes are read in the input buffer
+    size_t     _outputBufferSize  = 0;        // how many bytes are written in the output buffer
+    ELEM_TYPE* _inputBuffer       = nullptr;  // pointer to the start of the input buffer
+    ELEM_TYPE* _outputBuffer      = nullptr;  // pointer to the start of the output buffer
 };
 
 typedef basic_bzip2_decoder<uint8_t, std::char_traits<uint8_t>>  byte_bzip2_decoder;

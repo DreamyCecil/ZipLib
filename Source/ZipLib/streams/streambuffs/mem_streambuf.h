@@ -16,6 +16,10 @@ class mem_streambuf
     typedef typename base_type::pos_type  pos_type;
     typedef typename base_type::off_type  off_type;
 
+    typedef std::basic_ios<ELEM_TYPE, TRAITS_TYPE>     stream_type;
+    typedef std::basic_istream<ELEM_TYPE, TRAITS_TYPE> istream_type;
+    typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_type;
+
     mem_streambuf(ELEM_TYPE* buffer, size_t length)
     {
       // set stream buffer

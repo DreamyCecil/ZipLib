@@ -16,22 +16,21 @@ class sub_streambuf :
     typedef typename base_type::pos_type  pos_type;
     typedef typename base_type::off_type  off_type;
 
+    typedef std::basic_ios<ELEM_TYPE, TRAITS_TYPE>     stream_type;
+    typedef std::basic_istream<ELEM_TYPE, TRAITS_TYPE> istream_type;
+    typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_type;
+
     sub_streambuf()
-      : _inputStream(nullptr)
-      , _startPosition(0)
-      , _currentPosition(0)
-      , _endPosition(0)
     {
 
     }
 
-    sub_streambuf(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& input, pos_type startOffset, size_t length)
-      : sub_streambuf()
+    sub_streambuf(istream_type& input, pos_type startOffset, size_t length)
     {
       init(input, startOffset, length);
     }
 
-    void init(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& input, pos_type startOffset, size_t length)
+    void init(istream_type& input, pos_type startOffset, size_t length)
     {
       _inputStream = &input;
       _startPosition = startOffset;
@@ -130,10 +129,10 @@ class sub_streambuf :
       INTERNAL_BUFFER_SIZE = 1 << 15
     };
 
-    ELEM_TYPE* _internalBuffer;
+    ELEM_TYPE* _internalBuffer = nullptr;
 
-    std::basic_istream<ELEM_TYPE, TRAITS_TYPE>* _inputStream;
-    pos_type _startPosition;
-    pos_type _currentPosition;
-    pos_type _endPosition;
+    istream_type* _inputStream = nullptr;
+    pos_type _startPosition = 0;
+    pos_type _currentPosition = 0;
+    pos_type _endPosition = 0;
 };

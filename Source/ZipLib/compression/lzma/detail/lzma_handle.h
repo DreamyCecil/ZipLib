@@ -9,7 +9,6 @@ namespace detail
   {
     public:
       lzma_handle()
-        : _handle(nullptr)
       {
         _handle = LzmaEnc_Create(&_alloc);
       }
@@ -25,7 +24,7 @@ namespace detail
       CLzmaEncHandle get_native_handle() const { return _handle; }
 
     private:
-      CLzmaEncHandle  _handle;
+      CLzmaEncHandle  _handle = nullptr;
       lzma_alloc      _alloc;
   };
 }

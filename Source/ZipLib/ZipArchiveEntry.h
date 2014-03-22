@@ -327,17 +327,17 @@ class ZipArchiveEntry
     //////////////////////////////////////////////////////////////////////////
     ZipArchive*                     _archive;           //< pointer to the owning zip archive
 
+    std::shared_ptr<std::istream>   _archiveStream;     //< substream of owning zip archive file
     std::shared_ptr<std::istream>   _rawStream;         //< stream of raw compressed data
     std::shared_ptr<std::istream>   _compressionStream; //< stream of uncompressed data
     std::shared_ptr<std::istream>   _encryptionStream;  //< underlying encryption stream
-    std::shared_ptr<std::istream>   _archiveStream;     //< substream of owning zip archive file
 
     // internal compression data
     std::shared_ptr<std::iostream>  _immediateBuffer;   //< stream used in the immediate mode, stores compressed data in memory
     std::istream*                   _inputStream;       //< input stream
 
-    CompressionMethod::Ptr         _compressionMethod; //< compression method
-    CompressionMode                 _compressionMode;   //< compression mode, either deferred or immediate
+    CompressionMethod::Ptr         _compressionMethod;  //< compression method
+    CompressionMode                _compressionMode;    //< compression mode, either deferred or immediate
 
     std::string _name;
 

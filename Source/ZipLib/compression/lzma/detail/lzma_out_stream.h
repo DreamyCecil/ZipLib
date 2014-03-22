@@ -8,10 +8,9 @@ namespace detail
     : public ISeqOutStream
   {
     public:
-      typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> stream_t;
+      typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_type;
 
       lzma_out_stream()
-        : _stream(nullptr)
       {
         this->Write = [](void* p, const void* buf, size_t size)
         {
@@ -30,11 +29,11 @@ namespace detail
         return delta;
       }
 
-      const stream_t& get_stream() const { return *_stream; }
-      stream_t& get_stream() { return *_stream; }
-      void set_stream(stream_t& stream) { _stream = &stream; }
+      const ostream_type& get_stream() const { return *_stream; }
+      ostream_type& get_stream() { return *_stream; }
+      void set_stream(ostream_type& stream) { _stream = &stream; }
 
     private:
-      stream_t* _stream;
+      ostream_type* _stream = nullptr;
   };
 }

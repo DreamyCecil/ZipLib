@@ -63,10 +63,8 @@ namespace
 
 ZipArchiveEntry::ZipArchiveEntry()
   : _archive(nullptr)
-  , _archiveStream(nullptr)
-  , _compressionStream(nullptr)
-  , _encryptionStream(nullptr)
-  , _rawStream(nullptr)
+  , _inputStream(nullptr)
+  , _compressionMode(CompressionMode::Deferred)
 
   , _originallyInArchive(false)
   , _isNewOrChanged(false)
@@ -75,7 +73,6 @@ ZipArchiveEntry::ZipArchiveEntry()
   , _offsetOfCompressedData(-1)
   , _offsetOfSerializedLocalFileHeader(-1)
 
-  , _inputStream(nullptr)
 {
 
 }

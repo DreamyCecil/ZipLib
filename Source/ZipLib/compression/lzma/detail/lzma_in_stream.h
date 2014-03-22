@@ -22,10 +22,6 @@ namespace detail
       typedef std::mutex              mutex_t;
 
       lzma_in_stream()
-        : _bytesRead(0)
-        , _internalBufferSize(0)
-        , _internalInputBuffer(nullptr)
-        , _endOfStream(false)
       {
         this->Read = [](void* p, void* buf, size_t* size) -> SRes
         {
@@ -63,12 +59,12 @@ namespace detail
       }
 
     private:
-      size_t      _bytesRead;
-      size_t      _internalBufferSize;
-      ELEM_TYPE*  _internalInputBuffer;
+      size_t      _bytesRead            = 0;
+      size_t      _internalBufferSize   = 0;
+      ELEM_TYPE*  _internalInputBuffer  = nullptr;
       event_t     _event;
       mutex_t     _mutex;
-      bool        _endOfStream;
+      bool        _endOfStream          = false;
 
       ELEM_TYPE* get_buffer_begin() { return _internalInputBuffer; }
       ELEM_TYPE* get_buffer_end() { return _internalInputBuffer + _internalBufferSize; }

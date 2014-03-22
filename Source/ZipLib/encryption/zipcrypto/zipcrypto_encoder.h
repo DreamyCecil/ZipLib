@@ -14,9 +14,6 @@ class basic_zipcrypto_encoder
     typedef typename encryption_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     basic_zipcrypto_encoder()
-      : _inputBuffer(nullptr)
-      , _stream(nullptr)
-      , _encryptionHeaderWritten(false)
     {
 
     }
@@ -102,10 +99,10 @@ class basic_zipcrypto_encoder
       delete[] _inputBuffer;
     }
 
-    ELEM_TYPE* _inputBuffer = nullptr;
-    size_t     _bufferCapacity = 0;
+    ELEM_TYPE* _inputBuffer       = nullptr;
+    size_t     _bufferCapacity    = 0;
 
-    ostream_type* _stream = nullptr;
+    ostream_type* _stream         = nullptr;
     detail::zipcrypto _zipcrypto;
     bool _encryptionHeaderWritten = false;
 };

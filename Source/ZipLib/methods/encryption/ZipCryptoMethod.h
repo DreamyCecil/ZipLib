@@ -30,14 +30,19 @@ class ZipCryptoMethod :
     const std::string& GetPassword() const override { return _encoderProps.Password; }
     void SetPassword(const std::string& password) override { _encoderProps.Password = _decoderProps.Password = password; }
 
+    void SetUseDataDescriptor(bool use) { _encoderProps.UseDataDescriptor = use; }
+    bool GetUseDataDescriptor() const { return _decoderProps.UseDataDescriptor; }
+
   protected:
     void OnEncryptionBegin(ZipArchiveEntryPtr entry) override
     {
+      entry->UseDataDescriptor(_encoderProps.UseDataDescriptor);
       _encoderProps.LastByteOfEncryptionHeader = get_last_byte_of_encryption_header(entry);
     }
 
     void OnDecryptionBegin(ZipArchiveEntryPtr entry) override
     {
       _decoderProps.LastByteOfEncryptionHeader = get_last_byte_of_encryption_header(entry);
+      _decoderProps.UseDataDescriptor = entry->IsUsingDataDescriptor();
     }
 };

@@ -11,7 +11,9 @@ struct compression_properties_interface
     return std::min(std::max(minimum, value), maximum);
   }
 
-  virtual void normalize() = 0;
+  virtual void normalize() { }
+
+  size_t BufferCapacity = 1 << 15;
 };
 
 struct compression_encoder_properties_interface

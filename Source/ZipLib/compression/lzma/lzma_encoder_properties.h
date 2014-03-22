@@ -36,6 +36,6 @@ struct lzma_encoder_properties
     LzmaEnc_SetProps(handle.get_native_handle(), &props);
   }
   
-  bool IsMultithreaded;
-  int  CompressionLevel;
+  bool IsMultithreaded = true;
+  int  CompressionLevel = 5;
 };

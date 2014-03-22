@@ -21,8 +21,6 @@ class basic_store_encoder
       , _bufferCapacity(0)
       , _inputBuffer(nullptr)
       , _outputBuffer(nullptr)
-      , _bytesRead(0)
-      , _bytesWritten(0)
     {
 
     }
@@ -46,9 +44,6 @@ class basic_store_encoder
       // init stream
       _stream = &stream;
 
-      // init values
-      _bytesRead = _bytesWritten = 0;
-
       // init buffers
       store_encoder_properties& storeProps = static_cast<store_encoder_properties&>(props);
       _bufferCapacity = storeProps.BufferCapacity;
@@ -61,16 +56,6 @@ class basic_store_encoder
     bool is_init() const override
     {
       return _stream != nullptr;
-    }
-
-    size_t get_bytes_read() const override
-    {
-      return _bytesRead;
-    }
-
-    size_t get_bytes_written() const override
-    {
-      return _bytesWritten;
     }
 
     ELEM_TYPE* get_buffer_begin() override
@@ -86,9 +71,6 @@ class basic_store_encoder
     void encode_next(size_t length) override
     {
       _stream->write(_inputBuffer, length);
-
-      _bytesRead += length;
-      _bytesWritten += length;
     }
 
     void sync() override
@@ -108,9 +90,6 @@ class basic_store_encoder
     size_t     _bufferCapacity;
     ELEM_TYPE* _inputBuffer;      // pointer to the start of the input buffer
     ELEM_TYPE* _outputBuffer;     // pointer to the start of the output buffer
-
-    size_t _bytesRead;
-    size_t _bytesWritten;
 };
 
 typedef basic_store_encoder<uint8_t, std::char_traits<uint8_t>>  byte_store_encoder;

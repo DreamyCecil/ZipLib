@@ -28,11 +28,6 @@ class basic_crc32stream
       _crc32Streambuf.init(stream);
     }
 
-    size_t get_bytes_read() const
-    {
-      return _crc32Streambuf.get_bytes_read();
-    }
-
     uint32_t get_crc32() const
     {
       return _crc32Streambuf.get_crc32();

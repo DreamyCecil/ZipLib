@@ -67,16 +67,6 @@ class compression_decoder_streambuf
       return _compressionDecoder->is_init();
     }
 
-    size_t get_bytes_read() const
-    {
-      return _compressionDecoder->get_bytes_read();
-    }
-
-    size_t get_bytes_written() const
-    {
-      return _compressionDecoder->get_bytes_written();
-    }
-
   protected:
     int_type underflow() override
     {

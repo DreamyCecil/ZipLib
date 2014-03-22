@@ -22,7 +22,6 @@ class crc32_streambuf
       : _inputStream(nullptr)
       , _internalBufferPosition(_internalBuffer + INTERNAL_BUFFER_SIZE)
       , _internalBufferEnd(_internalBuffer + INTERNAL_BUFFER_SIZE)
-      , _bytesRead(0)
       , _crc32(0)
     {
 
@@ -47,11 +46,6 @@ class crc32_streambuf
       return (_inputStream != nullptr);
     }
 
-    size_t get_bytes_read() const
-    {
-      return _bytesRead;
-    }
-
     uint32_t get_crc32() const
     {
       return _crc32;
@@ -65,8 +59,6 @@ class crc32_streambuf
       {
         _inputStream->read(_internalBuffer, static_cast<std::streamsize>(INTERNAL_BUFFER_SIZE));
         size_t n = static_cast<size_t>(_inputStream->gcount());
-
-        _bytesRead += n;
 
         _internalBufferPosition = _internalBuffer;
         _internalBufferEnd = _internalBuffer + n;
@@ -100,6 +92,5 @@ class crc32_streambuf
     ELEM_TYPE* _internalBufferEnd;
 
     std::basic_istream<ELEM_TYPE, TRAITS_TYPE>* _inputStream;
-    size_t _bytesRead;
     uint32_t _crc32;
 };

@@ -72,16 +72,6 @@ class compression_encoder_streambuf
       return _compressionEncoder->is_init();
     }
 
-    size_t get_bytes_read() const
-    {
-      return _compressionEncoder->get_bytes_read();
-    }
-
-    size_t get_bytes_written() const
-    {
-      return _compressionEncoder->get_bytes_written();
-    }
-
   protected:
     int_type overflow(int_type c = traits_type::eof()) override
     {

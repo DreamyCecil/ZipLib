@@ -11,8 +11,7 @@ namespace detail
       typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> stream_t;
 
       lzma_out_stream()
-        : _bytesWritten(0)
-        , _stream(nullptr)
+        : _stream(nullptr)
       {
         this->Write = [](void* p, const void* buf, size_t size)
         {
@@ -27,12 +26,9 @@ namespace detail
         _stream->write(reinterpret_cast<const ELEM_TYPE*>(buf), size);
 
         size_t delta = static_cast<size_t>(_stream->tellp()) - static_cast<size_t>(currentPosition);
-        _bytesWritten += delta;
 
         return delta;
       }
-
-      size_t get_bytes_written() const { return _bytesWritten; }
 
       const stream_t& get_stream() const { return *_stream; }
       stream_t& get_stream() { return *_stream; }
@@ -40,6 +36,5 @@ namespace detail
 
     private:
       stream_t* _stream;
-      size_t _bytesWritten;
   };
 }

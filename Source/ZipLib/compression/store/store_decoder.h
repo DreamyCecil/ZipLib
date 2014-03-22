@@ -21,8 +21,6 @@ class basic_store_decoder
       , _bufferCapacity(0)
       , _outputBufferSize(0)
       , _outputBuffer(nullptr)
-      , _bytesRead(0)
-      , _bytesWritten(0)
     {
 
     }
@@ -48,7 +46,6 @@ class basic_store_decoder
 
       // init values
       _outputBufferSize = 0;
-      _bytesRead = _bytesWritten = 0;
 
       // init buffers
       store_decoder_properties& storeProps = static_cast<store_decoder_properties&>(props);
@@ -61,16 +58,6 @@ class basic_store_decoder
     bool is_init() const override
     {
       return (_outputBuffer != nullptr);
-    }
-
-    size_t get_bytes_read() const override
-    {
-      return _bytesRead;
-    }
-
-    size_t get_bytes_written() const override
-    {
-      return _bytesWritten;
     }
 
     ELEM_TYPE* get_buffer_begin() override
@@ -91,10 +78,6 @@ class basic_store_decoder
       // set the size of buffer
       _outputBufferSize = static_cast<size_t>(_stream->gcount());
 
-      // increase amount of total read & written bytes
-      _bytesRead += _outputBufferSize;
-      _bytesWritten += _outputBufferSize;
-
       // return count of processed bytes from input stream
       return _outputBufferSize;
     }
@@ -110,9 +93,6 @@ class basic_store_decoder
     size_t     _bufferCapacity;
     size_t     _outputBufferSize; // how many bytes are written in the output buffer
     ELEM_TYPE* _outputBuffer;     // pointer to the start of the output buffer
-
-    size_t _bytesRead;
-    size_t _bytesWritten;
 };
 
 typedef basic_store_decoder<uint8_t, std::char_traits<uint8_t>>  byte_store_decoder;

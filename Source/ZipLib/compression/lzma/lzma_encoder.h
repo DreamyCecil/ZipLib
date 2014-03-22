@@ -54,16 +54,6 @@ class basic_lzma_encoder
       return &_ostream.get_stream() != nullptr;
     }
 
-    size_t get_bytes_read() const override
-    {
-      return _istream.get_bytes_read();
-    }
-
-    size_t get_bytes_written() const override
-    {
-      return _ostream.get_bytes_written();
-    }
-
     ELEM_TYPE* get_buffer_begin() override
     {
       return _istream.get_buffer_begin();

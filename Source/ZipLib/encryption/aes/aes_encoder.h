@@ -1,10 +1,10 @@
 #pragma once
 #include "../encryption_interface.h"
+#include "../../streams/serialization.h"
 #include "aes_encoder_properties.h"
 #include "detail/aes_impl.h"
 
 #include <cstdint>
-#include "../../streams/serialization.h"
 
 template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class basic_aes_encoder

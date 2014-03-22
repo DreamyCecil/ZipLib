@@ -24,8 +24,6 @@ class basic_bzip2_decoder
       , _outputBufferSize(0)
       , _inputBuffer(nullptr)
       , _outputBuffer(nullptr)
-      , _bytesRead(0)
-      , _bytesWritten(0)
     {
 
     }
@@ -53,7 +51,6 @@ class basic_bzip2_decoder
 
       // init values
       _inputBufferSize = _outputBufferSize = 0;
-      _bytesRead = _bytesWritten = 0;
 
       // init buffers
       bzip2_decoder_properties& bzip2Props = static_cast<bzip2_decoder_properties&>(props);
@@ -80,16 +77,6 @@ class basic_bzip2_decoder
     bool is_init() const override
     {
       return (_inputBuffer != nullptr && _outputBuffer != nullptr);
-    }
-
-    size_t get_bytes_read() const override
-    {
-      return _bytesRead;
-    }
-
-    size_t get_bytes_written() const override
-    {
-      return _bytesWritten;
     }
 
     ELEM_TYPE* get_buffer_begin() override
@@ -136,9 +123,6 @@ class basic_bzip2_decoder
       // associate output buffer
       size_t bytesProcessed = _bufferCapacity - static_cast<size_t>(_bzstream.avail_out);
 
-      // increase amount of total written bytes
-      _bytesWritten += bytesProcessed;
-
       if (_lastError == BZ_STREAM_END)
       {
         _endOfStream = true;
@@ -172,9 +156,6 @@ class basic_bzip2_decoder
       // set the size of buffer
       _inputBufferSize = static_cast<size_t>(_stream->gcount());
 
-      // increase amount of total read bytes
-      _bytesRead += _inputBufferSize;
-
       // set lzma buffer pointer to the begin
       _endOfStream = _inputBufferSize != _bufferCapacity;
     }
@@ -195,9 +176,6 @@ class basic_bzip2_decoder
     size_t     _outputBufferSize; // how many bytes are written in the output buffer
     ELEM_TYPE* _inputBuffer;      // pointer to the start of the input buffer
     ELEM_TYPE* _outputBuffer;     // pointer to the start of the output buffer
-
-    size_t _bytesRead;
-    size_t _bytesWritten;
 };
 
 typedef basic_bzip2_decoder<uint8_t, std::char_traits<uint8_t>>  byte_bzip2_decoder;

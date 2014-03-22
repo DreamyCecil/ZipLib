@@ -26,8 +26,6 @@ class basic_lzma_decoder
       , _outputBufferSize(0)
       , _inputBuffer(nullptr)
       , _outputBuffer(nullptr)
-      , _bytesRead(0)
-      , _bytesWritten(0)
     {
       LzmaDec_Construct(&_handle);
     }
@@ -78,16 +76,6 @@ class basic_lzma_decoder
       return (_inputBuffer != nullptr && _outputBuffer != nullptr);
     }
 
-    size_t get_bytes_read() const override
-    {
-      return _bytesRead;
-    }
-
-    size_t get_bytes_written() const override
-    {
-      return _bytesWritten;
-    }
-
     ELEM_TYPE* get_buffer_begin() override
     {
       return _outputBuffer;
@@ -121,7 +109,6 @@ class basic_lzma_decoder
         &status);
 
       _inPos += _inProcessed;
-      _bytesWritten += _outProcessed;
 
       _outputBufferSize = _outProcessed;
 
@@ -153,9 +140,6 @@ class basic_lzma_decoder
       // set the size of buffer
       _inputBufferSize = static_cast<size_t>(_stream->gcount());
 
-      // increase amount of total read bytes
-      _bytesRead += _inputBufferSize;
-
       // set lzma buffer pointer to the begin
       _inPos = 0;
     }
@@ -174,9 +158,6 @@ class basic_lzma_decoder
     size_t     _outputBufferSize; // how many bytes are written in the output buffer
     ELEM_TYPE* _inputBuffer;      // pointer to the start of the input buffer
     ELEM_TYPE* _outputBuffer;     // pointer to the start of the output buffer
-
-    size_t _bytesRead;
-    size_t _bytesWritten;
 };
 
 typedef basic_lzma_decoder<uint8_t, std::char_traits<uint8_t>>  byte_lzma_decoder;

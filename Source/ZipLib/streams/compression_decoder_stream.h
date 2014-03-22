@@ -51,16 +51,6 @@ class basic_compression_decoder_stream
       return _compressionDecoderStreambuf.is_init();
     }
 
-    size_t get_bytes_read() const
-    {
-      return _compressionDecoderStreambuf.get_bytes_read();
-    }
-
-    size_t get_bytes_written() const
-    {
-      return _compressionDecoderStreambuf.get_bytes_written();
-    }
-
   private:
     compression_decoder_streambuf<ELEM_TYPE, TRAITS_TYPE> _compressionDecoderStreambuf;
 };

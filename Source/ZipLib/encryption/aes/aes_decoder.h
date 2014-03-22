@@ -1,5 +1,6 @@
 #pragma once
 #include "../encryption_interface.h"
+#include "../../streams/serialization.h"
 #include "aes_decoder_properties.h"
 #include "detail/aes_impl.h"
 

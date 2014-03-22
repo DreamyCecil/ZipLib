@@ -39,9 +39,6 @@ class compression_interface_basic
 
     virtual bool is_init() const = 0;
 
-    virtual size_t get_bytes_read() const = 0;
-    virtual size_t get_bytes_written() const = 0;
-
     virtual ELEM_TYPE* get_buffer_begin() = 0;
     virtual ELEM_TYPE* get_buffer_end() = 0;
 };

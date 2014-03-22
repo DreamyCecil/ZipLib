@@ -62,8 +62,6 @@ namespace detail
         return SZ_OK;
       }
 
-      size_t get_bytes_read() const { return _bytesRead; }
-
     private:
       size_t      _bytesRead;
       size_t      _internalBufferSize;

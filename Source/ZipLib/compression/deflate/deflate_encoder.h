@@ -21,8 +21,6 @@ class basic_deflate_encoder
       , _bufferCapacity(0)
       , _inputBuffer(nullptr)
       , _outputBuffer(nullptr)
-      , _bytesRead(0)
-      , _bytesWritten(0)
     {
 
     }
@@ -46,9 +44,6 @@ class basic_deflate_encoder
     {
       // init stream
       _stream = &stream;
-
-      // init values
-      _bytesRead = _bytesWritten = 0;
 
       // init buffers
       deflate_encoder_properties& deflateProps = static_cast<deflate_encoder_properties&>(props);
@@ -76,16 +71,6 @@ class basic_deflate_encoder
       return _stream != nullptr;
     }
 
-    size_t get_bytes_read() const override
-    {
-      return _bytesRead;
-    }
-
-    size_t get_bytes_written() const override
-    {
-      return _bytesWritten;
-    }
-
     ELEM_TYPE* get_buffer_begin() override
     {
       return _inputBuffer;
@@ -101,8 +86,6 @@ class basic_deflate_encoder
       // set the input buffer
       _zstream.next_in = reinterpret_cast<Bytef*>(_inputBuffer);
       _zstream.avail_in = static_cast<uInt>(length);
-
-      _bytesRead += length;
 
       bool flush = length < _bufferCapacity;
 
@@ -120,7 +103,6 @@ class basic_deflate_encoder
         if (have > 0)
         {
           _stream->write(_outputBuffer, have);
-          _bytesWritten += have;
         }
       } while (_zstream.avail_out == 0);
     }
@@ -150,9 +132,6 @@ class basic_deflate_encoder
     size_t     _bufferCapacity;
     ELEM_TYPE* _inputBuffer;      // pointer to the start of the input buffer
     ELEM_TYPE* _outputBuffer;     // pointer to the start of the output buffer
-
-    size_t _bytesRead;
-    size_t _bytesWritten;
 };
 
 typedef basic_deflate_encoder<uint8_t, std::char_traits<uint8_t>>  byte_deflate_encoder;

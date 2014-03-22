@@ -11,52 +11,62 @@ template <
 >
 class MethodTemplate
   : public BASE_METHOD_CLASS
-{    
+{
   public:
     typedef std::shared_ptr<METHOD_CLASS> Ptr;
     typedef typename BASE_METHOD_CLASS::encoder_t encoder_t;
     typedef typename BASE_METHOD_CLASS::decoder_t decoder_t;
     typedef typename BASE_METHOD_CLASS::encoder_properties_t encoder_properties_t;
     typedef typename BASE_METHOD_CLASS::decoder_properties_t decoder_properties_t;
-                                                                                
+
     static const uint16_t CompressionMethod      = COMPRESSION_METHOD;
     static const uint16_t VersionNeededToExtract = VERSION_NEEDED_TO_EXTRACT;
-                                                                                
+
     MethodTemplate()
-    {                                                                             
+    {
       this->SetEncoder(std::make_shared<ENCODER_CLASS>());
       this->SetDecoder(std::make_shared<DECODER_CLASS>());
-    }                                                                             
-                                                                                
-    static Ptr Create()                                                           
-    {                                                                             
+    }
+
+    static Ptr Create()
+    {
       return std::make_shared<METHOD_CLASS>();
-    }                                                                             
-                                                                                
+    }
+
     encoder_properties_t& GetEncoderProperties() override
-    {                                                                             
+    {
       _encoderProps.normalize();
       return _encoderProps;
-    }                                                                             
-                                                                                
+    }
+
     decoder_properties_t& GetDecoderProperties() override
-    {                                                                             
+    {
       _decoderProps.normalize();
       return _decoderProps;
-    }                                                                             
-                                                                                
-    const ZipMethodDescriptor& GetZipMethodDescriptor() const override            
-    {                                                                             
-      return GetZipMethodDescriptorStatic();                                      
-    }                                                                             
-                                                                                
-    static const ZipMethodDescriptor& GetZipMethodDescriptorStatic()              
-    {                                                                             
-      static ZipMethodDescriptor zmd {                                            
-        VersionNeededToExtract,                                                   
-        CompressionMethod                                                         
-      };                                                                          
-      return zmd;                                                                 
+    }
+
+    size_t GetBufferCapacity() const
+    {
+      return _encoderProps.BufferCapacity;
+    }
+
+    void SetBufferCapacity(size_t bufferCapacity)
+    {
+      _encoderProps.BufferCapacity = _decoderProps.BufferCapacity = bufferCapacity;
+    }
+
+    const ZipMethodDescriptor& GetZipMethodDescriptor() const override
+    {
+      return GetZipMethodDescriptorStatic();
+    }
+
+    static const ZipMethodDescriptor& GetZipMethodDescriptorStatic()
+    {
+      static ZipMethodDescriptor zmd {
+        VersionNeededToExtract,
+        CompressionMethod
+      };
+      return zmd;
     }
 
   protected:

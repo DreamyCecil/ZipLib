@@ -33,9 +33,6 @@ class Bzip2Method :
       Best = B900
     };
 
-    size_t GetBufferCapacity() const { return _encoderProps.BufferCapacity; }
-    void SetBufferCapacity(size_t bufferCapacity) { _encoderProps.BufferCapacity = bufferCapacity; }
-
     BlockSize GetBlockSize() const { return static_cast<BlockSize>(_encoderProps.BlockSize); }
     void SetBlockSize(BlockSize compressionLevel) { _encoderProps.BlockSize = static_cast<int>(compressionLevel); }
 };

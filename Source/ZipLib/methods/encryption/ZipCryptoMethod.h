@@ -24,9 +24,6 @@ class ZipCryptoMethod :
   >
 {
   public:
-    size_t GetBufferCapacity() const { return _encoderProps.BufferCapacity; }
-    void SetBufferCapacity(size_t bufferCapacity) { _encoderProps.BufferCapacity = _decoderProps.BufferCapacity = bufferCapacity; }
-
     const std::string& GetPassword() const override { return _encoderProps.Password; }
     void SetPassword(const std::string& password) override { _encoderProps.Password = _decoderProps.Password = password; }
 

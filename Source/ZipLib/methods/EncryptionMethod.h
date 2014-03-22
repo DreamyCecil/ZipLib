@@ -30,6 +30,9 @@ class EncryptionMethod
     
     CompressionMethodPtr GetCompressionMethod() const;
 
+    size_t GetBufferCapacity() const { return _encoderProps.BufferCapacity; }
+    void SetBufferCapacity(size_t bufferCapacity) { _encoderProps.BufferCapacity = _decoderProps.BufferCapacity = bufferCapacity; }
+
     virtual void SetPassword(const std::string& password) = 0;
     virtual const std::string& GetPassword() const = 0;
 

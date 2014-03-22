@@ -24,9 +24,6 @@ class AesCryptoMethod :
     typedef aes_encryption_mode EncryptionMode;
     typedef aes_version Version;
 
-    size_t GetBufferCapacity() const { return _encoderProps.BufferCapacity; }
-    void SetBufferCapacity(size_t bufferCapacity) { _encoderProps.BufferCapacity = _decoderProps.BufferCapacity = bufferCapacity; }
-
     const std::string& GetPassword() const override { return _encoderProps.Password; }
     void SetPassword(const std::string& password) override { _encoderProps.Password = _decoderProps.Password = password; }
 

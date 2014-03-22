@@ -33,9 +33,6 @@ class DeflateMethod :
       Best = L9
     };
 
-    size_t GetBufferCapacity() const { return _encoderProps.BufferCapacity; }
-    void SetBufferCapacity(size_t bufferCapacity) { _encoderProps.BufferCapacity = bufferCapacity; }
-
     CompressionLevel GetCompressionLevel() const { return static_cast<CompressionLevel>(_encoderProps.CompressionLevel); }
     void SetCompressionLevel(CompressionLevel compressionLevel) { _encoderProps.CompressionLevel = static_cast<int>(compressionLevel); }
 };

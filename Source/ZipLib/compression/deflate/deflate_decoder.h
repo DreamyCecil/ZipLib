@@ -1,7 +1,7 @@
 #pragma once
 #include "../compression_interface.h"
 
-#include "deflate_decoder_properties.h"
+#include "deflate_properties.h"
 
 #include "../../extlibs/zlib/zlib.h"
 
@@ -31,11 +31,11 @@ class basic_deflate_decoder
 
     void init(istream_type& stream) override
     {
-      deflate_decoder_properties props;
+      deflate_properties props;
       init(stream, props);
     }
 
-    void init(istream_type& stream, compression_decoder_properties_interface& props) override
+    void init(istream_type& stream, compression_properties_interface& props) override
     {
       // init stream
       _stream = &stream;
@@ -45,7 +45,7 @@ class basic_deflate_decoder
       _inputBufferSize = _outputBufferSize = 0;
 
       // init buffers
-      deflate_decoder_properties& deflateProps = static_cast<deflate_decoder_properties&>(props);
+      deflate_properties& deflateProps = static_cast<deflate_properties&>(props);
       _bufferCapacity = deflateProps.BufferCapacity;
 
       uninit_buffers();

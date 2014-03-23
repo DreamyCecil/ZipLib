@@ -1,8 +1,0 @@
-#pragma once
-#include "../compression_interface.h"
-
-struct bzip2_decoder_properties
-  : compression_decoder_properties_interface
-{
-
-};

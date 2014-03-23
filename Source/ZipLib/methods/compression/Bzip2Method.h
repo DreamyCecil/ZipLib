@@ -9,8 +9,7 @@ class Bzip2Method :
   public CompressionMethodTemplate
   <
       Bzip2Method,
-      bzip2_encoder, bzip2_decoder,
-      bzip2_encoder_properties, bzip2_decoder_properties,
+      bzip2_encoder, bzip2_decoder, bzip2_properties,
       /* CompressionMethod */ 12,
       /* VersionNeededToExtract */ 46
   >
@@ -33,6 +32,6 @@ class Bzip2Method :
       Best = B900
     };
 
-    BlockSize GetBlockSize() const { return static_cast<BlockSize>(_encoderProps.BlockSize); }
-    void SetBlockSize(BlockSize compressionLevel) { _encoderProps.BlockSize = static_cast<int>(compressionLevel); }
+    BlockSize GetBlockSize() const { return static_cast<BlockSize>(_properties.BlockSize); }
+    void SetBlockSize(BlockSize compressionLevel) { _properties.BlockSize = static_cast<int>(compressionLevel); }
 };

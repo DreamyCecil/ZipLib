@@ -9,8 +9,7 @@ class LzmaMethod :
   public CompressionMethodTemplate
   <
     LzmaMethod,
-    lzma_encoder, lzma_decoder,
-    lzma_encoder_properties, lzma_decoder_properties,
+    lzma_encoder, lzma_decoder, lzma_properties,
     /* CompressionMethod */ 14,
     /* VersionNeededToExtract */ 63
   >
@@ -33,9 +32,9 @@ class LzmaMethod :
       Best = L9
     };
 
-    bool GetIsMultithreaded() const { return _encoderProps.IsMultithreaded; }
-    void SetIsMultithreaded(bool isMultithreaded) { _encoderProps.IsMultithreaded = isMultithreaded; }
+    bool GetIsMultithreaded() const { return _properties.IsMultithreaded; }
+    void SetIsMultithreaded(bool isMultithreaded) { _properties.IsMultithreaded = isMultithreaded; }
 
-    CompressionLevel GetCompressionLevel() const { return static_cast<CompressionLevel>(_encoderProps.CompressionLevel); }
-    void SetCompressionLevel(CompressionLevel compressionLevel) { _encoderProps.CompressionLevel = static_cast<int>(compressionLevel); }
+    CompressionLevel GetCompressionLevel() const { return static_cast<CompressionLevel>(_properties.CompressionLevel); }
+    void SetCompressionLevel(CompressionLevel compressionLevel) { _properties.CompressionLevel = static_cast<int>(compressionLevel); }
 };

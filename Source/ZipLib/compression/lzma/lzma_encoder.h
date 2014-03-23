@@ -1,7 +1,7 @@
 #pragma once
 #include "../compression_interface.h"
 
-#include "lzma_encoder_properties.h"
+#include "lzma_properties.h"
 #include "detail/lzma_alloc.h"
 #include "detail/lzma_handle.h"
 #include "detail/lzma_header.h"
@@ -35,13 +35,13 @@ class basic_lzma_encoder
 
     void init(ostream_type& stream) override
     {
-      lzma_encoder_properties props;
+      lzma_properties props;
       init(stream, props);
     }
 
-    void init(ostream_type& stream, compression_encoder_properties_interface& props) override
+    void init(ostream_type& stream, compression_properties_interface& props) override
     {
-      lzma_encoder_properties& lzmaProps = static_cast<lzma_encoder_properties&>(props);
+      lzma_properties& lzmaProps = static_cast<lzma_properties&>(props);
 
       _ostream.set_stream(stream);
       lzmaProps.apply(_handle);

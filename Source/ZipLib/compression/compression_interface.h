@@ -16,18 +16,6 @@ struct compression_properties_interface
   size_t BufferCapacity = 1 << 15;
 };
 
-struct compression_encoder_properties_interface
-  : compression_properties_interface
-{
-
-};
-
-struct compression_decoder_properties_interface
-  : compression_properties_interface
-{
-
-};
-
 template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class compression_interface_basic
 {
@@ -52,7 +40,7 @@ class compression_encoder_interface_basic
     typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     virtual void init(ostream_type& stream) = 0;
-    virtual void init(ostream_type& stream, compression_encoder_properties_interface& props) = 0;
+    virtual void init(ostream_type& stream, compression_properties_interface& props) = 0;
     virtual void encode_next(size_t length) = 0;
     virtual void sync() = 0;
 };
@@ -66,7 +54,7 @@ class compression_decoder_interface_basic
     typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     virtual void init(istream_type& stream) = 0;
-    virtual void init(istream_type& stream, compression_decoder_properties_interface& props) = 0;
+    virtual void init(istream_type& stream, compression_properties_interface& props) = 0;
     virtual size_t decode_next() = 0;
 };
 

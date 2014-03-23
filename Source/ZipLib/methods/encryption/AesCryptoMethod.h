@@ -14,8 +14,7 @@ class AesCryptoMethod :
   public EncryptionMethodTemplate
   <
     AesCryptoMethod,
-    aes_encoder, aes_decoder,
-    aes_encoder_properties, aes_decoder_properties,
+    aes_encoder, aes_decoder, aes_properties,
     /* CompressionMethod */ 99,
     /* VersionNeededToExtract */ 51
   >
@@ -24,14 +23,14 @@ class AesCryptoMethod :
     typedef aes_encryption_mode EncryptionMode;
     typedef aes_version Version;
 
-    const std::string& GetPassword() const override { return _encoderProps.Password; }
-    void SetPassword(const std::string& password) override { _encoderProps.Password = _decoderProps.Password = password; }
+    const std::string& GetPassword() const override { return _properties.Password; }
+    void SetPassword(const std::string& password) override { _properties.Password = password; }
 
-    EncryptionMode GetEncryptionMode() const { return _decoderProps.EncryptionMode; }
-    void SetEncryptionMode(EncryptionMode encryptionMode) { _encoderProps.EncryptionMode = _decoderProps.EncryptionMode = encryptionMode; }
+    EncryptionMode GetEncryptionMode() const { return _properties.EncryptionMode; }
+    void SetEncryptionMode(EncryptionMode encryptionMode) { _properties.EncryptionMode = encryptionMode; }
 
-    Version GetVersion() const { return _decoderProps.Version; }
-    void SetVersion(Version version) { _encoderProps.Version = _decoderProps.Version = version; }
+    Version GetVersion() const { return _properties.Version; }
+    void SetVersion(Version version) { _properties.Version = version; }
 
   protected:
     void OnEncryptionBegin(ZipArchiveEntryPtr entry) override

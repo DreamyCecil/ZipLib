@@ -1,7 +1,7 @@
 #pragma once
 #include "../compression_interface.h"
 
-#include "bzip2_decoder_properties.h"
+#include "bzip2_properties.h"
 
 #include "../../extlibs/bzip2/bzlib.h"
 
@@ -31,11 +31,11 @@ class basic_bzip2_decoder
 
     void init(istream_type& stream) override
     {
-      bzip2_decoder_properties props;
+      bzip2_properties props;
       init(stream, props);
     }
 
-    void init(istream_type& stream, compression_decoder_properties_interface& props) override
+    void init(istream_type& stream, compression_properties_interface& props) override
     {
       // init stream
       _stream = &stream;
@@ -45,7 +45,7 @@ class basic_bzip2_decoder
       _inputBufferSize = _outputBufferSize = 0;
 
       // init buffers
-      bzip2_decoder_properties& bzip2Props = static_cast<bzip2_decoder_properties&>(props);
+      bzip2_properties& bzip2Props = static_cast<bzip2_properties&>(props);
       _bufferCapacity = bzip2Props.BufferCapacity;
 
       uninit_buffers();

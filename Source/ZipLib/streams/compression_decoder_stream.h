@@ -29,7 +29,7 @@ class basic_compression_decoder_stream
 
     }
 
-    basic_compression_decoder_stream(icompression_decoder_ptr_type compressionDecoder, compression_decoder_properties_interface& props, istream_type& stream)
+    basic_compression_decoder_stream(icompression_decoder_ptr_type compressionDecoder, compression_properties_interface& props, istream_type& stream)
       : std::basic_istream<ELEM_TYPE, TRAITS_TYPE>(&_compressionDecoderStreambuf)
       , _compressionDecoderStreambuf(compressionDecoder, props, stream)
     {
@@ -41,7 +41,7 @@ class basic_compression_decoder_stream
       return _compressionDecoderStreambuf.init(compressionDecoder, stream);
     }
 
-    bool init(icompression_decoder_ptr_type compressionDecoder, compression_decoder_properties_interface& props, istream_type& stream)
+    bool init(icompression_decoder_ptr_type compressionDecoder, compression_properties_interface& props, istream_type& stream)
     {
       return _compressionDecoderStreambuf.init(compressionDecoder, props, stream);
     }

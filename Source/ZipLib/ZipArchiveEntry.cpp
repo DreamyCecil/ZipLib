@@ -378,7 +378,7 @@ std::istream* ZipArchiveEntry::GetDecompressionStream(const std::string& passwor
 
         cryptoStream = std::make_shared<encryption_decoder_stream>(
           encryptionMethod->GetDecoder(),
-          encryptionMethod->GetDecoderProperties(),
+          encryptionMethod->GetProperties(),
           *intermediateStream);
 
         // set it here, because in case the hasCorrectPassword is false
@@ -396,7 +396,7 @@ std::istream* ZipArchiveEntry::GetDecompressionStream(const std::string& passwor
 
       intermediateStream = _compressionStream = std::make_shared<compression_decoder_stream>(
         zipMethod->GetDecoder(),
-        zipMethod->GetDecoderProperties(),
+        zipMethod->GetProperties(),
         *intermediateStream);
     }
   }
@@ -641,7 +641,7 @@ void ZipArchiveEntry::InternalCompressStream(std::istream& inputStream, std::ost
 
       encryptionStream = std::unique_ptr<encryption_encoder_stream>(new encryption_encoder_stream(
         encryptionMethod->GetEncoder(),
-        encryptionMethod->GetEncoderProperties(),
+        encryptionMethod->GetProperties(),
         *intermediateStream));
 
       intermediateStream = encryptionStream.get();
@@ -651,7 +651,7 @@ void ZipArchiveEntry::InternalCompressStream(std::istream& inputStream, std::ost
 
     compression_encoder_stream compressionStream(
       _compressionMethod->GetEncoder(),
-      _compressionMethod->GetEncoderProperties(),
+      _compressionMethod->GetProperties(),
       *intermediateStream);
     intermediateStream = &compressionStream;
     utils::stream::copy(crc32Stream, *intermediateStream);

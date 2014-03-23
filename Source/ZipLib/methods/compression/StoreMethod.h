@@ -9,8 +9,7 @@ class StoreMethod :
   public CompressionMethodTemplate
   <
       StoreMethod,
-      store_encoder, store_decoder,
-      store_encoder_properties, store_decoder_properties,
+      store_encoder, store_decoder, store_properties,
       /* CompressionMethod */ 0,
       /* VersionNeededToExtract */ 10
   >

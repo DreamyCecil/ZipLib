@@ -20,27 +20,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="compression\bzip2\bzip2_decoder.h" />
-    <ClInclude Include="compression\bzip2\bzip2_decoder_properties.h" />
     <ClInclude Include="compression\bzip2\bzip2_encoder.h" />
-    <ClInclude Include="compression\bzip2\bzip2_encoder_properties.h" />
+    <ClInclude Include="compression\bzip2\bzip2_properties.h" />
     <ClInclude Include="compression\compression_interface.h" />
     <ClInclude Include="compression\deflate\deflate_decoder.h" />
-    <ClInclude Include="compression\deflate\deflate_decoder_properties.h" />
     <ClInclude Include="compression\deflate\deflate_encoder.h" />
-    <ClInclude Include="compression\deflate\deflate_encoder_properties.h" />
+    <ClInclude Include="compression\deflate\deflate_properties.h" />
     <ClInclude Include="compression\lzma\detail\lzma_alloc.h" />
     <ClInclude Include="compression\lzma\detail\lzma_handle.h" />
     <ClInclude Include="compression\lzma\detail\lzma_header.h" />
     <ClInclude Include="compression\lzma\detail\lzma_in_stream.h" />
     <ClInclude Include="compression\lzma\detail\lzma_out_stream.h" />
     <ClInclude Include="compression\lzma\lzma_decoder.h" />
-    <ClInclude Include="compression\lzma\lzma_decoder_properties.h" />
     <ClInclude Include="compression\lzma\lzma_encoder.h" />
-    <ClInclude Include="compression\lzma\lzma_encoder_properties.h" />
+    <ClInclude Include="compression\lzma\lzma_properties.h" />
     <ClInclude Include="compression\store\store_decoder.h" />
-    <ClInclude Include="compression\store\store_decoder_properties.h" />
+    <ClInclude Include="compression\store\store_properties.h" />
     <ClInclude Include="compression\store\store_encoder.h" />
-    <ClInclude Include="compression\store\store_encoder_properties.h" />
     <ClInclude Include="detail\EndOfCentralDirectoryBlock.h" />
     <ClInclude Include="detail\ZipArchiveEntryInfo.h" />
     <ClInclude Include="detail\ZipBitFlag.h" />
@@ -48,9 +44,8 @@
     <ClInclude Include="detail\ZipGenericExtraField.h" />
     <ClInclude Include="detail\ZipLocalFileHeader.h" />
     <ClInclude Include="encryption\aes\aes_decoder.h" />
-    <ClInclude Include="encryption\aes\aes_decoder_properties.h" />
     <ClInclude Include="encryption\aes\aes_encoder.h" />
-    <ClInclude Include="encryption\aes\aes_encoder_properties.h" />
+    <ClInclude Include="encryption\aes\aes_properties.h" />
     <ClInclude Include="encryption\aes\common.h" />
     <ClInclude Include="encryption\aes\detail\aes_impl.h" />
     <ClInclude Include="encryption\aes\detail\aes_salt.h" />
@@ -61,9 +56,8 @@
     <ClInclude Include="encryption\zipcrypto\detail\zipcrypto_encryption_header.h" />
     <ClInclude Include="encryption\zipcrypto\detail\zipcrypto_keys.h" />
     <ClInclude Include="encryption\zipcrypto\zipcrypto_decoder.h" />
-    <ClInclude Include="encryption\zipcrypto\zipcrypto_decoder_properties.h" />
+    <ClInclude Include="encryption\zipcrypto\zipcrypto_properties.h" />
     <ClInclude Include="encryption\zipcrypto\zipcrypto_encoder.h" />
-    <ClInclude Include="encryption\zipcrypto\zipcrypto_encoder_properties.h" />
     <ClInclude Include="methods\CompressionMethod.h" />
     <ClInclude Include="methods\compression\Bzip2Method.h" />
     <ClInclude Include="methods\compression\DeflateMethod.h" />

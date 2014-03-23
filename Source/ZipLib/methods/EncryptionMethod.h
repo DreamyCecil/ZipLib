@@ -6,8 +6,7 @@ class ZipArchiveEntry;
 class CompressionMethod;
 
 using EncryptionMethodBase = ZipMethod<
-  encryption_encoder_interface, encryption_decoder_interface,
-  encryption_encoder_properties_interface, encryption_decoder_properties_interface
+  encryption_encoder_interface, encryption_decoder_interface, encryption_properties_interface
 >;
 
 class EncryptionMethod
@@ -19,14 +18,13 @@ class EncryptionMethod
   friend class ZipMethodResolver;
 
   public:
-    typedef std::shared_ptr<EncryptionMethod>  Ptr;
-    typedef std::shared_ptr<CompressionMethod> CompressionMethodPtr;
-    typedef std::shared_ptr<ZipArchiveEntry>   ZipArchiveEntryPtr;
+    typedef std::shared_ptr<EncryptionMethod>   Ptr;
+    typedef std::shared_ptr<CompressionMethod>  CompressionMethodPtr;
+    typedef std::shared_ptr<ZipArchiveEntry>    ZipArchiveEntryPtr;
 
-    typedef EncryptionMethodBase::encoder_t             encoder_t;
-    typedef EncryptionMethodBase::decoder_t             decoder_t;
-    typedef EncryptionMethodBase::encoder_properties_t  encoder_properties_t;
-    typedef EncryptionMethodBase::decoder_properties_t  decoder_properties_t;
+    typedef EncryptionMethodBase::encoder_t     encoder_t;
+    typedef EncryptionMethodBase::decoder_t     decoder_t;
+    typedef EncryptionMethodBase::properties_t  properties_t;
     
     CompressionMethodPtr GetCompressionMethod() const;
 

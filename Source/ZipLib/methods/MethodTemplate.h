@@ -5,8 +5,7 @@
 template <
   typename BASE_METHOD_CLASS,
   typename METHOD_CLASS,
-  typename ENCODER_CLASS, typename DECODER_CLASS,
-  typename ENCODER_PROPS_CLASS, typename DECODER_PROPS_CLASS,
+  typename ENCODER_CLASS, typename DECODER_CLASS, typename PROPS_CLASS,
   uint16_t COMPRESSION_METHOD, uint16_t VERSION_NEEDED_TO_EXTRACT
 >
 class MethodTemplate
@@ -16,8 +15,7 @@ class MethodTemplate
     typedef std::shared_ptr<METHOD_CLASS> Ptr;
     typedef typename BASE_METHOD_CLASS::encoder_t encoder_t;
     typedef typename BASE_METHOD_CLASS::decoder_t decoder_t;
-    typedef typename BASE_METHOD_CLASS::encoder_properties_t encoder_properties_t;
-    typedef typename BASE_METHOD_CLASS::decoder_properties_t decoder_properties_t;
+    typedef typename BASE_METHOD_CLASS::properties_t properties_t;
 
     static const uint16_t CompressionMethod      = COMPRESSION_METHOD;
     static const uint16_t VersionNeededToExtract = VERSION_NEEDED_TO_EXTRACT;
@@ -33,26 +31,20 @@ class MethodTemplate
       return std::make_shared<METHOD_CLASS>();
     }
 
-    encoder_properties_t& GetEncoderProperties() override
+    properties_t& GetProperties() override
     {
-      _encoderProps.normalize();
-      return _encoderProps;
-    }
-
-    decoder_properties_t& GetDecoderProperties() override
-    {
-      _decoderProps.normalize();
-      return _decoderProps;
+      _properties.normalize();
+      return _properties;
     }
 
     size_t GetBufferCapacity() const
     {
-      return _encoderProps.BufferCapacity;
+      return _properties.BufferCapacity;
     }
 
     void SetBufferCapacity(size_t bufferCapacity)
     {
-      _encoderProps.BufferCapacity = _decoderProps.BufferCapacity = bufferCapacity;
+      _properties.BufferCapacity = bufferCapacity;
     }
 
     const ZipMethodDescriptor& GetZipMethodDescriptor() const override
@@ -70,36 +62,31 @@ class MethodTemplate
     }
 
   protected:
-    ENCODER_PROPS_CLASS _encoderProps;
-    DECODER_PROPS_CLASS _decoderProps;
+    PROPS_CLASS _properties;
 };
 
 template <
   typename METHOD_CLASS,
-  typename ENCODER_CLASS, typename DECODER_CLASS,
-  typename ENCODER_PROPS_CLASS, typename DECODER_PROPS_CLASS,
+  typename ENCODER_CLASS, typename DECODER_CLASS, typename PROPS_CLASS,
   uint16_t COMPRESSION_METHOD, uint16_t VERSION_NEEDED_TO_EXTRACT
 >
 using CompressionMethodTemplate = MethodTemplate
 <
   CompressionMethod,
   METHOD_CLASS,
-  ENCODER_CLASS, DECODER_CLASS,
-  ENCODER_PROPS_CLASS, DECODER_PROPS_CLASS,
+  ENCODER_CLASS, DECODER_CLASS, PROPS_CLASS,
   COMPRESSION_METHOD, VERSION_NEEDED_TO_EXTRACT
 >;
 
 template <
   typename METHOD_CLASS,
-  typename ENCODER_CLASS, typename DECODER_CLASS,
-  typename ENCODER_PROPS_CLASS, typename DECODER_PROPS_CLASS,
+  typename ENCODER_CLASS, typename DECODER_CLASS, typename PROPS_CLASS,
   uint16_t COMPRESSION_METHOD, uint16_t VERSION_NEEDED_TO_EXTRACT
 >
 using EncryptionMethodTemplate = MethodTemplate
 <
   EncryptionMethod,
   METHOD_CLASS,
-  ENCODER_CLASS, DECODER_CLASS,
-  ENCODER_PROPS_CLASS, DECODER_PROPS_CLASS,
+  ENCODER_CLASS, DECODER_CLASS, PROPS_CLASS,
   COMPRESSION_METHOD, VERSION_NEEDED_TO_EXTRACT
 >;

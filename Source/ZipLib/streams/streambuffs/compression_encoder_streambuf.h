@@ -36,7 +36,7 @@ class compression_encoder_streambuf
       init(compressionEncoder, stream);
     }
 
-    compression_encoder_streambuf(icompression_encoder_ptr_type compressionEncoder, compression_encoder_properties_interface& props, ostream_type& stream)
+    compression_encoder_streambuf(icompression_encoder_ptr_type compressionEncoder, compression_properties_interface& props, ostream_type& stream)
     {
       init(compressionEncoder, props, stream);
     }
@@ -57,7 +57,7 @@ class compression_encoder_streambuf
       this->setp(_compressionEncoder->get_buffer_begin(), _compressionEncoder->get_buffer_end() - 1);
     }
 
-    void init(icompression_encoder_ptr_type compressionEncoder, compression_encoder_properties_interface& props, ostream_type& stream)
+    void init(icompression_encoder_ptr_type compressionEncoder, compression_properties_interface& props, ostream_type& stream)
     {
       _compressionEncoder = compressionEncoder;
 

@@ -99,13 +99,7 @@
     <ClInclude Include="compression\deflate\deflate_decoder.h">
       <Filter>Header Files\compression\deflate</Filter>
     </ClInclude>
-    <ClInclude Include="compression\deflate\deflate_decoder_properties.h">
-      <Filter>Header Files\compression\deflate</Filter>
-    </ClInclude>
     <ClInclude Include="compression\deflate\deflate_encoder.h">
-      <Filter>Header Files\compression\deflate</Filter>
-    </ClInclude>
-    <ClInclude Include="compression\deflate\deflate_encoder_properties.h">
       <Filter>Header Files\compression\deflate</Filter>
     </ClInclude>
     <ClInclude Include="compression\lzma\detail\lzma_alloc.h">
@@ -126,13 +120,7 @@
     <ClInclude Include="compression\lzma\lzma_decoder.h">
       <Filter>Header Files\compression\lzma</Filter>
     </ClInclude>
-    <ClInclude Include="compression\lzma\lzma_decoder_properties.h">
-      <Filter>Header Files\compression\lzma</Filter>
-    </ClInclude>
     <ClInclude Include="compression\lzma\lzma_encoder.h">
-      <Filter>Header Files\compression\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="compression\lzma\lzma_encoder_properties.h">
       <Filter>Header Files\compression\lzma</Filter>
     </ClInclude>
     <ClInclude Include="streams\compression_decoder_stream.h">
@@ -183,12 +171,6 @@
     <ClInclude Include="compression\store\store_decoder.h">
       <Filter>Header Files\compression\store</Filter>
     </ClInclude>
-    <ClInclude Include="compression\store\store_encoder_properties.h">
-      <Filter>Header Files\compression\store</Filter>
-    </ClInclude>
-    <ClInclude Include="compression\store\store_decoder_properties.h">
-      <Filter>Header Files\compression\store</Filter>
-    </ClInclude>
     <ClInclude Include="methods\ZipMethodResolver.h">
       <Filter>Header Files\methods</Filter>
     </ClInclude>
@@ -219,12 +201,6 @@
     <ClInclude Include="compression\bzip2\bzip2_decoder.h">
       <Filter>Header Files\compression\bzip2</Filter>
     </ClInclude>
-    <ClInclude Include="compression\bzip2\bzip2_encoder_properties.h">
-      <Filter>Header Files\compression\bzip2</Filter>
-    </ClInclude>
-    <ClInclude Include="compression\bzip2\bzip2_decoder_properties.h">
-      <Filter>Header Files\compression\bzip2</Filter>
-    </ClInclude>
     <ClInclude Include="streams\streambuffs\null_streambuf.h">
       <Filter>Header Files\streams\streambuffs</Filter>
     </ClInclude>
@@ -240,9 +216,6 @@
     <ClInclude Include="encryption\encryption_interface.h">
       <Filter>Header Files\encryption</Filter>
     </ClInclude>
-    <ClInclude Include="encryption\zipcrypto\zipcrypto_encoder_properties.h">
-      <Filter>Header Files\encryption\zipcrypto</Filter>
-    </ClInclude>
     <ClInclude Include="streams\streambuffs\encryption_decoder_streambuf.h">
       <Filter>Header Files\streams\streambuffs</Filter>
     </ClInclude>
@@ -254,9 +227,6 @@
     </ClInclude>
     <ClInclude Include="streams\encryption_decoder_stream.h">
       <Filter>Header Files\streams</Filter>
-    </ClInclude>
-    <ClInclude Include="encryption\zipcrypto\zipcrypto_decoder_properties.h">
-      <Filter>Header Files\encryption\zipcrypto</Filter>
     </ClInclude>
     <ClInclude Include="encryption\zipcrypto\detail\zipcrypto_keys.h">
       <Filter>Header Files\encryption\zipcrypto\detail</Filter>
@@ -282,13 +252,7 @@
     <ClInclude Include="encryption\aes\aes_encoder.h">
       <Filter>Header Files\encryption\aes</Filter>
     </ClInclude>
-    <ClInclude Include="encryption\aes\aes_encoder_properties.h">
-      <Filter>Header Files\encryption\aes</Filter>
-    </ClInclude>
     <ClInclude Include="encryption\aes\aes_decoder.h">
-      <Filter>Header Files\encryption\aes</Filter>
-    </ClInclude>
-    <ClInclude Include="encryption\aes\aes_decoder_properties.h">
       <Filter>Header Files\encryption\aes</Filter>
     </ClInclude>
     <ClInclude Include="methods\CompressionMethod.h">
@@ -341,6 +305,24 @@
     </ClInclude>
     <ClInclude Include="encryption\aes\detail\aes_impl.h">
       <Filter>Header Files\encryption\aes\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\aes\aes_properties.h">
+      <Filter>Header Files\encryption\aes</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption\zipcrypto\zipcrypto_properties.h">
+      <Filter>Header Files\encryption\zipcrypto</Filter>
+    </ClInclude>
+    <ClInclude Include="compression\store\store_properties.h">
+      <Filter>Header Files\compression\store</Filter>
+    </ClInclude>
+    <ClInclude Include="compression\lzma\lzma_properties.h">
+      <Filter>Header Files\compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="compression\deflate\deflate_properties.h">
+      <Filter>Header Files\compression\deflate</Filter>
+    </ClInclude>
+    <ClInclude Include="compression\bzip2\bzip2_properties.h">
+      <Filter>Header Files\compression\bzip2</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

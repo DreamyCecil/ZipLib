@@ -1,7 +1,7 @@
 #pragma once
 #include "../compression_interface.h"
 
-#include "store_encoder_properties.h"
+#include "store_properties.h"
 
 #include "../../streams/crc32stream.h"
 #include "../../extlibs/zlib/zlib.h"
@@ -31,17 +31,17 @@ class basic_store_encoder
 
     void init(ostream_type& stream) override
     {
-      store_encoder_properties props;
+      store_properties props;
       init(stream, props);
     }
 
-    void init(ostream_type& stream, compression_encoder_properties_interface& props) override
+    void init(ostream_type& stream, compression_properties_interface& props) override
     {
       // init stream
       _stream = &stream;
 
       // init buffers
-      store_encoder_properties& storeProps = static_cast<store_encoder_properties&>(props);
+      store_properties& storeProps = static_cast<store_properties&>(props);
       _bufferCapacity = storeProps.BufferCapacity;
 
       uninit_buffers();

@@ -1,6 +1,6 @@
 #pragma once
 #include "../encryption_interface.h"
-#include "zipcrypto_encoder_properties.h"
+#include "zipcrypto_properties.h"
 #include "detail/zipcrypto.h"
 
 #include <cstdint>
@@ -28,14 +28,14 @@ class basic_zipcrypto_encoder
 
     void init(ostream_type& stream) override
     {
-      zipcrypto_encoder_properties props;
+      zipcrypto_properties props;
       init(stream, props);
     }
 
-    void init(ostream_type& stream, encryption_encoder_properties_interface& props) override
+    void init(ostream_type& stream, encryption_properties_interface& props) override
     {
       // init buffers
-      zipcrypto_encoder_properties& zipcryptoProps = static_cast<zipcrypto_encoder_properties&>(props);
+      zipcrypto_properties& zipcryptoProps = static_cast<zipcrypto_properties&>(props);
       _bufferCapacity = zipcryptoProps.BufferCapacity;
 
       uninit_buffers();

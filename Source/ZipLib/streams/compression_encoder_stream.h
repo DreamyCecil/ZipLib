@@ -29,7 +29,7 @@ class basic_compression_encoder_stream
 
     }
 
-    basic_compression_encoder_stream(icompression_encoder_ptr_type compressionEncoder, compression_encoder_properties_interface& props, ostream_type& stream)
+    basic_compression_encoder_stream(icompression_encoder_ptr_type compressionEncoder, compression_properties_interface& props, ostream_type& stream)
       : std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>(&_compressionEncoderStreambuf)
       , _compressionEncoderStreambuf(compressionEncoder, props, stream)
     {
@@ -41,7 +41,7 @@ class basic_compression_encoder_stream
       _compressionEncoderStreambuf.init(compressionEncoder, stream);
     }
 
-    void init(icompression_encoder_ptr_type compressionEncoder, compression_encoder_properties_interface& props, ostream_type& stream)
+    void init(icompression_encoder_ptr_type compressionEncoder, compression_properties_interface& props, ostream_type& stream)
     {
       _compressionEncoderStreambuf.init(compressionEncoder, props, stream);
     }

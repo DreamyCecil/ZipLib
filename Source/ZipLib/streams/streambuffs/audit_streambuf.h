@@ -84,7 +84,7 @@ class audit_streambuf
     }
 
   private:
-    streambuf_type* _streambuf = nullptr;
+    streambuf_type* _streambuf    = nullptr;
     size_t          _bytesRead    = 0;
     size_t          _bytesWritten = 0;
 };

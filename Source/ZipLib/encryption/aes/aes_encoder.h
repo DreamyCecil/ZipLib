@@ -1,7 +1,7 @@
 #pragma once
 #include "../encryption_interface.h"
 #include "../../streams/serialization.h"
-#include "aes_encoder_properties.h"
+#include "aes_properties.h"
 #include "detail/aes_impl.h"
 
 #include <cstdint>
@@ -29,14 +29,14 @@ class basic_aes_encoder
 
     void init(ostream_type& stream) override
     {
-      aes_encoder_properties props;
+      aes_properties props;
       init(stream, props);
     }
 
-    void init(ostream_type& stream, encryption_encoder_properties_interface& props) override
+    void init(ostream_type& stream, encryption_properties_interface& props) override
     {
       // init buffers
-      aes_encoder_properties& aesProps = static_cast<aes_encoder_properties&>(props);
+      aes_properties& aesProps = static_cast<aes_properties&>(props);
       _bufferCapacity = aesProps.BufferCapacity;
 
       uninit_buffers();

@@ -2,7 +2,7 @@
 #include "../compression_interface.h"
 
 #include "detail/lzma_alloc.h"
-#include "lzma_decoder_properties.h"
+#include "lzma_properties.h"
 
 #include "../../extlibs/lzma/LzmaDec.h"
 
@@ -32,11 +32,11 @@ class basic_lzma_decoder
 
     void init(istream_type& stream) override
     {
-      lzma_decoder_properties props;
+      lzma_properties props;
       init(stream, props);
     }
 
-    void init(istream_type& stream, compression_decoder_properties_interface& props) override
+    void init(istream_type& stream, compression_properties_interface& props) override
     {
       // init stream
       _stream = &stream;
@@ -46,7 +46,7 @@ class basic_lzma_decoder
       _inputBufferSize = 0;
 
       // init buffers
-      lzma_decoder_properties& lzmaProps = static_cast<lzma_decoder_properties&>(props);
+      lzma_properties& lzmaProps = static_cast<lzma_properties&>(props);
       _bufferCapacity = lzmaProps.BufferCapacity;
 
       uninit_buffers();

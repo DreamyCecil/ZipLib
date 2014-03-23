@@ -29,7 +29,7 @@ class basic_encryption_decoder_stream
 
     }
 
-    basic_encryption_decoder_stream(iencryption_decoder_ptr_type encryptionDecoder, encryption_decoder_properties_interface& props, istream_type& stream)
+    basic_encryption_decoder_stream(iencryption_decoder_ptr_type encryptionDecoder, encryption_properties_interface& props, istream_type& stream)
       : std::basic_istream<ELEM_TYPE, TRAITS_TYPE>(&_encryptionDecoderStreambuf)
       , _encryptionDecoderStreambuf(encryptionDecoder, props, stream)
     {
@@ -41,7 +41,7 @@ class basic_encryption_decoder_stream
       return _encryptionDecoderStreambuf.init(encryptionDecoder, stream);
     }
 
-    bool init(iencryption_decoder_ptr_type encryptionDecoder, encryption_decoder_properties_interface& props, istream_type& stream)
+    bool init(iencryption_decoder_ptr_type encryptionDecoder, encryption_properties_interface& props, istream_type& stream)
     {
       return _encryptionDecoderStreambuf.init(encryptionDecoder, props, stream);
     }

@@ -31,8 +31,7 @@ class ZipMethodBase
 };
 
 template <
-  typename ENCODER_TYPE, typename DECODER_TYPE,
-  typename ENCODER_PROPERTIES_TYPE, typename DECODER_PROPERTIES_TYPE
+  typename ENCODER_TYPE, typename DECODER_TYPE, typename PROPS_TYPE
 >
 class ZipMethod
   : public ZipMethodBase
@@ -40,8 +39,7 @@ class ZipMethod
   public:
     typedef std::shared_ptr<ENCODER_TYPE> encoder_t;
     typedef std::shared_ptr<DECODER_TYPE> decoder_t;
-    typedef ENCODER_PROPERTIES_TYPE       encoder_properties_t;
-    typedef DECODER_PROPERTIES_TYPE       decoder_properties_t;
+    typedef PROPS_TYPE                    properties_t;
 
     void SetEncoder(encoder_t encoder) { _encoder = encoder; }
     void SetDecoder(decoder_t decoder) { _decoder = decoder; }
@@ -49,8 +47,7 @@ class ZipMethod
     encoder_t GetEncoder() const { return _encoder; }
     decoder_t GetDecoder() const { return _decoder; }
 
-    virtual encoder_properties_t& GetEncoderProperties() = 0;
-    virtual decoder_properties_t& GetDecoderProperties() = 0;
+    virtual properties_t& GetProperties() = 0;
 
   protected:
     ZipMethod() { }

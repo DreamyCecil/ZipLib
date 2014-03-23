@@ -9,8 +9,7 @@ class DeflateMethod :
   public CompressionMethodTemplate
   <
     DeflateMethod,
-    deflate_encoder, deflate_decoder,
-    deflate_encoder_properties, deflate_decoder_properties,
+    deflate_encoder, deflate_decoder, deflate_properties,
     /* CompressionMethod */ 8,
     /* VersionNeededToExtract */ 20
   >
@@ -33,6 +32,6 @@ class DeflateMethod :
       Best = L9
     };
 
-    CompressionLevel GetCompressionLevel() const { return static_cast<CompressionLevel>(_encoderProps.CompressionLevel); }
-    void SetCompressionLevel(CompressionLevel compressionLevel) { _encoderProps.CompressionLevel = static_cast<int>(compressionLevel); }
+    CompressionLevel GetCompressionLevel() const { return static_cast<CompressionLevel>(_properties.CompressionLevel); }
+    void SetCompressionLevel(CompressionLevel compressionLevel) { _properties.CompressionLevel = static_cast<int>(compressionLevel); }
 };

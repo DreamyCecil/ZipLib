@@ -36,7 +36,7 @@ class encryption_encoder_streambuf
       init(encryptionEncoder, stream);
     }
 
-    encryption_encoder_streambuf(iencryption_encoder_ptr_type encryptionEncoder, encryption_encoder_properties_interface& props, ostream_type& stream)
+    encryption_encoder_streambuf(iencryption_encoder_ptr_type encryptionEncoder, encryption_properties_interface& props, ostream_type& stream)
     {
       init(encryptionEncoder, props, stream);
     }
@@ -57,7 +57,7 @@ class encryption_encoder_streambuf
       this->setp(_encryptionEncoder->get_buffer_begin(), _encryptionEncoder->get_buffer_end() - 1);
     }
 
-    void init(iencryption_encoder_ptr_type encryptionEncoder, encryption_encoder_properties_interface& props, ostream_type& stream)
+    void init(iencryption_encoder_ptr_type encryptionEncoder, encryption_properties_interface& props, ostream_type& stream)
     {
       _encryptionEncoder = encryptionEncoder;
 

@@ -18,18 +18,6 @@ struct encryption_properties_interface
   std::string Password;
 };
 
-struct encryption_encoder_properties_interface
-  : encryption_properties_interface
-{
-
-};
-
-struct encryption_decoder_properties_interface
-  : encryption_properties_interface
-{
-
-};
-
 template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class encryption_interface_basic
 {
@@ -54,7 +42,7 @@ class encryption_encoder_interface_basic
     typedef typename encryption_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     virtual void init(ostream_type& stream) = 0;
-    virtual void init(ostream_type& stream, encryption_encoder_properties_interface& props) = 0;
+    virtual void init(ostream_type& stream, encryption_properties_interface& props) = 0;
     virtual void encrypt_next(size_t length) = 0;
     virtual void sync() = 0;
 };
@@ -68,7 +56,7 @@ class encryption_decoder_interface_basic
     typedef typename encryption_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
 
     virtual void init(istream_type& stream) = 0;
-    virtual void init(istream_type& stream, encryption_decoder_properties_interface& props) = 0;
+    virtual void init(istream_type& stream, encryption_properties_interface& props) = 0;
     virtual size_t decrypt_next() = 0;
     virtual bool has_correct_password() const = 0;
 };

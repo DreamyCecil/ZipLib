@@ -17,29 +17,28 @@ class ZipCryptoMethod :
   public EncryptionMethodTemplate
   <
     ZipCryptoMethod,
-    zipcrypto_encoder, zipcrypto_decoder,
-    zipcrypto_encoder_properties, zipcrypto_decoder_properties,
+    zipcrypto_encoder, zipcrypto_decoder, zipcrypto_properties,
     /* CompressionMethod */ ZipMethodDescriptor::INVALID_COMPRESSION_METHOD,
     /* VersionNeededToExtract */ 20
   >
 {
   public:
-    const std::string& GetPassword() const override { return _encoderProps.Password; }
-    void SetPassword(const std::string& password) override { _encoderProps.Password = _decoderProps.Password = password; }
+    const std::string& GetPassword() const override { return _properties.Password; }
+    void SetPassword(const std::string& password) override { _properties.Password = password; }
 
-    void SetUseDataDescriptor(bool use) { _encoderProps.UseDataDescriptor = use; }
-    bool GetUseDataDescriptor() const { return _decoderProps.UseDataDescriptor; }
+    void SetUseDataDescriptor(bool use) { _properties.UseDataDescriptor = use; }
+    bool GetUseDataDescriptor() const { return _properties.UseDataDescriptor; }
 
   protected:
     void OnEncryptionBegin(ZipArchiveEntryPtr entry) override
     {
-      entry->UseDataDescriptor(_encoderProps.UseDataDescriptor);
-      _encoderProps.LastByteOfEncryptionHeader = get_last_byte_of_encryption_header(entry);
+      entry->UseDataDescriptor(_properties.UseDataDescriptor);
+      _properties.LastByteOfEncryptionHeader = get_last_byte_of_encryption_header(entry);
     }
 
     void OnDecryptionBegin(ZipArchiveEntryPtr entry) override
     {
-      _decoderProps.LastByteOfEncryptionHeader = get_last_byte_of_encryption_header(entry);
-      _decoderProps.UseDataDescriptor = entry->IsUsingDataDescriptor();
+      _properties.LastByteOfEncryptionHeader = get_last_byte_of_encryption_header(entry);
+      _properties.UseDataDescriptor = entry->IsUsingDataDescriptor();
     }
 };

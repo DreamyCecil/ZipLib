@@ -29,7 +29,7 @@ class basic_encryption_encoder_stream
 
     }
 
-    basic_encryption_encoder_stream(iencryption_encoder_ptr_type encryptionEncoder, encryption_encoder_properties_interface& props, ostream_type& stream)
+    basic_encryption_encoder_stream(iencryption_encoder_ptr_type encryptionEncoder, encryption_properties_interface& props, ostream_type& stream)
       : std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>(&_encryptionEncoderStreambuf)
       , _encryptionEncoderStreambuf(encryptionEncoder, props, stream)
     {
@@ -41,7 +41,7 @@ class basic_encryption_encoder_stream
       _encryptionEncoderStreambuf.init(encryptionEncoder, stream);
     }
 
-    void init(iencryption_encoder_ptr_type encryptionEncoder, encryption_encoder_properties_interface& props, ostream_type& stream)
+    void init(iencryption_encoder_ptr_type encryptionEncoder, encryption_properties_interface& props, ostream_type& stream)
     {
       _encryptionEncoderStreambuf.init(encryptionEncoder, props, stream);
     }

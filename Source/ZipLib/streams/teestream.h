@@ -1,55 +1,47 @@
 #pragma once
 #include <ostream>
-#include <cstdint>
 #include "streambuffs/tee_streambuff.h"
 
 /**
  * \brief Basic teestream. Distributes the input data into every bound output stream.
  */
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class basic_teestream
-  : public std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>
+class teestream
+  : public std::ostream
 {
   public:
-    basic_teestream()
-      : std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>(&_teeStreambuf)
+    teestream()
+      : std::ostream(&_teeStreambuf)
     {
 
     }
 
-    basic_teestream(basic_teestream<ELEM_TYPE, TRAITS_TYPE>&& other)
-      : basic_teestream()
+    teestream(teestream&& other)
+      : teestream()
     {
       _teeStreambuf = std::move(other._teeStreambuf);
       this->swap(other);
     }
 
-    basic_teestream& bind(std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>* sb)
+    teestream& bind(std::streambuf* sb)
     {
       _teeStreambuf.bind(sb);
       return *this;
     }
 
-    basic_teestream& bind(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream)
+    teestream& bind(std::ostream& stream)
     {
       _teeStreambuf.bind(stream);
       return *this;
     }
 
-    basic_teestream move()
+    teestream move()
     {
       return std::move(*this);
     }
 
   private:
-    basic_teestream(const basic_teestream&) = delete;
-    basic_teestream& operator = (const basic_teestream&) = delete;
+    teestream(const teestream&) = delete;
+    teestream& operator = (const teestream&) = delete;
 
-    tee_streambuf<ELEM_TYPE, TRAITS_TYPE> _teeStreambuf;
+    tee_streambuf _teeStreambuf;
 };
-
-//////////////////////////////////////////////////////////////////////////
-
-typedef basic_teestream<uint8_t, std::char_traits<uint8_t>>  byte_teestream;
-typedef basic_teestream<char, std::char_traits<char>>        teestream;
-typedef basic_teestream<wchar_t, std::char_traits<wchar_t>>  wteestream;

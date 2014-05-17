@@ -5,25 +5,24 @@
 /**
  * \brief Basic CRC32 output stream. Computes CRC32 of input data.
  */
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class basic_crc32stream
-  : public std::basic_istream<ELEM_TYPE, TRAITS_TYPE>
+class crc32stream
+  : public std::istream
 {
   public:
-    basic_crc32stream()
-      : std::basic_istream<ELEM_TYPE, TRAITS_TYPE>(&_crc32Streambuf)
+    crc32stream()
+      : std::istream(&_crc32Streambuf)
     {
 
     }
 
-    basic_crc32stream(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>* stream)
-      : std::basic_istream<ELEM_TYPE, TRAITS_TYPE>(&_crc32Streambuf)
+    crc32stream(std::istream& stream)
+      : std::istream(&_crc32Streambuf)
       , _crc32Streambuf(stream)
     {
 
     }
 
-    void init(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream)
+    void init(std::istream& stream)
     {
       _crc32Streambuf.init(stream);
     }
@@ -34,11 +33,5 @@ class basic_crc32stream
     }
 
   private:
-    crc32_streambuf<ELEM_TYPE, TRAITS_TYPE> _crc32Streambuf;
+    crc32_streambuf _crc32Streambuf;
 };
-
-//////////////////////////////////////////////////////////////////////////
-
-typedef basic_crc32stream<uint8_t, std::char_traits<uint8_t>>  byte_crc32stream;
-typedef basic_crc32stream<char, std::char_traits<char>>        crc32stream;
-typedef basic_crc32stream<wchar_t, std::char_traits<wchar_t>>  wcrc32stream;

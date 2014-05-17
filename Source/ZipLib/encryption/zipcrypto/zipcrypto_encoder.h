@@ -5,20 +5,16 @@
 
 #include <cstdint>
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class basic_zipcrypto_encoder
-  : public encryption_encoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>
+class zipcrypto_encoder
+  : public encryption_encoder_interface
 {
   public:
-    typedef typename encryption_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
-    typedef typename encryption_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
-
-    basic_zipcrypto_encoder()
+    zipcrypto_encoder()
     {
 
     }
 
-    ~basic_zipcrypto_encoder()
+    ~zipcrypto_encoder()
     {
       if (is_init())
       {
@@ -26,20 +22,20 @@ class basic_zipcrypto_encoder
       }
     }
 
-    void init(ostream_type& stream) override
+    void init(std::ostream& stream) override
     {
       zipcrypto_properties props;
       init(stream, props);
     }
 
-    void init(ostream_type& stream, encryption_properties_interface& props) override
+    void init(std::ostream& stream, encryption_properties_interface& props) override
     {
       // init buffers
       zipcrypto_properties& zipcryptoProps = static_cast<zipcrypto_properties&>(props);
       _bufferCapacity = zipcryptoProps.BufferCapacity;
 
       uninit_buffers();
-      _inputBuffer = new ELEM_TYPE[_bufferCapacity];
+      _inputBuffer = new char_type[_bufferCapacity];
 
       // init stream
       _stream = &stream;
@@ -57,12 +53,12 @@ class basic_zipcrypto_encoder
       return _stream != nullptr;
     }
 
-    ELEM_TYPE* get_buffer_begin() override
+    char_type* get_buffer_begin() override
     {
       return _inputBuffer;
     }
 
-    ELEM_TYPE* get_buffer_end() override
+    char_type* get_buffer_end() override
     {
       return _inputBuffer + _bufferCapacity;
     }
@@ -88,7 +84,7 @@ class basic_zipcrypto_encoder
     {
       _zipcrypto.encrypt_header();
       _stream->write(
-        reinterpret_cast<const ELEM_TYPE*>(&_zipcrypto.get_encryption_header()),
+        reinterpret_cast<const char_type*>(&_zipcrypto.get_encryption_header()),
         _zipcrypto.get_encryption_header_size());
 
       _encryptionHeaderWritten = true;
@@ -99,14 +95,10 @@ class basic_zipcrypto_encoder
       delete[] _inputBuffer;
     }
 
-    ELEM_TYPE* _inputBuffer       = nullptr;
+    char_type* _inputBuffer       = nullptr;
     size_t     _bufferCapacity    = 0;
 
-    ostream_type* _stream         = nullptr;
+    std::ostream* _stream         = nullptr;
     detail::zipcrypto _zipcrypto;
     bool _encryptionHeaderWritten = false;
 };
-
-typedef basic_zipcrypto_encoder<uint8_t, std::char_traits<uint8_t>> byte_zipcrypto_encoder;
-typedef basic_zipcrypto_encoder<char, std::char_traits<char>>       zipcrypto_encoder;
-typedef basic_zipcrypto_encoder<wchar_t, std::char_traits<wchar_t>> wzipcrypto_encoder;

@@ -5,38 +5,25 @@
 #include "../substream.h"
 #include "../../extlibs/zlib/zlib.h"
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class crc32_streambuf
-  : public std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>
+  : public std::streambuf
 {
   public:
-    typedef std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE> base_type;
-    typedef typename std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>::traits_type traits_type;
-
-    typedef typename base_type::char_type char_type;
-    typedef typename base_type::int_type  int_type;
-    typedef typename base_type::pos_type  pos_type;
-    typedef typename base_type::off_type  off_type;
-
-    typedef std::basic_ios<ELEM_TYPE, TRAITS_TYPE>     stream_type;
-    typedef std::basic_istream<ELEM_TYPE, TRAITS_TYPE> istream_type;
-    typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_type;
-
     crc32_streambuf()
     {
 
     }
 
-    crc32_streambuf(istream_type& input)
+    crc32_streambuf(std::istream& input)
     {
       init(input);
     }
 
-    void init(istream_type& input)
+    void init(std::istream& input)
     {
       _inputStream = &input;
 
-      ELEM_TYPE* endOfBuffer = _internalBuffer + INTERNAL_BUFFER_SIZE;
+      char_type* endOfBuffer = _internalBuffer + INTERNAL_BUFFER_SIZE;
       this->setg(endOfBuffer, endOfBuffer, endOfBuffer);
     }
 
@@ -69,13 +56,13 @@ class crc32_streambuf
       }
 
       // set buffer pointers, increment current position
-      ELEM_TYPE* base = _internalBufferPosition++;
+      char_type* base = _internalBufferPosition++;
 
       // setting all pointers to the same position forces calling of this method each time,
       // so crc32 really represents the checksum of what really has been read
       this->setg(base, base, base + 1);
 
-      _crc32 = crc32(_crc32, reinterpret_cast<Bytef*>(this->gptr()), static_cast<uInt>(sizeof(ELEM_TYPE)));
+      _crc32 = crc32(_crc32, reinterpret_cast<Bytef*>(this->gptr()), static_cast<uInt>(sizeof(char_type)));
 
       return traits_type::to_int_type(*this->gptr());
     }
@@ -86,10 +73,10 @@ class crc32_streambuf
       INTERNAL_BUFFER_SIZE = 1 << 15
     };
 
-    ELEM_TYPE     _internalBuffer[INTERNAL_BUFFER_SIZE];
-    ELEM_TYPE*    _internalBufferPosition = _internalBuffer + INTERNAL_BUFFER_SIZE;
-    ELEM_TYPE*    _internalBufferEnd      = _internalBuffer + INTERNAL_BUFFER_SIZE;
+    char_type     _internalBuffer[INTERNAL_BUFFER_SIZE];
+    char_type*    _internalBufferPosition = _internalBuffer + INTERNAL_BUFFER_SIZE;
+    char_type*    _internalBufferEnd      = _internalBuffer + INTERNAL_BUFFER_SIZE;
 
-    istream_type* _inputStream = nullptr;
+    std::istream* _inputStream = nullptr;
     uint32_t _crc32 = 0;
 };

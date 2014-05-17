@@ -7,20 +7,16 @@
 
 #include <cstdint>
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class basic_bzip2_decoder
-  : public compression_decoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>
+class bzip2_decoder
+  : public compression_decoder_interface
 {
   public:
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
-
-    basic_bzip2_decoder()
+    bzip2_decoder()
     {
 
     }
 
-    ~basic_bzip2_decoder()
+    ~bzip2_decoder()
     {
       if (is_init())
       {
@@ -29,13 +25,13 @@ class basic_bzip2_decoder
       }
     }
 
-    void init(istream_type& stream) override
+    void init(std::istream& stream) override
     {
       bzip2_properties props;
       init(stream, props);
     }
 
-    void init(istream_type& stream, compression_properties_interface& props) override
+    void init(std::istream& stream, compression_properties_interface& props) override
     {
       // init stream
       _stream = &stream;
@@ -49,8 +45,8 @@ class basic_bzip2_decoder
       _bufferCapacity = bzip2Props.BufferCapacity;
 
       uninit_buffers();
-      _inputBuffer = new ELEM_TYPE[_bufferCapacity];
-      _outputBuffer = new ELEM_TYPE[_bufferCapacity];
+      _inputBuffer = new char_type[_bufferCapacity];
+      _outputBuffer = new char_type[_bufferCapacity];
 
       // init bzip2
       _bzstream.bzalloc = nullptr;
@@ -71,12 +67,12 @@ class basic_bzip2_decoder
       return (_inputBuffer != nullptr && _outputBuffer != nullptr);
     }
 
-    ELEM_TYPE* get_buffer_begin() override
+    char_type* get_buffer_begin() override
     {
       return _outputBuffer;
     }
 
-    ELEM_TYPE* get_buffer_end() override
+    char_type* get_buffer_end() override
     {
       return _outputBuffer + _outputBufferSize;
     }
@@ -123,7 +119,7 @@ class basic_bzip2_decoder
         if (_bzstream.avail_in > 0)
         {
           _stream->clear();
-          _stream->seekg(-static_cast<typename istream_type::off_type>(_bzstream.avail_in), std::ios::cur);
+          _stream->seekg(-static_cast<std::istream::off_type>(_bzstream.avail_in), std::ios::cur);
         }
       }
 
@@ -160,16 +156,12 @@ class basic_bzip2_decoder
     bz_stream   _bzstream;                    // internal bzip2 structure
     int         _lastError        = BZ_OK;    // last error of bzip2 operation
 
-    istream_type* _stream         = nullptr;
+    std::istream* _stream         = nullptr;
     bool       _endOfStream       = false;
 
     size_t     _bufferCapacity    = 0;
     size_t     _inputBufferSize   = 0;        // how many bytes are read in the input buffer
     size_t     _outputBufferSize  = 0;        // how many bytes are written in the output buffer
-    ELEM_TYPE* _inputBuffer       = nullptr;  // pointer to the start of the input buffer
-    ELEM_TYPE* _outputBuffer      = nullptr;  // pointer to the start of the output buffer
+    char_type* _inputBuffer       = nullptr;  // pointer to the start of the input buffer
+    char_type* _outputBuffer      = nullptr;  // pointer to the start of the output buffer
 };
-
-typedef basic_bzip2_decoder<uint8_t, std::char_traits<uint8_t>>  byte_bzip2_decoder;
-typedef basic_bzip2_decoder<char, std::char_traits<char>>        bzip2_decoder;
-typedef basic_bzip2_decoder<wchar_t, std::char_traits<wchar_t>>  wbzip2_decoder;

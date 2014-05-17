@@ -6,42 +6,28 @@
 
 #include "../../encryption/encryption_interface.h"
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class encryption_decoder_streambuf
-  : public std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>
+  : public std::streambuf
 {
   public:
-    typedef std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE> base_type;
-    typedef typename std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>::traits_type traits_type;
-
-    typedef typename base_type::char_type char_type;
-    typedef typename base_type::int_type  int_type;
-    typedef typename base_type::pos_type  pos_type;
-    typedef typename base_type::off_type  off_type;
-
-    typedef std::basic_ios<ELEM_TYPE, TRAITS_TYPE>     stream_type;
-    typedef std::basic_istream<ELEM_TYPE, TRAITS_TYPE> istream_type;
-    typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_type;
-
-    typedef encryption_decoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>  iencryption_decoder_type;
-    typedef std::shared_ptr<iencryption_decoder_type>                   iencryption_decoder_ptr_type;
+    typedef std::shared_ptr<encryption_decoder_interface> encryption_decoder_interface_ptr;
 
     encryption_decoder_streambuf()
     {
 
     }
 
-    encryption_decoder_streambuf(iencryption_decoder_ptr_type encryptionDecoder, istream_type& stream)
+    encryption_decoder_streambuf(encryption_decoder_interface_ptr encryptionDecoder, std::istream& stream)
     {
       init(encryptionDecoder, stream);
     }
 
-    encryption_decoder_streambuf(iencryption_decoder_ptr_type encryptionDecoder, encryption_properties_interface& props, istream_type& stream)
+    encryption_decoder_streambuf(encryption_decoder_interface_ptr encryptionDecoder, encryption_properties_interface& props, std::istream& stream)
     {
       init(encryptionDecoder, props, stream);
     }
 
-    void init(iencryption_decoder_ptr_type encryptionDecoder, istream_type& stream)
+    void init(encryption_decoder_interface_ptr encryptionDecoder, std::istream& stream)
     {
       _encryptionDecoder = encryptionDecoder;
 
@@ -52,7 +38,7 @@ class encryption_decoder_streambuf
       this->setg(_encryptionDecoder->get_buffer_end(), _encryptionDecoder->get_buffer_end(), _encryptionDecoder->get_buffer_end());
     }
 
-    void init(iencryption_decoder_ptr_type encryptionDecoder, encryption_properties_interface& props, istream_type& stream)
+    void init(encryption_decoder_interface_ptr encryptionDecoder, encryption_properties_interface& props, std::istream& stream)
     {
       _encryptionDecoder = encryptionDecoder;
 
@@ -74,7 +60,7 @@ class encryption_decoder_streambuf
       // buffer exhausted
       if (this->gptr() >= this->egptr())
       {
-        ELEM_TYPE* base = _encryptionDecoder->get_buffer_begin();
+        char_type* base = _encryptionDecoder->get_buffer_begin();
 
         // how many bytes has been read
         size_t n = _encryptionDecoder->decrypt_next();
@@ -92,5 +78,5 @@ class encryption_decoder_streambuf
     }
 
   private:
-    iencryption_decoder_ptr_type _encryptionDecoder;
+    encryption_decoder_interface_ptr _encryptionDecoder;
 };

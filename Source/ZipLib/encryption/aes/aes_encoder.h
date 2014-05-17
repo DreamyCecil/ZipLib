@@ -6,20 +6,16 @@
 
 #include <cstdint>
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class basic_aes_encoder
-  : public encryption_encoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>
+class aes_encoder
+  : public encryption_encoder_interface
 {
   public:
-    typedef typename encryption_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
-    typedef typename encryption_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
-
-    basic_aes_encoder()
+    aes_encoder()
     {
 
     }
 
-    ~basic_aes_encoder()
+    ~aes_encoder()
     {
       if (is_init())
       {
@@ -27,20 +23,20 @@ class basic_aes_encoder
       }
     }
 
-    void init(ostream_type& stream) override
+    void init(std::ostream& stream) override
     {
       aes_properties props;
       init(stream, props);
     }
 
-    void init(ostream_type& stream, encryption_properties_interface& props) override
+    void init(std::ostream& stream, encryption_properties_interface& props) override
     {
       // init buffers
       aes_properties& aesProps = static_cast<aes_properties&>(props);
       _bufferCapacity = aesProps.BufferCapacity;
 
       uninit_buffers();
-      _inputBuffer = new ELEM_TYPE[_bufferCapacity];
+      _inputBuffer = new char_type[_bufferCapacity];
 
       // init stream
       _stream = &stream;
@@ -58,12 +54,12 @@ class basic_aes_encoder
       return _stream != nullptr;
     }
 
-    ELEM_TYPE* get_buffer_begin() override
+    char_type* get_buffer_begin() override
     {
       return _inputBuffer;
     }
 
-    ELEM_TYPE* get_buffer_end() override
+    char_type* get_buffer_end() override
     {
       return _inputBuffer + _bufferCapacity;
     }
@@ -99,10 +95,10 @@ class basic_aes_encoder
       delete[] _inputBuffer;
     }
 
-    ELEM_TYPE* _inputBuffer = nullptr;
+    char_type* _inputBuffer = nullptr;
     size_t     _bufferCapacity = 0;
 
-    ostream_type* _stream = nullptr;
+    std::ostream* _stream = nullptr;
 
     struct aes_context
     {
@@ -115,7 +111,3 @@ class basic_aes_encoder
 
     bool _encryptionHeaderWritten = false;
 };
-
-typedef basic_aes_encoder<uint8_t, std::char_traits<uint8_t>> byte_aes_encoder;
-typedef basic_aes_encoder<char, std::char_traits<char>>       aes_encoder;
-typedef basic_aes_encoder<wchar_t, std::char_traits<wchar_t>> waes_encoder;

@@ -6,42 +6,28 @@
 
 #include "../../compression/compression_interface.h"
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class compression_decoder_streambuf
-  : public std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>
+  : public std::streambuf
 {
   public:
-    typedef std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE> base_type;
-    typedef typename std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>::traits_type traits_type;
-
-    typedef typename base_type::char_type char_type;
-    typedef typename base_type::int_type  int_type;
-    typedef typename base_type::pos_type  pos_type;
-    typedef typename base_type::off_type  off_type;
-
-    typedef std::basic_ios<ELEM_TYPE, TRAITS_TYPE>     stream_type;
-    typedef std::basic_istream<ELEM_TYPE, TRAITS_TYPE> istream_type;
-    typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_type;
-
-    typedef compression_decoder_interface_basic<ELEM_TYPE, TRAITS_TYPE> icompression_decoder_type;
-    typedef std::shared_ptr<icompression_decoder_type>                  icompression_decoder_ptr_type;
+    typedef std::shared_ptr<compression_decoder_interface> compression_decoder_interface_ptr;
 
     compression_decoder_streambuf()
     {
 
     }
 
-    compression_decoder_streambuf(icompression_decoder_ptr_type compressionDecoder, istream_type& stream)
+    compression_decoder_streambuf(compression_decoder_interface_ptr compressionDecoder, std::istream& stream)
     {
       init(compressionDecoder, stream);
     }
 
-    compression_decoder_streambuf(icompression_decoder_ptr_type compressionDecoder, compression_properties_interface& props, istream_type& stream)
+    compression_decoder_streambuf(compression_decoder_interface_ptr compressionDecoder, compression_properties_interface& props, std::istream& stream)
     {
       init(compressionDecoder, props, stream);
     }
 
-    void init(icompression_decoder_ptr_type compressionDecoder, istream_type& stream)
+    void init(compression_decoder_interface_ptr compressionDecoder, std::istream& stream)
     {
       _compressionDecoder = compressionDecoder;
 
@@ -52,7 +38,7 @@ class compression_decoder_streambuf
       this->setg(_compressionDecoder->get_buffer_end(), _compressionDecoder->get_buffer_end(), _compressionDecoder->get_buffer_end());
     }
 
-    void init(icompression_decoder_ptr_type compressionDecoder, compression_properties_interface& props, istream_type& stream)
+    void init(compression_decoder_interface_ptr compressionDecoder, compression_properties_interface& props, std::istream& stream)
     {
       _compressionDecoder = compressionDecoder;
 
@@ -74,7 +60,7 @@ class compression_decoder_streambuf
       // buffer exhausted
       if (this->gptr() >= this->egptr())
       {
-        ELEM_TYPE* base = _compressionDecoder->get_buffer_begin();
+        char_type* base = _compressionDecoder->get_buffer_begin();
 
         // how many bytes has been read
         size_t n = _compressionDecoder->decode_next();
@@ -92,5 +78,5 @@ class compression_decoder_streambuf
     }
 
   private:
-    icompression_decoder_ptr_type _compressionDecoder;
+    compression_decoder_interface_ptr _compressionDecoder;
 };

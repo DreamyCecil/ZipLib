@@ -8,20 +8,16 @@
 
 #include <cstdint>
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class basic_lzma_decoder
-  : public compression_decoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>
+class lzma_decoder
+  : public compression_decoder_interface
 {
   public:
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
-
-    basic_lzma_decoder()
+    lzma_decoder()
     {
       LzmaDec_Construct(&_handle);
     }
 
-    ~basic_lzma_decoder()
+    ~lzma_decoder()
     {
       if (is_init())
       {
@@ -30,13 +26,13 @@ class basic_lzma_decoder
       }
     }
 
-    void init(istream_type& stream) override
+    void init(std::istream& stream) override
     {
       lzma_properties props;
       init(stream, props);
     }
 
-    void init(istream_type& stream, compression_properties_interface& props) override
+    void init(std::istream& stream, compression_properties_interface& props) override
     {
       // init stream
       _stream = &stream;
@@ -50,12 +46,12 @@ class basic_lzma_decoder
       _bufferCapacity = lzmaProps.BufferCapacity;
 
       uninit_buffers();
-      _inputBuffer = new ELEM_TYPE[_bufferCapacity];
-      _outputBuffer = new ELEM_TYPE[_bufferCapacity];
+      _inputBuffer = new char_type[_bufferCapacity];
+      _outputBuffer = new char_type[_bufferCapacity];
 
       // read lzma header
       Byte header[LZMA_PROPS_SIZE + 4];
-      _stream->read(reinterpret_cast<ELEM_TYPE*>(header), sizeof(header) / sizeof(ELEM_TYPE));
+      _stream->read(reinterpret_cast<char_type*>(header), sizeof(header) / sizeof(char_type));
 
       // init lzma
       LzmaDec_Allocate(&_handle, &header[4], LZMA_PROPS_SIZE, &_alloc);
@@ -67,12 +63,12 @@ class basic_lzma_decoder
       return (_inputBuffer != nullptr && _outputBuffer != nullptr);
     }
 
-    ELEM_TYPE* get_buffer_begin() override
+    char_type* get_buffer_begin() override
     {
       return _outputBuffer;
     }
 
-    ELEM_TYPE* get_buffer_end() override
+    char_type* get_buffer_end() override
     {
       return _outputBuffer + _outputBufferSize;
     }
@@ -142,15 +138,11 @@ class basic_lzma_decoder
     SizeT _inProcessed            = 0;
     SizeT _outProcessed           = 0;
 
-    istream_type* _stream         = nullptr;
+    std::istream* _stream         = nullptr;
 
     size_t     _bufferCapacity    = 0;
     size_t     _inputBufferSize   = 0;        // how many bytes are read in the input buffer
     size_t     _outputBufferSize  = 0;        // how many bytes are written in the output buffer
-    ELEM_TYPE* _inputBuffer       = nullptr;  // pointer to the start of the input buffer
-    ELEM_TYPE* _outputBuffer      = nullptr;  // pointer to the start of the output buffer
+    char_type* _inputBuffer       = nullptr;  // pointer to the start of the input buffer
+    char_type* _outputBuffer      = nullptr;  // pointer to the start of the output buffer
 };
-
-typedef basic_lzma_decoder<uint8_t, std::char_traits<uint8_t>>  byte_lzma_decoder;
-typedef basic_lzma_decoder<char, std::char_traits<char>>        lzma_decoder;
-typedef basic_lzma_decoder<wchar_t, std::char_traits<wchar_t>>  wlzma_decoder;

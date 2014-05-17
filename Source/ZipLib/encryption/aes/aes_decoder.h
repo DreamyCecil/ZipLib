@@ -6,20 +6,16 @@
 
 #include <cstdint>
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class basic_aes_decoder
-  : public encryption_decoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>
+class aes_decoder
+  : public encryption_decoder_interface
 {
   public:
-    typedef typename encryption_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
-    typedef typename encryption_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
-
-    basic_aes_decoder()
+    aes_decoder()
     {
 
     }
 
-    ~basic_aes_decoder()
+    ~aes_decoder()
     {
       if (is_init())
       {
@@ -27,20 +23,20 @@ class basic_aes_decoder
       }
     }
 
-    void init(istream_type& stream) override
+    void init(std::istream& stream) override
     {
       aes_properties props;
       init(stream, props);
     }
 
-    void init(istream_type& stream, encryption_properties_interface& props) override
+    void init(std::istream& stream, encryption_properties_interface& props) override
     {
       // init buffers
       aes_properties& aesProps = static_cast<aes_properties&>(props);
       _bufferCapacity = aesProps.BufferCapacity;
 
       uninit_buffers();
-      _inputBuffer = new ELEM_TYPE[_bufferCapacity];
+      _inputBuffer = new char_type[_bufferCapacity];
 
       // init stream
       _stream = &stream;
@@ -65,12 +61,12 @@ class basic_aes_decoder
       return _stream != nullptr && _encryptedStream != nullptr && _authCodeStream != nullptr;
     }
 
-    ELEM_TYPE* get_buffer_begin() override
+    char_type* get_buffer_begin() override
     {
       return _inputBuffer;
     }
 
-    ELEM_TYPE* get_buffer_end() override
+    char_type* get_buffer_end() override
     {
       return _inputBuffer + _bufferCapacity;
     }
@@ -137,10 +133,10 @@ class basic_aes_decoder
       delete[] _inputBuffer;
     }
 
-    ELEM_TYPE* _inputBuffer = nullptr;
+    char_type* _inputBuffer = nullptr;
     size_t     _bufferCapacity = 0;
 
-    istream_type* _stream = nullptr;
+    std::istream* _stream = nullptr;
     std::unique_ptr<isubstream> _encryptedStream;
     std::unique_ptr<isubstream> _authCodeStream;
 
@@ -164,7 +160,3 @@ class basic_aes_decoder
     bool _encryptionHeaderRead = false;
     bool _encryptionFooterRead = false;
 };
-
-typedef basic_aes_decoder<uint8_t, std::char_traits<uint8_t>> byte_aes_decoder;
-typedef basic_aes_decoder<char, std::char_traits<char>>       aes_decoder;
-typedef basic_aes_decoder<wchar_t, std::char_traits<wchar_t>> waes_decoder;

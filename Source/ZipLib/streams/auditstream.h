@@ -2,27 +2,24 @@
 #include <iostream>
 #include "streambuffs/audit_streambuf.h"
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class basic_iauditstream
-  : public std::basic_istream<ELEM_TYPE, TRAITS_TYPE>
+class iauditstream
+  : public std::istream
 {
   public:
-    typedef std::basic_ios<ELEM_TYPE, TRAITS_TYPE> stream_type;
-
-    basic_iauditstream()
-      : std::basic_istream<ELEM_TYPE, TRAITS_TYPE>(&_auditStreambuf)
+    iauditstream()
+      : std::istream(&_auditStreambuf)
     {
 
       }
 
-    basic_iauditstream(stream_type& stream)
-      : std::basic_istream<ELEM_TYPE, TRAITS_TYPE>(&_auditStreambuf)
+    iauditstream(std::ios& stream)
+      : std::istream(&_auditStreambuf)
       , _auditStreambuf(stream)
     {
 
     }
 
-    void set_stream(stream_type& stream)
+    void set_stream(std::ios& stream)
     {
       _auditStreambuf.set_stream(stream);
     }
@@ -33,30 +30,27 @@ class basic_iauditstream
     }
 
   private:
-    audit_streambuf<ELEM_TYPE, TRAITS_TYPE> _auditStreambuf;
+    audit_streambuf _auditStreambuf;
 };
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class basic_oauditstream
-  : public std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>
+class oauditstream
+  : public std::ostream
 {
   public:
-    typedef std::basic_ios<ELEM_TYPE, TRAITS_TYPE> stream_type;
-
-    basic_oauditstream()
-      : std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>(&_auditStreambuf)
+    oauditstream()
+      : std::ostream(&_auditStreambuf)
     {
 
       }
 
-    basic_oauditstream(stream_type& stream)
-      : std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>(&_auditStreambuf)
+    oauditstream(std::ios& stream)
+      : std::ostream(&_auditStreambuf)
       , _auditStreambuf(stream)
     {
 
     }
 
-    void set_stream(stream_type& stream)
+    void set_stream(std::ios& stream)
     {
       _auditStreambuf.set_stream(stream);
     }
@@ -67,30 +61,27 @@ class basic_oauditstream
     }
 
   private:
-    audit_streambuf<ELEM_TYPE, TRAITS_TYPE> _auditStreambuf;
+    audit_streambuf _auditStreambuf;
 };
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class basic_ioauditstream
-  : public std::basic_iostream<ELEM_TYPE, TRAITS_TYPE>
+class ioauditstream
+  : public std::iostream
 {
   public:
-    typedef std::basic_ios<ELEM_TYPE, TRAITS_TYPE> stream_type;
-
-    basic_ioauditstream()
-      : std::basic_iostream<ELEM_TYPE, TRAITS_TYPE>(&_auditStreambuf)
+    ioauditstream()
+      : std::iostream(&_auditStreambuf)
     {
 
       }
 
-    basic_ioauditstream(stream_type& stream)
-      : std::basic_iostream<ELEM_TYPE, TRAITS_TYPE>(&_auditStreambuf)
+    ioauditstream(std::ios& stream)
+      : std::iostream(&_auditStreambuf)
       , _auditStreambuf(stream)
     {
 
     }
 
-    void set_stream(stream_type& stream)
+    void set_stream(std::ios& stream)
     {
       _auditStreambuf.set_stream(stream);
     }
@@ -106,19 +97,5 @@ class basic_ioauditstream
     }
 
   private:
-    audit_streambuf<ELEM_TYPE, TRAITS_TYPE> _auditStreambuf;
+    audit_streambuf _auditStreambuf;
 };
-
-//////////////////////////////////////////////////////////////////////////
-
-typedef basic_iauditstream<uint8_t, std::char_traits<uint8_t>>  byte_iauditstream;
-typedef basic_iauditstream<char, std::char_traits<char>>        iauditstream;
-typedef basic_iauditstream<wchar_t, std::char_traits<wchar_t>>  wiauditstream;
-
-typedef basic_oauditstream<uint8_t, std::char_traits<uint8_t>>  byte_oauditstream;
-typedef basic_oauditstream<char, std::char_traits<char>>        oauditstream;
-typedef basic_oauditstream<wchar_t, std::char_traits<wchar_t>>  woauditstream;
-
-typedef basic_ioauditstream<uint8_t, std::char_traits<uint8_t>> byte_ioauditstream;
-typedef basic_ioauditstream<char, std::char_traits<char>>       ioauditstream;
-typedef basic_ioauditstream<wchar_t, std::char_traits<wchar_t>> wioauditstream;

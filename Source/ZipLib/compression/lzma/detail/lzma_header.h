@@ -29,8 +29,7 @@ namespace detail
         LzmaEnc_WriteProperties(handle.get_native_handle(), &_header[4], &headerSize);
       }
 
-      template <typename ELEM_TYPE, typename TRAITS_TYPE>
-      void write_to_stream(detail::lzma_out_stream<ELEM_TYPE, TRAITS_TYPE>& stream)
+      void write_to_stream(detail::lzma_out_stream& stream)
       {
         stream.write(&_header, HEADER_SIZE);
       }

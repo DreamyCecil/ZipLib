@@ -5,21 +5,19 @@
 #include <mutex>
 
 // forward declaration
-template <typename ELEM_TYPE_, typename TRAITS_TYPE_>
-class basic_lzma_encoder;
+class lzma_encoder;
 
 namespace detail
 {
-  template <typename ELEM_TYPE, typename TRAITS_TYPE>
   class lzma_in_stream
     : public ISeqInStream
   {
     public:
-      template <typename ELEM_TYPE_, typename TRAITS_TYPE_>
-      friend class ::basic_lzma_encoder;
+      friend class ::lzma_encoder;
 
-      typedef std::condition_variable event_t;
-      typedef std::mutex              mutex_t;
+      typedef char                    char_type;
+      typedef std::condition_variable event_type;
+      typedef std::mutex              mutex_type;
 
       lzma_in_stream()
       {
@@ -35,8 +33,8 @@ namespace detail
         size_t lastBytesRead = _bytesRead;
 
         // set buffer pointer and get required size
-        _internalInputBuffer = static_cast<ELEM_TYPE*>(buf);
-        _internalBufferSize = *size / sizeof(ELEM_TYPE);
+        _internalInputBuffer = static_cast<char_type*>(buf);
+        _internalBufferSize = *size / sizeof(char_type);
 
         // give control back to the main thread
         set_event();
@@ -61,13 +59,13 @@ namespace detail
     private:
       size_t      _bytesRead            = 0;
       size_t      _internalBufferSize   = 0;
-      ELEM_TYPE*  _internalInputBuffer  = nullptr;
-      event_t     _event;
-      mutex_t     _mutex;
+      char_type*  _internalInputBuffer  = nullptr;
+      event_type  _event;
+      mutex_type  _mutex;
       bool        _endOfStream          = false;
 
-      ELEM_TYPE* get_buffer_begin() { return _internalInputBuffer; }
-      ELEM_TYPE* get_buffer_end() { return _internalInputBuffer + _internalBufferSize; }
+      char_type* get_buffer_begin() { return _internalInputBuffer; }
+      char_type* get_buffer_end() { return _internalInputBuffer + _internalBufferSize; }
 
       void set_event()
       {
@@ -76,7 +74,7 @@ namespace detail
 
       void wait_for_event()
       {
-        std::unique_lock<std::mutex> lk(_mutex);
+        std::unique_lock<mutex_type> lk(_mutex);
         _event.wait(lk);
       }
 

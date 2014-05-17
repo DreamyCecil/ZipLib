@@ -8,20 +8,16 @@
 
 #include <cstdint>
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class basic_store_decoder
-  : public compression_decoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>
+class store_decoder
+  : public compression_decoder_interface
 {
   public:
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
-
-    basic_store_decoder()
+    store_decoder()
     {
 
     }
 
-    ~basic_store_decoder()
+    ~store_decoder()
     {
       if (is_init())
       {
@@ -29,13 +25,13 @@ class basic_store_decoder
       }
     }
 
-    void init(istream_type& stream) override
+    void init(std::istream& stream) override
     {
       store_properties props;
       init(stream, props);
     }
 
-    void init(istream_type& stream, compression_properties_interface& props) override
+    void init(std::istream& stream, compression_properties_interface& props) override
     {
       // init stream
       _stream = &stream;
@@ -48,7 +44,7 @@ class basic_store_decoder
       _bufferCapacity = storeProps.BufferCapacity;
 
       uninit_buffers();
-      _outputBuffer = new ELEM_TYPE[_bufferCapacity];
+      _outputBuffer = new char_type[_bufferCapacity];
     }
 
     bool is_init() const override
@@ -56,12 +52,12 @@ class basic_store_decoder
       return (_outputBuffer != nullptr);
     }
 
-    ELEM_TYPE* get_buffer_begin() override
+    char_type* get_buffer_begin() override
     {
       return _outputBuffer;
     }
 
-    ELEM_TYPE* get_buffer_end() override
+    char_type* get_buffer_end() override
     {
       return _outputBuffer + _outputBufferSize;
     }
@@ -84,13 +80,9 @@ class basic_store_decoder
       delete[] _outputBuffer;
     }
 
-    istream_type* _stream         = nullptr;
+    std::istream* _stream         = nullptr;
 
     size_t     _bufferCapacity    = 0;
     size_t     _outputBufferSize  = 0;        // how many bytes are written in the output buffer
-    ELEM_TYPE* _outputBuffer      = nullptr;  // pointer to the start of the output buffer
+    char_type* _outputBuffer      = nullptr;  // pointer to the start of the output buffer
 };
-
-typedef basic_store_decoder<uint8_t, std::char_traits<uint8_t>>  byte_store_decoder;
-typedef basic_store_decoder<char, std::char_traits<char>>        store_decoder;
-typedef basic_store_decoder<wchar_t, std::char_traits<wchar_t>>  wstore_decoder;

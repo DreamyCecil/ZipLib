@@ -32,7 +32,7 @@ namespace detail {
         return;
       }
 
-      byte_imemstream extraFieldDataStream(extraField.Data.data(), extraField.Data.size());
+      imemstream extraFieldDataStream((const char*)extraField.Data.data(), extraField.Data.size());
 
       uint16_t dummyVendorID;
 
@@ -49,7 +49,7 @@ namespace detail {
 
       extraField.Data.resize(SIZE_IN_BYTES);
 
-      byte_omemstream extraFieldDataStream(extraField.Data.data(), extraField.Data.size());
+      omemstream extraFieldDataStream((char*)extraField.Data.data(), extraField.Data.size());
 
       serialize(extraFieldDataStream, AesVersion);
       serialize(extraFieldDataStream, VendorID);

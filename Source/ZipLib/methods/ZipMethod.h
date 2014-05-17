@@ -37,22 +37,22 @@ class ZipMethod
   : public ZipMethodBase
 {
   public:
-    typedef std::shared_ptr<ENCODER_TYPE> encoder_t;
-    typedef std::shared_ptr<DECODER_TYPE> decoder_t;
-    typedef PROPS_TYPE                    properties_t;
+    typedef std::shared_ptr<ENCODER_TYPE> encoder_type;
+    typedef std::shared_ptr<DECODER_TYPE> decoder_type;
+    typedef PROPS_TYPE                    properties_type;
 
-    void SetEncoder(encoder_t encoder) { _encoder = encoder; }
-    void SetDecoder(decoder_t decoder) { _decoder = decoder; }
+    void SetEncoder(encoder_type encoder) { _encoder = encoder; }
+    void SetDecoder(decoder_type decoder) { _decoder = decoder; }
 
-    encoder_t GetEncoder() const { return _encoder; }
-    decoder_t GetDecoder() const { return _decoder; }
+    encoder_type GetEncoder() const { return _encoder; }
+    decoder_type GetDecoder() const { return _decoder; }
 
-    virtual properties_t& GetProperties() = 0;
+    virtual properties_type& GetProperties() = 0;
 
   protected:
     ZipMethod() { }
 
   private:
-    encoder_t _encoder;
-    decoder_t _decoder;
+    encoder_type _encoder;
+    decoder_type _decoder;
 };

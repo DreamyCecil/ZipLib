@@ -3,37 +3,22 @@
 #include <cstdint>
 #include <cassert>
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class audit_streambuf
-  : public std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>
+  : public std::streambuf
 {
   public:
-    typedef std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE> base_type;
-    typedef typename std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>::traits_type traits_type;
-
-    typedef typename base_type::char_type char_type;
-    typedef typename base_type::int_type  int_type;
-    typedef typename base_type::pos_type  pos_type;
-    typedef typename base_type::off_type  off_type;
-
-    typedef base_type streambuf_type;
-    typedef std::basic_ios<ELEM_TYPE, TRAITS_TYPE>     stream_type;
-    typedef std::basic_istream<ELEM_TYPE, TRAITS_TYPE> istream_type;
-    typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_type;
-
-
     audit_streambuf()
     {
 
     }
 
-    audit_streambuf(stream_type& stream)
+    audit_streambuf(std::ios& stream)
       : _streambuf(stream.rdbuf())
     {
 
     }
 
-    void set_stream(stream_type& stream)
+    void set_stream(std::ios& stream)
     {
       _streambuf = stream.rdbuf();
     }
@@ -71,7 +56,7 @@ class audit_streambuf
       return n;
     }
 
-    std::streamsize xsputn(const ELEM_TYPE* ptr, std::streamsize count) override
+    std::streamsize xsputn(const char_type* ptr, std::streamsize count) override
     {
       auto n = _streambuf->sputn(ptr, count);
       _bytesWritten += static_cast<size_t>(n);
@@ -84,7 +69,7 @@ class audit_streambuf
     }
 
   private:
-    streambuf_type* _streambuf    = nullptr;
+    std::streambuf* _streambuf    = nullptr;
     size_t          _bytesRead    = 0;
     size_t          _bytesWritten = 0;
 };

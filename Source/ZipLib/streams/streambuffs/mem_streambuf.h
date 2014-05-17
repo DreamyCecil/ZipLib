@@ -3,27 +3,14 @@
 #include <cstdint>
 #include <cassert>
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class mem_streambuf
-  : public std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>
+  : public std::streambuf
 {
   public:
-    typedef std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE> base_type;
-    typedef typename std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>::traits_type traits_type;
-
-    typedef typename base_type::char_type char_type;
-    typedef typename base_type::int_type  int_type;
-    typedef typename base_type::pos_type  pos_type;
-    typedef typename base_type::off_type  off_type;
-
-    typedef std::basic_ios<ELEM_TYPE, TRAITS_TYPE>     stream_type;
-    typedef std::basic_istream<ELEM_TYPE, TRAITS_TYPE> istream_type;
-    typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_type;
-
-    mem_streambuf(ELEM_TYPE* buffer, size_t length)
+    mem_streambuf(char_type* buffer, size_t length)
     {
       // set stream buffer
-      ELEM_TYPE* endOfBuffer = buffer + length;
+      char_type* endOfBuffer = buffer + length;
       this->setg(buffer, buffer, endOfBuffer);
       this->setp(buffer, buffer, endOfBuffer);
     }
@@ -198,9 +185,9 @@ class mem_streambuf
     }
 
   private:
-    void setp(ELEM_TYPE* first, ELEM_TYPE* next, ELEM_TYPE* last)
+    void setp(char_type* first, char_type* next, char_type* last)
     {
-      this->std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>::setp(first, last);
+      this->std::streambuf::setp(first, last);
       this->pbump(static_cast<int>(next - first));
     }
 };

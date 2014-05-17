@@ -3,43 +3,30 @@
 #include <istream>
 #include <cstdint>
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class sub_streambuf :
-  public std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>
+class sub_streambuf
+  : public std::streambuf
 {
   public:
-    typedef std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE> base_type;
-    typedef typename std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>::traits_type traits_type;
-
-    typedef typename base_type::char_type char_type;
-    typedef typename base_type::int_type  int_type;
-    typedef typename base_type::pos_type  pos_type;
-    typedef typename base_type::off_type  off_type;
-
-    typedef std::basic_ios<ELEM_TYPE, TRAITS_TYPE>     stream_type;
-    typedef std::basic_istream<ELEM_TYPE, TRAITS_TYPE> istream_type;
-    typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_type;
-
     sub_streambuf()
     {
 
     }
 
-    sub_streambuf(istream_type& input, pos_type startOffset, size_t length)
+    sub_streambuf(std::istream& input, pos_type startOffset, size_t length)
     {
       init(input, startOffset, length);
     }
 
-    void init(istream_type& input, pos_type startOffset, size_t length)
+    void init(std::istream& input, pos_type startOffset, size_t length)
     {
       _inputStream = &input;
       _startPosition = startOffset;
       _currentPosition = startOffset;
       _endPosition = startOffset + static_cast<pos_type>(length);
-      _internalBuffer = new ELEM_TYPE[INTERNAL_BUFFER_SIZE];
+      _internalBuffer = new char_type[INTERNAL_BUFFER_SIZE];
 
       // set stream buffer
-      ELEM_TYPE* endOfOutputBuffer = _internalBuffer + INTERNAL_BUFFER_SIZE;
+      char_type* endOfOutputBuffer = _internalBuffer + INTERNAL_BUFFER_SIZE;
       this->setg(endOfOutputBuffer, endOfOutputBuffer, endOfOutputBuffer);
     }
 
@@ -59,7 +46,7 @@ class sub_streambuf :
       // buffer exhausted
       if (this->gptr() >= this->egptr())
       {
-        ELEM_TYPE* base = _internalBuffer;
+        char_type* base = _internalBuffer;
 
         _inputStream->seekg(_currentPosition, std::ios::beg);
         _inputStream->read(_internalBuffer, std::min(static_cast<size_t>(INTERNAL_BUFFER_SIZE), static_cast<size_t>(_endPosition - _currentPosition)));
@@ -92,7 +79,7 @@ class sub_streambuf :
       _currentPosition = _startPosition + pos;
 
       // invalidate stream buffer
-      ELEM_TYPE* endOfOutputBuffer = _internalBuffer + INTERNAL_BUFFER_SIZE;
+      char_type* endOfOutputBuffer = _internalBuffer + INTERNAL_BUFFER_SIZE;
       this->setg(endOfOutputBuffer, endOfOutputBuffer, endOfOutputBuffer);
 
       return pos_type(_inputStream->rdbuf()->pubseekpos(_startPosition + pos, which) - _startPosition);
@@ -114,7 +101,7 @@ class sub_streambuf :
                     dir == std::ios::end ? _endPosition : 0;
 
       // invalidate stream buffer
-      ELEM_TYPE* endOfOutputBuffer = _internalBuffer + INTERNAL_BUFFER_SIZE;
+      char_type* endOfOutputBuffer = _internalBuffer + INTERNAL_BUFFER_SIZE;
       this->setg(endOfOutputBuffer, endOfOutputBuffer, endOfOutputBuffer);
 
       // set new current position
@@ -129,10 +116,10 @@ class sub_streambuf :
       INTERNAL_BUFFER_SIZE = 1 << 15
     };
 
-    ELEM_TYPE* _internalBuffer = nullptr;
+    char_type*    _internalBuffer = nullptr;
 
-    istream_type* _inputStream = nullptr;
-    pos_type _startPosition = 0;
-    pos_type _currentPosition = 0;
-    pos_type _endPosition = 0;
+    std::istream* _inputStream    = nullptr;
+    pos_type _startPosition       = 0;
+    pos_type _currentPosition     = 0;
+    pos_type _endPosition         = 0;
 };

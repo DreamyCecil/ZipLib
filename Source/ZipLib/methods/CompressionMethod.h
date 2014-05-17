@@ -13,13 +13,13 @@ class CompressionMethod
   , public std::enable_shared_from_this<CompressionMethod>
 {
   public:
-    typedef std::shared_ptr<CompressionMethod>  Ptr;
-    typedef std::shared_ptr<EncryptionMethod>   EncryptionMethodPtr;
-    typedef std::shared_ptr<ZipArchiveEntry>    ZipArchiveEntryPtr;
+    typedef std::shared_ptr<CompressionMethod>      Ptr;
+    typedef std::shared_ptr<EncryptionMethod>       EncryptionMethodPtr;
+    typedef std::shared_ptr<ZipArchiveEntry>        ZipArchiveEntryPtr;
 
-    typedef CompressionMethodBase::encoder_t    encoder_t;
-    typedef CompressionMethodBase::decoder_t    decoder_t;
-    typedef CompressionMethodBase::properties_t properties_t;
+    typedef CompressionMethodBase::encoder_type     encoder_type;
+    typedef CompressionMethodBase::decoder_type     decoder_type;
+    typedef CompressionMethodBase::properties_type  properties_type;
 
     EncryptionMethodPtr GetEncryptionMethod() const;
     void SetEncryptionMethod(EncryptionMethodPtr encryptionMethod);

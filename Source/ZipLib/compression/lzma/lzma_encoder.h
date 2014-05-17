@@ -12,20 +12,16 @@
 #include <thread>
 #include <cstdint>
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class basic_lzma_encoder
-  : public compression_encoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>
+class lzma_encoder
+  : public compression_encoder_interface
 {
   public:
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
-
-    basic_lzma_encoder()
+    lzma_encoder()
     {
 
     }
 
-    ~basic_lzma_encoder()
+    ~lzma_encoder()
     {
       if (is_init())
       {
@@ -33,13 +29,13 @@ class basic_lzma_encoder
       }
     }
 
-    void init(ostream_type& stream) override
+    void init(std::ostream& stream) override
     {
       lzma_properties props;
       init(stream, props);
     }
 
-    void init(ostream_type& stream, compression_properties_interface& props) override
+    void init(std::ostream& stream, compression_properties_interface& props) override
     {
       lzma_properties& lzmaProps = static_cast<lzma_properties&>(props);
 
@@ -54,12 +50,12 @@ class basic_lzma_encoder
       return &_ostream.get_stream() != nullptr;
     }
 
-    ELEM_TYPE* get_buffer_begin() override
+    char_type* get_buffer_begin() override
     {
       return _istream.get_buffer_begin();
     }
 
-    ELEM_TYPE* get_buffer_end() override
+    char_type* get_buffer_end() override
     {
       return _istream.get_buffer_end();
     }
@@ -84,7 +80,7 @@ class basic_lzma_encoder
       header.apply(_handle);
       header.write_to_stream(_ostream);
 
-      _compressionThread = std::thread(&basic_lzma_encoder::encode_threadroutine, this);
+      _compressionThread = std::thread(&lzma_encoder::encode_threadroutine, this);
 
       _istream.wait_for_event();
     }
@@ -96,12 +92,8 @@ class basic_lzma_encoder
 
     detail::lzma_handle _handle;
     detail::lzma_alloc  _alloc;
-    detail::lzma_in_stream<ELEM_TYPE, TRAITS_TYPE>  _istream;
-    detail::lzma_out_stream<ELEM_TYPE, TRAITS_TYPE> _ostream;
+    detail::lzma_in_stream  _istream;
+    detail::lzma_out_stream _ostream;
 
     std::thread _compressionThread;
 };
-
-typedef basic_lzma_encoder<uint8_t, std::char_traits<uint8_t>>  byte_lzma_encoder;
-typedef basic_lzma_encoder<char, std::char_traits<char>>        lzma_encoder;
-typedef basic_lzma_encoder<wchar_t, std::char_traits<wchar_t>>  wlzma_encoder;

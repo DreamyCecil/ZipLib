@@ -16,56 +16,34 @@ struct compression_properties_interface
   size_t BufferCapacity = 1 << 15;
 };
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class compression_interface_basic
+class compression_interface
 {
   public:
-    typedef std::basic_istream<ELEM_TYPE, TRAITS_TYPE> istream_type;
-    typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_type;
+    typedef char char_type;
 
-    virtual ~compression_interface_basic() { }
+    virtual ~compression_interface() { }
 
     virtual bool is_init() const = 0;
 
-    virtual ELEM_TYPE* get_buffer_begin() = 0;
-    virtual ELEM_TYPE* get_buffer_end() = 0;
+    virtual char_type* get_buffer_begin() = 0;
+    virtual char_type* get_buffer_end() = 0;
 };
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class compression_encoder_interface_basic
-  : public compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>
+class compression_encoder_interface
+  : public compression_interface
 {
   public:
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
-
-    virtual void init(ostream_type& stream) = 0;
-    virtual void init(ostream_type& stream, compression_properties_interface& props) = 0;
+    virtual void init(std::ostream& stream) = 0;
+    virtual void init(std::ostream& stream, compression_properties_interface& props) = 0;
     virtual void encode_next(size_t length) = 0;
     virtual void sync() = 0;
 };
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
-class compression_decoder_interface_basic
-  : public compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>
+class compression_decoder_interface
+  : public compression_interface
 {
   public:
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::istream_type istream_type;
-    typedef typename compression_interface_basic<ELEM_TYPE, TRAITS_TYPE>::ostream_type ostream_type;
-
-    virtual void init(istream_type& stream) = 0;
-    virtual void init(istream_type& stream, compression_properties_interface& props) = 0;
+    virtual void init(std::istream& stream) = 0;
+    virtual void init(std::istream& stream, compression_properties_interface& props) = 0;
     virtual size_t decode_next() = 0;
 };
-
-typedef compression_interface_basic<uint8_t, std::char_traits<uint8_t>>           byte_compression_interface;
-typedef compression_interface_basic<char, std::char_traits<char>>                 compression_interface;
-typedef compression_interface_basic<wchar_t, std::char_traits<wchar_t>>           wcompression_interface;
-
-typedef compression_encoder_interface_basic<uint8_t, std::char_traits<uint8_t>>   byte_compression_encoder_interface;
-typedef compression_encoder_interface_basic<char, std::char_traits<char>>         compression_encoder_interface;
-typedef compression_encoder_interface_basic<wchar_t, std::char_traits<wchar_t>>   wcompression_encoder_interface;
-
-typedef compression_decoder_interface_basic<uint8_t, std::char_traits<uint8_t>>   byte_compression_decoder_interface;
-typedef compression_decoder_interface_basic<char, std::char_traits<char>>         compression_decoder_interface;
-typedef compression_decoder_interface_basic<wchar_t, std::char_traits<wchar_t>>   wcompression_decoder_interface;

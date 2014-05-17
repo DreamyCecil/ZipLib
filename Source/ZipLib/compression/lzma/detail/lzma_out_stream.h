@@ -3,12 +3,11 @@
 
 namespace detail
 {
-  template <typename ELEM_TYPE, typename TRAITS_TYPE>
   class lzma_out_stream
     : public ISeqOutStream
   {
     public:
-      typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_type;
+      typedef char char_type;
 
       lzma_out_stream()
       {
@@ -22,18 +21,18 @@ namespace detail
       size_t write(const void* buf, size_t size)
       {
         auto currentPosition = _stream->tellp();
-        _stream->write(reinterpret_cast<const ELEM_TYPE*>(buf), size);
+        _stream->write(reinterpret_cast<const char_type*>(buf), size);
 
         size_t delta = static_cast<size_t>(_stream->tellp()) - static_cast<size_t>(currentPosition);
 
         return delta;
       }
 
-      const ostream_type& get_stream() const { return *_stream; }
-      ostream_type& get_stream() { return *_stream; }
-      void set_stream(ostream_type& stream) { _stream = &stream; }
+      const std::ostream& get_stream() const { return *_stream; }
+      std::ostream& get_stream() { return *_stream; }
+      void set_stream(std::ostream& stream) { _stream = &stream; }
 
     private:
-      ostream_type* _stream = nullptr;
+      std::ostream* _stream = nullptr;
   };
 }

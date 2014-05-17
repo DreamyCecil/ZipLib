@@ -12,10 +12,10 @@ class MethodTemplate
   : public BASE_METHOD_CLASS
 {
   public:
-    typedef std::shared_ptr<METHOD_CLASS> Ptr;
-    typedef typename BASE_METHOD_CLASS::encoder_t encoder_t;
-    typedef typename BASE_METHOD_CLASS::decoder_t decoder_t;
-    typedef typename BASE_METHOD_CLASS::properties_t properties_t;
+    typedef std::shared_ptr<METHOD_CLASS>               Ptr;
+    typedef typename BASE_METHOD_CLASS::encoder_type    encoder_type;
+    typedef typename BASE_METHOD_CLASS::decoder_type    decoder_type;
+    typedef typename BASE_METHOD_CLASS::properties_type properties_type;
 
     static const uint16_t CompressionMethod      = COMPRESSION_METHOD;
     static const uint16_t VersionNeededToExtract = VERSION_NEEDED_TO_EXTRACT;
@@ -31,7 +31,7 @@ class MethodTemplate
       return std::make_shared<METHOD_CLASS>();
     }
 
-    properties_t& GetProperties() override
+    properties_type& GetProperties() override
     {
       _properties.normalize();
       return _properties;

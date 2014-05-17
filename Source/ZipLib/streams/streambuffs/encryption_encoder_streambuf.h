@@ -6,37 +6,23 @@
 
 #include "../../encryption/encryption_interface.h"
 
-template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class encryption_encoder_streambuf
-  : public std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>
+  : public std::streambuf
 {
   public:
-    typedef std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE> base_type;
-    typedef typename std::basic_streambuf<ELEM_TYPE, TRAITS_TYPE>::traits_type traits_type;
-
-    typedef typename base_type::char_type char_type;
-    typedef typename base_type::int_type  int_type;
-    typedef typename base_type::pos_type  pos_type;
-    typedef typename base_type::off_type  off_type;
-
-    typedef std::basic_ios<ELEM_TYPE, TRAITS_TYPE>     stream_type;
-    typedef std::basic_istream<ELEM_TYPE, TRAITS_TYPE> istream_type;
-    typedef std::basic_ostream<ELEM_TYPE, TRAITS_TYPE> ostream_type;
-
-    typedef encryption_encoder_interface_basic<ELEM_TYPE, TRAITS_TYPE>  iencryption_encoder_type;
-    typedef std::shared_ptr<iencryption_encoder_type>                   iencryption_encoder_ptr_type;
+    typedef std::shared_ptr<encryption_encoder_interface> encryption_encoder_interface_ptr;
 
     encryption_encoder_streambuf()
     {
 
     }
 
-    encryption_encoder_streambuf(iencryption_encoder_ptr_type encryptionEncoder, ostream_type& stream)
+    encryption_encoder_streambuf(encryption_encoder_interface_ptr encryptionEncoder, std::ostream& stream)
     {
       init(encryptionEncoder, stream);
     }
 
-    encryption_encoder_streambuf(iencryption_encoder_ptr_type encryptionEncoder, encryption_properties_interface& props, ostream_type& stream)
+    encryption_encoder_streambuf(encryption_encoder_interface_ptr encryptionEncoder, encryption_properties_interface& props, std::ostream& stream)
     {
       init(encryptionEncoder, props, stream);
     }
@@ -46,7 +32,7 @@ class encryption_encoder_streambuf
       sync();
     }
 
-    void init(iencryption_encoder_ptr_type encryptionEncoder, ostream_type& stream)
+    void init(encryption_encoder_interface_ptr encryptionEncoder, std::ostream& stream)
     {
       _encryptionEncoder = encryptionEncoder;
 
@@ -57,7 +43,7 @@ class encryption_encoder_streambuf
       this->setp(_encryptionEncoder->get_buffer_begin(), _encryptionEncoder->get_buffer_end() - 1);
     }
 
-    void init(iencryption_encoder_ptr_type encryptionEncoder, encryption_properties_interface& props, ostream_type& stream)
+    void init(encryption_encoder_interface_ptr encryptionEncoder, encryption_properties_interface& props, std::ostream& stream)
     {
       _encryptionEncoder = encryptionEncoder;
 
@@ -115,5 +101,5 @@ class encryption_encoder_streambuf
       this->setp(_encryptionEncoder->get_buffer_begin(), _encryptionEncoder->get_buffer_end() - 1);
     }
 
-    iencryption_encoder_ptr_type _encryptionEncoder;
+    encryption_encoder_interface_ptr _encryptionEncoder;
 };

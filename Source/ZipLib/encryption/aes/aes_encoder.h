@@ -1,8 +1,8 @@
 #pragma once
-#include "../encryption_interface.h"
-#include "../../streams/serialization.h"
 #include "aes_properties.h"
 #include "detail/aes_impl.h"
+#include "../encryption_interface.h"
+#include "../../utils/stream/serialization.h"
 
 #include <cstdint>
 
@@ -36,7 +36,7 @@ class aes_encoder
       _bufferCapacity = aesProps.BufferCapacity;
 
       uninit_buffers();
-      _inputBuffer = new char_type[_bufferCapacity];
+      _inputBuffer = new uint8_t[_bufferCapacity];
 
       // init stream
       _stream = &stream;
@@ -54,12 +54,12 @@ class aes_encoder
       return _stream != nullptr;
     }
 
-    char_type* get_buffer_begin() override
+    uint8_t* get_buffer_begin() override
     {
       return _inputBuffer;
     }
 
-    char_type* get_buffer_end() override
+    uint8_t* get_buffer_end() override
     {
       return _inputBuffer + _bufferCapacity;
     }
@@ -71,21 +71,21 @@ class aes_encoder
         write_encryption_header();
       }
 
-      _aes.encrypt(reinterpret_cast<uint8_t*>(_inputBuffer), length);
-      _stream->write(_inputBuffer, length);
+      _aes.encrypt(_inputBuffer, length);
+      utils::stream::serialize(*_stream, _inputBuffer, length);
     }
 
     void sync() override
     {
-      serialize(*_stream, _aes.finish());
+      utils::stream::serialize(*_stream, _aes.finish());
       _stream->rdbuf()->pubsync();
     }
 
   private:
     void write_encryption_header()
     {
-      serialize(*_stream, _aesContext.salt.data(), _aesContext.salt.size());
-      serialize(*_stream, _aesContext.passverify);
+      utils::stream::serialize(*_stream, _aesContext.salt.data(), _aesContext.salt.size());
+      utils::stream::serialize(*_stream, _aesContext.passverify);
 
       _encryptionHeaderWritten = true;
     }
@@ -95,7 +95,7 @@ class aes_encoder
       delete[] _inputBuffer;
     }
 
-    char_type* _inputBuffer = nullptr;
+    uint8_t*   _inputBuffer = nullptr;
     size_t     _bufferCapacity = 0;
 
     std::ostream* _stream = nullptr;

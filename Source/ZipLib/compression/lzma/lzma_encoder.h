@@ -1,12 +1,14 @@
 #pragma once
-#include "../compression_interface.h"
-
 #include "lzma_properties.h"
+
 #include "detail/lzma_alloc.h"
 #include "detail/lzma_handle.h"
 #include "detail/lzma_header.h"
 #include "detail/lzma_in_stream.h"
 #include "detail/lzma_out_stream.h"
+
+#include "../compression_interface.h"
+#include "../../utils/stream/serialization.h"
 
 #include <ostream>
 #include <thread>
@@ -50,12 +52,12 @@ class lzma_encoder
       return &_ostream.get_stream() != nullptr;
     }
 
-    char_type* get_buffer_begin() override
+    uint8_t* get_buffer_begin() override
     {
       return _istream.get_buffer_begin();
     }
 
-    char_type* get_buffer_end() override
+    uint8_t* get_buffer_end() override
     {
       return _istream.get_buffer_end();
     }

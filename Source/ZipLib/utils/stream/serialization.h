@@ -5,6 +5,8 @@
 #include <array>
 #include <list>
 
+namespace utils { namespace stream {
+
 namespace detail {
 
   template <typename CONTAINER_TYPE>
@@ -55,6 +57,20 @@ template <typename TYPE, typename ELEM_TYPE, typename TRAITS_TYPE>
 void serialize(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const TYPE& value)
 {
   stream.write(reinterpret_cast<const ELEM_TYPE*>(&value), sizeof(TYPE) / sizeof(ELEM_TYPE));
+}
+
+/**
+ * \brief Serializes native array of the input type.
+ *
+ * \tparam  TYPE      Type of the value to be serialized.
+ * \tparam  N         Deducted array size.
+ * \param   stream    The stream to be serialized into.
+ * \param   value     The value to be serialized.
+ */
+template <typename TYPE, size_t N, typename ELEM_TYPE, typename TRAITS_TYPE>
+void serialize(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const TYPE(&value)[N])
+{
+  stream.write(reinterpret_cast<const ELEM_TYPE*>(value), N * (sizeof(TYPE) / sizeof(ELEM_TYPE)));
 }
 
 /**
@@ -135,6 +151,23 @@ std::ios::pos_type deserialize(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& strea
 }
 
 /**
+ * \brief Deserializes native array of the input type.
+ *
+ * \tparam  RETURN_TYPE  Type of the value to be deserialized.
+ * \tparam  N            Deducted array size.
+ * \param   stream       The stream to be deserialized from.
+ * \param   [out] out    The deserialized value.
+ *
+ * \return  Count of read elements.
+ */
+template <typename RETURN_TYPE, size_t N, typename ELEM_TYPE, typename TRAITS_TYPE>
+std::ios::pos_type deserialize(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, RETURN_TYPE(&out)[N])
+{
+  stream.read(reinterpret_cast<ELEM_TYPE*>(out), N * sizeof(RETURN_TYPE));
+  return stream.gcount();
+}
+
+/**
  * \brief Deserializes the input type from the stream
  *
  * \tparam  RETURN_TYPE  Type of the value to be deserialized.
@@ -205,3 +238,5 @@ std::ios::pos_type deserialize(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& strea
 {
   return detail::deserialize_stl_container(stream, out, out.size());
 }
+
+} }

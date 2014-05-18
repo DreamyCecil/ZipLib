@@ -1,7 +1,8 @@
 #pragma once
-#include "../encryption_interface.h"
 #include "zipcrypto_properties.h"
 #include "detail/zipcrypto.h"
+#include "../encryption_interface.h"
+#include "../../utils/stream/serialization.h"
 
 #include <cstdint>
 
@@ -35,7 +36,7 @@ class zipcrypto_encoder
       _bufferCapacity = zipcryptoProps.BufferCapacity;
 
       uninit_buffers();
-      _inputBuffer = new char_type[_bufferCapacity];
+      _inputBuffer = new uint8_t[_bufferCapacity];
 
       // init stream
       _stream = &stream;
@@ -53,12 +54,12 @@ class zipcrypto_encoder
       return _stream != nullptr;
     }
 
-    char_type* get_buffer_begin() override
+    uint8_t* get_buffer_begin() override
     {
       return _inputBuffer;
     }
 
-    char_type* get_buffer_end() override
+    uint8_t* get_buffer_end() override
     {
       return _inputBuffer + _bufferCapacity;
     }
@@ -70,8 +71,8 @@ class zipcrypto_encoder
         write_encryption_header();
       }
 
-      _zipcrypto.encrypt_buffer(reinterpret_cast<uint8_t*>(_inputBuffer), length);
-      _stream->write(_inputBuffer, length);
+      _zipcrypto.encrypt_buffer(_inputBuffer, length);
+      utils::stream::serialize(*_stream, _inputBuffer, length);
     }
 
     void sync() override
@@ -83,9 +84,11 @@ class zipcrypto_encoder
     void write_encryption_header()
     {
       _zipcrypto.encrypt_header();
-      _stream->write(
-        reinterpret_cast<const char_type*>(&_zipcrypto.get_encryption_header()),
-        _zipcrypto.get_encryption_header_size());
+
+      utils::stream::serialize(
+        *_stream,
+        &_zipcrypto.get_encryption_header(),
+         _zipcrypto.get_encryption_header_size());
 
       _encryptionHeaderWritten = true;
     }
@@ -95,7 +98,7 @@ class zipcrypto_encoder
       delete[] _inputBuffer;
     }
 
-    char_type* _inputBuffer       = nullptr;
+    uint8_t*   _inputBuffer       = nullptr;
     size_t     _bufferCapacity    = 0;
 
     std::ostream* _stream         = nullptr;

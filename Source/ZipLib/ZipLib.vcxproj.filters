@@ -85,6 +85,9 @@
     <Filter Include="Header Files\methods\encryption\detail">
       <UniqueIdentifier>{fdd8531d-8da9-439a-bde5-24b55515a5c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\utils\stream">
+      <UniqueIdentifier>{7aa687c2-d8de-4cdb-a3fb-20076486838b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ZipFile.h">
@@ -133,9 +136,6 @@
       <Filter>Header Files\streams</Filter>
     </ClInclude>
     <ClInclude Include="streams\memstream.h">
-      <Filter>Header Files\streams</Filter>
-    </ClInclude>
-    <ClInclude Include="streams\serialization.h">
       <Filter>Header Files\streams</Filter>
     </ClInclude>
     <ClInclude Include="streams\substream.h">
@@ -323,6 +323,12 @@
     </ClInclude>
     <ClInclude Include="compression\bzip2\bzip2_properties.h">
       <Filter>Header Files\compression\bzip2</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\stream\copy.h">
+      <Filter>Header Files\utils\stream</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\stream\serialization.h">
+      <Filter>Header Files\utils\stream</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

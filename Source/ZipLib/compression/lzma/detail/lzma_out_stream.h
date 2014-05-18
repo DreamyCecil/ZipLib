@@ -1,4 +1,5 @@
 #pragma once
+#include "../../../utils/stream/serialization.h"
 #include "../../../extlibs/lzma/Types.h"
 
 namespace detail
@@ -7,8 +8,6 @@ namespace detail
     : public ISeqOutStream
   {
     public:
-      typedef char char_type;
-
       lzma_out_stream()
       {
         this->Write = [](void* p, const void* buf, size_t size)
@@ -21,7 +20,7 @@ namespace detail
       size_t write(const void* buf, size_t size)
       {
         auto currentPosition = _stream->tellp();
-        _stream->write(reinterpret_cast<const char_type*>(buf), size);
+        utils::stream::serialize(*_stream, buf, size);
 
         size_t delta = static_cast<size_t>(_stream->tellp()) - static_cast<size_t>(currentPosition);
 

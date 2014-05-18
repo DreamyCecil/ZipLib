@@ -1,7 +1,7 @@
 #pragma once
 #include "../../../detail/ZipGenericExtraField.h"
 #include "../../../streams/memstream.h"
-#include "../../../streams/serialization.h"
+#include "../../../utils/stream/serialization.h"
 #include <cstdint>
 
 namespace detail {
@@ -36,10 +36,10 @@ namespace detail {
 
       uint16_t dummyVendorID;
 
-      deserialize(extraFieldDataStream, AesVersion);
-      deserialize(extraFieldDataStream, dummyVendorID);
-      deserialize(extraFieldDataStream, EncryptionMode);
-      deserialize(extraFieldDataStream, CompressionMethod);
+      utils::stream::deserialize(extraFieldDataStream, AesVersion);
+      utils::stream::deserialize(extraFieldDataStream, dummyVendorID);
+      utils::stream::deserialize(extraFieldDataStream, EncryptionMode);
+      utils::stream::deserialize(extraFieldDataStream, CompressionMethod);
     }
 
     void ToExtraField(detail::ZipGenericExtraField& extraField)
@@ -51,10 +51,10 @@ namespace detail {
 
       omemstream extraFieldDataStream((char*)extraField.Data.data(), extraField.Data.size());
 
-      serialize(extraFieldDataStream, AesVersion);
-      serialize(extraFieldDataStream, VendorID);
-      serialize(extraFieldDataStream, EncryptionMode);
-      serialize(extraFieldDataStream, CompressionMethod);
+      utils::stream::serialize(extraFieldDataStream, AesVersion);
+      utils::stream::serialize(extraFieldDataStream, VendorID);
+      utils::stream::serialize(extraFieldDataStream, EncryptionMode);
+      utils::stream::serialize(extraFieldDataStream, CompressionMethod);
     }
   };
 

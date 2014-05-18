@@ -1,9 +1,8 @@
 #pragma once
-#include "../compression_interface.h"
-
-#include "detail/lzma_alloc.h"
 #include "lzma_properties.h"
-
+#include "detail/lzma_alloc.h"
+#include "../compression_interface.h"
+#include "../../utils/stream/serialization.h"
 #include "../../extlibs/lzma/LzmaDec.h"
 
 #include <cstdint>
@@ -46,12 +45,12 @@ class lzma_decoder
       _bufferCapacity = lzmaProps.BufferCapacity;
 
       uninit_buffers();
-      _inputBuffer = new char_type[_bufferCapacity];
-      _outputBuffer = new char_type[_bufferCapacity];
+      _inputBuffer  = new uint8_t[_bufferCapacity];
+      _outputBuffer = new uint8_t[_bufferCapacity];
 
       // read lzma header
-      Byte header[LZMA_PROPS_SIZE + 4];
-      _stream->read(reinterpret_cast<char_type*>(header), sizeof(header) / sizeof(char_type));
+      Byte header[detail::lzma_header::HEADER_SIZE];
+      utils::stream::deserialize(*_stream, header);
 
       // init lzma
       LzmaDec_Allocate(&_handle, &header[4], LZMA_PROPS_SIZE, &_alloc);
@@ -63,12 +62,12 @@ class lzma_decoder
       return (_inputBuffer != nullptr && _outputBuffer != nullptr);
     }
 
-    char_type* get_buffer_begin() override
+    uint8_t* get_buffer_begin() override
     {
       return _outputBuffer;
     }
 
-    char_type* get_buffer_end() override
+    uint8_t* get_buffer_end() override
     {
       return _outputBuffer + _outputBufferSize;
     }
@@ -122,7 +121,7 @@ class lzma_decoder
     void read_next()
     {
       // read next bytes from input stream
-      _stream->read(_inputBuffer, _bufferCapacity);
+      utils::stream::deserialize(*_stream, _inputBuffer, _bufferCapacity);
 
       // set the size of buffer
       _inputBufferSize = static_cast<size_t>(_stream->gcount());
@@ -143,6 +142,6 @@ class lzma_decoder
     size_t     _bufferCapacity    = 0;
     size_t     _inputBufferSize   = 0;        // how many bytes are read in the input buffer
     size_t     _outputBufferSize  = 0;        // how many bytes are written in the output buffer
-    char_type* _inputBuffer       = nullptr;  // pointer to the start of the input buffer
-    char_type* _outputBuffer      = nullptr;  // pointer to the start of the output buffer
+    uint8_t*   _inputBuffer       = nullptr;  // pointer to the start of the input buffer
+    uint8_t*   _outputBuffer      = nullptr;  // pointer to the start of the output buffer
 };

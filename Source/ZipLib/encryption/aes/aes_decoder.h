@@ -1,8 +1,8 @@
 #pragma once
-#include "../encryption_interface.h"
-#include "../../streams/serialization.h"
 #include "aes_properties.h"
 #include "detail/aes_impl.h"
+#include "../encryption_interface.h"
+#include "../../utils/stream/serialization.h"
 
 #include <cstdint>
 
@@ -36,7 +36,7 @@ class aes_decoder
       _bufferCapacity = aesProps.BufferCapacity;
 
       uninit_buffers();
-      _inputBuffer = new char_type[_bufferCapacity];
+      _inputBuffer = new uint8_t[_bufferCapacity];
 
       // init stream
       _stream = &stream;
@@ -61,22 +61,22 @@ class aes_decoder
       return _stream != nullptr && _encryptedStream != nullptr && _authCodeStream != nullptr;
     }
 
-    char_type* get_buffer_begin() override
+    uint8_t* get_buffer_begin() override
     {
       return _inputBuffer;
     }
 
-    char_type* get_buffer_end() override
+    uint8_t* get_buffer_end() override
     {
       return _inputBuffer + _bufferCapacity;
     }
 
     size_t decrypt_next() override
     {
-      _encryptedStream->read(_inputBuffer, _bufferCapacity);
+      utils::stream::deserialize(*_encryptedStream, _inputBuffer, _bufferCapacity);
 
       size_t n = static_cast<size_t>(_encryptedStream->gcount());
-      _aes.decrypt(reinterpret_cast<uint8_t*>(_inputBuffer), n);
+      _aes.decrypt(_inputBuffer, n);
 
       _aesContext.authcode = _aes.finish();
 
@@ -115,15 +115,15 @@ class aes_decoder
 
     void read_encryption_header()
     {
-      deserialize(*_encryptedStream, _aesStoredContext.salt.data(), _aesStoredContext.salt.size());
-      deserialize(*_encryptedStream, _aesStoredContext.passverify);
+      utils::stream::deserialize(*_encryptedStream, _aesStoredContext.salt.data(), _aesStoredContext.salt.size());
+      utils::stream::deserialize(*_encryptedStream, _aesStoredContext.passverify);
 
       _encryptionHeaderRead = true;
     }
 
     void read_encryption_footer()
     {
-      deserialize(*_authCodeStream, _aesStoredContext.authcode);
+      utils::stream::deserialize(*_authCodeStream, _aesStoredContext.authcode);
 
       _encryptionFooterRead = true;
     }
@@ -133,10 +133,10 @@ class aes_decoder
       delete[] _inputBuffer;
     }
 
-    char_type* _inputBuffer = nullptr;
-    size_t     _bufferCapacity = 0;
+    uint8_t*    _inputBuffer    = nullptr;
+    size_t     _bufferCapacity  = 0;
 
-    std::istream* _stream = nullptr;
+    std::istream* _stream       = nullptr;
     std::unique_ptr<isubstream> _encryptedStream;
     std::unique_ptr<isubstream> _authCodeStream;
 
@@ -157,6 +157,6 @@ class aes_decoder
     aes_context         _aesContext;
     aes_stored_context  _aesStoredContext;
 
-    bool _encryptionHeaderRead = false;
-    bool _encryptionFooterRead = false;
+    bool _encryptionHeaderRead  = false;
+    bool _encryptionFooterRead  = false;
 };

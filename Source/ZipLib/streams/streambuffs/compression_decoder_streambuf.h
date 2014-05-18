@@ -35,7 +35,7 @@ class compression_decoder_streambuf
       _compressionDecoder->init(stream);
 
       // set stream buffer
-      this->setg(_compressionDecoder->get_buffer_end(), _compressionDecoder->get_buffer_end(), _compressionDecoder->get_buffer_end());
+      this->setg(get_buffer_end(), get_buffer_end(), get_buffer_end());
     }
 
     void init(compression_decoder_interface_ptr compressionDecoder, compression_properties_interface& props, std::istream& stream)
@@ -46,7 +46,7 @@ class compression_decoder_streambuf
       _compressionDecoder->init(stream, props);
 
       // set stream buffer
-      this->setg(_compressionDecoder->get_buffer_end(), _compressionDecoder->get_buffer_end(), _compressionDecoder->get_buffer_end());
+      this->setg(get_buffer_end(), get_buffer_end(), get_buffer_end());
     }
 
     bool is_init() const
@@ -60,7 +60,7 @@ class compression_decoder_streambuf
       // buffer exhausted
       if (this->gptr() >= this->egptr())
       {
-        char_type* base = _compressionDecoder->get_buffer_begin();
+        char_type* base = get_buffer_begin();
 
         // how many bytes has been read
         size_t n = _compressionDecoder->decode_next();
@@ -78,5 +78,15 @@ class compression_decoder_streambuf
     }
 
   private:
+    char_type* get_buffer_begin()
+    {
+      return reinterpret_cast<char_type*>(_compressionDecoder->get_buffer_begin());
+    }
+
+    char_type* get_buffer_end()
+    {
+      return reinterpret_cast<char_type*>(_compressionDecoder->get_buffer_end());
+    }
+
     compression_decoder_interface_ptr _compressionDecoder;
 };

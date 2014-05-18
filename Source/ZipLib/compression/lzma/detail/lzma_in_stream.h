@@ -15,7 +15,6 @@ namespace detail
     public:
       friend class ::lzma_encoder;
 
-      typedef char                    char_type;
       typedef std::condition_variable event_type;
       typedef std::mutex              mutex_type;
 
@@ -33,8 +32,8 @@ namespace detail
         size_t lastBytesRead = _bytesRead;
 
         // set buffer pointer and get required size
-        _internalInputBuffer = static_cast<char_type*>(buf);
-        _internalBufferSize = *size / sizeof(char_type);
+        _internalInputBuffer = static_cast<uint8_t*>(buf);
+        _internalBufferSize = *size;
 
         // give control back to the main thread
         set_event();
@@ -59,13 +58,13 @@ namespace detail
     private:
       size_t      _bytesRead            = 0;
       size_t      _internalBufferSize   = 0;
-      char_type*  _internalInputBuffer  = nullptr;
+      uint8_t*    _internalInputBuffer  = nullptr;
       event_type  _event;
       mutex_type  _mutex;
       bool        _endOfStream          = false;
 
-      char_type* get_buffer_begin() { return _internalInputBuffer; }
-      char_type* get_buffer_end() { return _internalInputBuffer + _internalBufferSize; }
+      uint8_t* get_buffer_begin() { return _internalInputBuffer; }
+      uint8_t* get_buffer_end() { return _internalInputBuffer + _internalBufferSize; }
 
       void set_event()
       {

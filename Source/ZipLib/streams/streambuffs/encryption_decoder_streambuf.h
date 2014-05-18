@@ -35,7 +35,7 @@ class encryption_decoder_streambuf
       _encryptionDecoder->init(stream);
 
       // set stream buffer
-      this->setg(_encryptionDecoder->get_buffer_end(), _encryptionDecoder->get_buffer_end(), _encryptionDecoder->get_buffer_end());
+      this->setg(get_buffer_end(), get_buffer_end(), get_buffer_end());
     }
 
     void init(encryption_decoder_interface_ptr encryptionDecoder, encryption_properties_interface& props, std::istream& stream)
@@ -46,7 +46,7 @@ class encryption_decoder_streambuf
       _encryptionDecoder->init(stream, props);
 
       // set stream buffer
-      this->setg(_encryptionDecoder->get_buffer_end(), _encryptionDecoder->get_buffer_end(), _encryptionDecoder->get_buffer_end());
+      this->setg(get_buffer_end(), get_buffer_end(), get_buffer_end());
     }
 
     bool is_init() const
@@ -60,7 +60,7 @@ class encryption_decoder_streambuf
       // buffer exhausted
       if (this->gptr() >= this->egptr())
       {
-        char_type* base = _encryptionDecoder->get_buffer_begin();
+        char_type* base = get_buffer_begin();
 
         // how many bytes has been read
         size_t n = _encryptionDecoder->decrypt_next();
@@ -78,5 +78,15 @@ class encryption_decoder_streambuf
     }
 
   private:
+    char_type* get_buffer_begin()
+    {
+      return reinterpret_cast<char_type*>(_encryptionDecoder->get_buffer_begin());
+    }
+
+    char_type* get_buffer_end()
+    {
+      return reinterpret_cast<char_type*>(_encryptionDecoder->get_buffer_end());
+    }
+
     encryption_decoder_interface_ptr _encryptionDecoder;
 };

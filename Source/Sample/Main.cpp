@@ -114,7 +114,7 @@ TEST_METHOD(Sample_ZipArchive_Stream_Deferred_Comment)
   //// this method is only useful for password protected files
   //entry->UseDataDescriptor();
 
-  StoreMethod::Ptr ctx = StoreMethod::Create();
+  LzmaMethod::Ptr ctx = LzmaMethod::Create();
   AesCryptoMethod::Ptr encryptionCtx = AesCryptoMethod::Create();
   encryptionCtx->SetPassword("gogo");
   ctx->SetEncryptionMethod(encryptionCtx);

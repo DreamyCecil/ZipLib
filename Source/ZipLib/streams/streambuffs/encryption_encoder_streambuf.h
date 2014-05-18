@@ -40,7 +40,7 @@ class encryption_encoder_streambuf
       _encryptionEncoder->init(stream);
 
       // set stream buffer
-      this->setp(_encryptionEncoder->get_buffer_begin(), _encryptionEncoder->get_buffer_end() - 1);
+      this->setp(get_buffer_begin(), get_buffer_end() - 1);
     }
 
     void init(encryption_encoder_interface_ptr encryptionEncoder, encryption_properties_interface& props, std::ostream& stream)
@@ -51,7 +51,7 @@ class encryption_encoder_streambuf
       _encryptionEncoder->init(stream, props);
 
       // set stream buffer
-      this->setp(_encryptionEncoder->get_buffer_begin(), _encryptionEncoder->get_buffer_end() - 1);
+      this->setp(get_buffer_begin(), get_buffer_end() - 1);
     }
 
     bool is_init() const
@@ -98,7 +98,17 @@ class encryption_encoder_streambuf
       _encryptionEncoder->encrypt_next(inputLength);
 
       // set pointers for new buffer
-      this->setp(_encryptionEncoder->get_buffer_begin(), _encryptionEncoder->get_buffer_end() - 1);
+      this->setp(get_buffer_begin(), get_buffer_end() - 1);
+    }
+
+    char_type* get_buffer_begin()
+    {
+      return reinterpret_cast<char_type*>(_encryptionEncoder->get_buffer_begin());
+    }
+
+    char_type* get_buffer_end()
+    {
+      return reinterpret_cast<char_type*>(_encryptionEncoder->get_buffer_end());
     }
 
     encryption_encoder_interface_ptr _encryptionEncoder;

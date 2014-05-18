@@ -1,7 +1,7 @@
 #include "ZipLocalFileHeader.h"
 #include "ZipCentralDirectoryFileHeader.h"
 
-#include "../streams/serialization.h"
+#include "../utils/stream/serialization.h"
 
 #include <cstring>
 
@@ -32,21 +32,21 @@ bool ZipLocalFileHeader::Deserialize(std::istream& stream)
 {
   if (sizeof(ZipLocalFileHeaderBase) == ZipLocalFileHeaderBase::SIZE_IN_BYTES)
   {
-    deserialize<ZipLocalFileHeaderBase>(stream, *this);
+    utils::stream::deserialize<ZipLocalFileHeaderBase>(stream, *this);
   }
   else
   {
-    deserialize(stream, Signature);
-    deserialize(stream, VersionNeededToExtract);
-    deserialize(stream, GeneralPurposeBitFlag);
-    deserialize(stream, CompressionMethod);
-    deserialize(stream, LastModificationTime);
-    deserialize(stream, LastModificationDate);
-    deserialize(stream, Crc32);
-    deserialize(stream, CompressedSize);
-    deserialize(stream, UncompressedSize);
-    deserialize(stream, FilenameLength);
-    deserialize(stream, ExtraFieldLength);
+    utils::stream::deserialize(stream, Signature);
+    utils::stream::deserialize(stream, VersionNeededToExtract);
+    utils::stream::deserialize(stream, GeneralPurposeBitFlag);
+    utils::stream::deserialize(stream, CompressionMethod);
+    utils::stream::deserialize(stream, LastModificationTime);
+    utils::stream::deserialize(stream, LastModificationDate);
+    utils::stream::deserialize(stream, Crc32);
+    utils::stream::deserialize(stream, CompressedSize);
+    utils::stream::deserialize(stream, UncompressedSize);
+    utils::stream::deserialize(stream, FilenameLength);
+    utils::stream::deserialize(stream, ExtraFieldLength);
   }
 
   // If there is not any other entry.
@@ -57,7 +57,7 @@ bool ZipLocalFileHeader::Deserialize(std::istream& stream)
     return false;
   }
 
-  deserialize(stream, Filename, FilenameLength);
+  utils::stream::deserialize(stream, Filename, FilenameLength);
 
   if (ExtraFieldLength > 0)
   {
@@ -86,24 +86,24 @@ void ZipLocalFileHeader::Serialize(std::ostream& stream)
 
   if (sizeof(ZipLocalFileHeaderBase) == ZipLocalFileHeaderBase::SIZE_IN_BYTES)
   {
-    serialize<ZipLocalFileHeaderBase>(stream, *this);
+    utils::stream::serialize<ZipLocalFileHeaderBase>(stream, *this);
   }
   else
   {
-    serialize(stream, Signature);
-    serialize(stream, VersionNeededToExtract);
-    serialize(stream, GeneralPurposeBitFlag);
-    serialize(stream, CompressionMethod);
-    serialize(stream, LastModificationTime);
-    serialize(stream, LastModificationDate);
-    serialize(stream, Crc32);
-    serialize(stream, CompressedSize);
-    serialize(stream, UncompressedSize);
-    serialize(stream, FilenameLength);
-    serialize(stream, ExtraFieldLength);
+    utils::stream::serialize(stream, Signature);
+    utils::stream::serialize(stream, VersionNeededToExtract);
+    utils::stream::serialize(stream, GeneralPurposeBitFlag);
+    utils::stream::serialize(stream, CompressionMethod);
+    utils::stream::serialize(stream, LastModificationTime);
+    utils::stream::serialize(stream, LastModificationDate);
+    utils::stream::serialize(stream, Crc32);
+    utils::stream::serialize(stream, CompressedSize);
+    utils::stream::serialize(stream, UncompressedSize);
+    utils::stream::serialize(stream, FilenameLength);
+    utils::stream::serialize(stream, ExtraFieldLength);
   }
 
-  serialize(stream, Filename);
+  utils::stream::serialize(stream, Filename);
 
   if (ExtraFieldLength > 0)
   {
@@ -117,29 +117,29 @@ void ZipLocalFileHeader::Serialize(std::ostream& stream)
 void ZipLocalFileHeader::DeserializeAsDataDescriptor(std::istream& stream)
 {
   uint32_t firstWord;
-  deserialize(stream, firstWord);
+  utils::stream::deserialize(stream, firstWord);
 
   // the signature is optional, if it's missing,
   // we're starting with crc32
   if (firstWord != DataDescriptorSignature)
   {
-    deserialize(stream, Crc32);
+    utils::stream::deserialize(stream, Crc32);
   }
   else
   {
     Crc32 = firstWord;
   }
 
-  deserialize(stream, CompressedSize);
-  deserialize(stream, UncompressedSize);
+  utils::stream::deserialize(stream, CompressedSize);
+  utils::stream::deserialize(stream, UncompressedSize);
 }
 
 void ZipLocalFileHeader::SerializeAsDataDescriptor(std::ostream& stream)
 {
-  serialize(stream, DataDescriptorSignature);
-  serialize(stream, Crc32);
-  serialize(stream, CompressedSize);
-  serialize(stream, UncompressedSize);
+  utils::stream::serialize(stream, DataDescriptorSignature);
+  utils::stream::serialize(stream, Crc32);
+  utils::stream::serialize(stream, CompressedSize);
+  utils::stream::serialize(stream, UncompressedSize);
 }
 
 }

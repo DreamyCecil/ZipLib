@@ -1,8 +1,7 @@
 #pragma once
-#include "../compression_interface.h"
-
 #include "deflate_properties.h"
-
+#include "../compression_interface.h"
+#include "../../utils/stream/serialization.h"
 #include "../../extlibs/zlib/zlib.h"
 
 #include <cstdint>
@@ -41,18 +40,18 @@ class deflate_encoder
       _bufferCapacity = deflateProps.BufferCapacity;
 
       uninit_buffers();
-      _inputBuffer = new char_type[_bufferCapacity];
-      _outputBuffer = new char_type[_bufferCapacity];
+      _inputBuffer        = new uint8_t[_bufferCapacity];
+      _outputBuffer       = new uint8_t[_bufferCapacity];
 
       // init deflate
-      _zstream.zalloc = nullptr;
-      _zstream.zfree = nullptr;
-      _zstream.opaque = nullptr;
+      _zstream.zalloc     = nullptr;
+      _zstream.zfree      = nullptr;
+      _zstream.opaque     = nullptr;
 
-      _zstream.next_in = nullptr;
-      _zstream.next_out = nullptr;
-      _zstream.avail_in = 0;
-      _zstream.avail_out = 0;
+      _zstream.next_in    = nullptr;
+      _zstream.next_out   = nullptr;
+      _zstream.avail_in   = 0;
+      _zstream.avail_out  = 0;
 
       deflateInit2(&_zstream, deflateProps.CompressionLevel, Z_DEFLATED, -MAX_WBITS, 8, Z_DEFAULT_STRATEGY);
     }
@@ -62,12 +61,12 @@ class deflate_encoder
       return _stream != nullptr;
     }
 
-    char_type* get_buffer_begin() override
+    uint8_t* get_buffer_begin() override
     {
       return _inputBuffer;
     }
 
-    char_type* get_buffer_end() override
+    uint8_t* get_buffer_end() override
     {
       return _inputBuffer + _bufferCapacity;
     }
@@ -93,7 +92,7 @@ class deflate_encoder
 
         if (have > 0)
         {
-          _stream->write(_outputBuffer, have);
+          utils::stream::serialize(*_stream, _outputBuffer, have);
         }
       } while (_zstream.avail_out == 0);
     }
@@ -121,6 +120,6 @@ class deflate_encoder
     std::ostream* _stream       = nullptr;
 
     size_t     _bufferCapacity  = 0;
-    char_type* _inputBuffer     = nullptr;  // pointer to the start of the input buffer
-    char_type* _outputBuffer    = nullptr;  // pointer to the start of the output buffer
+    uint8_t*   _inputBuffer     = nullptr;  // pointer to the start of the input buffer
+    uint8_t*   _outputBuffer    = nullptr;  // pointer to the start of the output buffer
 };

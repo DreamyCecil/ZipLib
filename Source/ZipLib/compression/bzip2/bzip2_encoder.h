@@ -1,8 +1,7 @@
 #pragma once
-#include "../compression_interface.h"
-
 #include "bzip2_properties.h"
-
+#include "../compression_interface.h"
+#include "../../utils/stream/serialization.h"
 #include "../../extlibs/bzip2/bzlib.h"
 
 #include <cstdint>
@@ -41,17 +40,17 @@ class bzip2_encoder
       _bufferCapacity = bz2Props.BufferCapacity;
 
       uninit_buffers();
-      _inputBuffer = new char_type[_bufferCapacity];
-      _outputBuffer = new char_type[_bufferCapacity];
+      _inputBuffer        = new uint8_t[_bufferCapacity];
+      _outputBuffer       = new uint8_t[_bufferCapacity];
 
       // init bzip2
-      _bzstream.bzalloc = nullptr;
-      _bzstream.bzfree = nullptr;
-      _bzstream.opaque = nullptr;
+      _bzstream.bzalloc   = nullptr;
+      _bzstream.bzfree    = nullptr;
+      _bzstream.opaque    = nullptr;
 
-      _bzstream.next_in = nullptr;
-      _bzstream.next_out = nullptr;
-      _bzstream.avail_in = 0;
+      _bzstream.next_in   = nullptr;
+      _bzstream.next_out  = nullptr;
+      _bzstream.avail_in  = 0;
       _bzstream.avail_out = 0;
 
       _lastError = BZ2_bzCompressInit(&_bzstream, bz2Props.BlockSize, 0, bz2Props.WorkFactor);
@@ -62,12 +61,12 @@ class bzip2_encoder
       return _stream != nullptr;
     }
 
-    char_type* get_buffer_begin() override
+    uint8_t* get_buffer_begin() override
     {
       return _inputBuffer;
     }
 
-    char_type* get_buffer_end() override
+    uint8_t* get_buffer_end() override
     {
       return _inputBuffer + _bufferCapacity;
     }
@@ -93,7 +92,7 @@ class bzip2_encoder
 
         if (have > 0)
         {
-          _stream->write(_outputBuffer, have);
+          utils::stream::serialize(*_stream, _outputBuffer, have);
         }
       } while (_bzstream.avail_out == 0);
     }
@@ -121,6 +120,6 @@ class bzip2_encoder
     std::ostream* _stream       = nullptr;
 
     size_t     _bufferCapacity  = 0;
-    char_type* _inputBuffer     = nullptr;  // pointer to the start of the input buffer
-    char_type* _outputBuffer    = nullptr;  // pointer to the start of the output buffer
+    uint8_t*   _inputBuffer     = nullptr;  // pointer to the start of the input buffer
+    uint8_t*   _outputBuffer    = nullptr;  // pointer to the start of the output buffer
 };

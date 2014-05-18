@@ -40,7 +40,7 @@ class compression_encoder_streambuf
       _compressionEncoder->init(stream);
 
       // set stream buffer
-      this->setp(_compressionEncoder->get_buffer_begin(), _compressionEncoder->get_buffer_end() - 1);
+      this->setp(get_buffer_begin(), get_buffer_end() - 1);
     }
 
     void init(compression_encoder_interface_ptr compressionEncoder, compression_properties_interface& props, std::ostream& stream)
@@ -51,7 +51,7 @@ class compression_encoder_streambuf
       _compressionEncoder->init(stream, props);
 
       // set stream buffer
-      this->setp(_compressionEncoder->get_buffer_begin(), _compressionEncoder->get_buffer_end() - 1);
+      this->setp(get_buffer_begin(), get_buffer_end() - 1);
     }
 
     bool is_init() const
@@ -98,7 +98,17 @@ class compression_encoder_streambuf
       _compressionEncoder->encode_next(inputLength);
 
       // set pointers for new buffer
-      this->setp(_compressionEncoder->get_buffer_begin(), _compressionEncoder->get_buffer_end() - 1);
+      this->setp(get_buffer_begin(), get_buffer_end() - 1);
+    }
+
+    char_type* get_buffer_begin()
+    {
+      return reinterpret_cast<char_type*>(_compressionEncoder->get_buffer_begin());
+    }
+
+    char_type* get_buffer_end()
+    {
+      return reinterpret_cast<char_type*>(_compressionEncoder->get_buffer_end());
     }
 
     compression_encoder_interface_ptr _compressionEncoder;

@@ -1,7 +1,7 @@
 #include "ZipCentralDirectoryFileHeader.h"
 #include "ZipLocalFileHeader.h"
 
-#include "../streams/serialization.h"
+#include "../utils/stream/serialization.h"
 
 #include <cstring>
 #include <ctime>
@@ -28,27 +28,27 @@ bool ZipCentralDirectoryFileHeader::Deserialize(std::istream& stream)
 {
   if (sizeof(ZipCentralDirectoryFileHeaderBase) == ZipCentralDirectoryFileHeaderBase::SIZE_IN_BYTES)
   {
-    deserialize<ZipCentralDirectoryFileHeaderBase>(stream, *this);
+    utils::stream::deserialize<ZipCentralDirectoryFileHeaderBase>(stream, *this);
   }
   else
   {
-    deserialize(stream, Signature);
-    deserialize(stream, VersionMadeBy);
-    deserialize(stream, VersionNeededToExtract);
-    deserialize(stream, GeneralPurposeBitFlag);
-    deserialize(stream, CompressionMethod);
-    deserialize(stream, LastModificationTime);
-    deserialize(stream, LastModificationDate);
-    deserialize(stream, Crc32);
-    deserialize(stream, CompressedSize);
-    deserialize(stream, UncompressedSize);
-    deserialize(stream, FilenameLength);
-    deserialize(stream, ExtraFieldLength);
-    deserialize(stream, FileCommentLength);
-    deserialize(stream, DiskNumberStart);
-    deserialize(stream, InternalFileAttributes);
-    deserialize(stream, ExternalFileAttributes);
-    deserialize(stream, RelativeOffsetOfLocalHeader);
+    utils::stream::deserialize(stream, Signature);
+    utils::stream::deserialize(stream, VersionMadeBy);
+    utils::stream::deserialize(stream, VersionNeededToExtract);
+    utils::stream::deserialize(stream, GeneralPurposeBitFlag);
+    utils::stream::deserialize(stream, CompressionMethod);
+    utils::stream::deserialize(stream, LastModificationTime);
+    utils::stream::deserialize(stream, LastModificationDate);
+    utils::stream::deserialize(stream, Crc32);
+    utils::stream::deserialize(stream, CompressedSize);
+    utils::stream::deserialize(stream, UncompressedSize);
+    utils::stream::deserialize(stream, FilenameLength);
+    utils::stream::deserialize(stream, ExtraFieldLength);
+    utils::stream::deserialize(stream, FileCommentLength);
+    utils::stream::deserialize(stream, DiskNumberStart);
+    utils::stream::deserialize(stream, InternalFileAttributes);
+    utils::stream::deserialize(stream, ExternalFileAttributes);
+    utils::stream::deserialize(stream, RelativeOffsetOfLocalHeader);
   }
 
   // If there is not any other entry.
@@ -59,7 +59,7 @@ bool ZipCentralDirectoryFileHeader::Deserialize(std::istream& stream)
     return false;
   }
 
-  deserialize(stream, Filename, FilenameLength);
+  utils::stream::deserialize(stream, Filename, FilenameLength);
 
   if (ExtraFieldLength > 0)
   {
@@ -73,7 +73,7 @@ bool ZipCentralDirectoryFileHeader::Deserialize(std::istream& stream)
     }
   }
 
-  deserialize(stream, FileComment, FileCommentLength);
+  utils::stream::deserialize(stream, FileComment, FileCommentLength);
 
   return true;
 }
@@ -91,30 +91,30 @@ void ZipCentralDirectoryFileHeader::Serialize(std::ostream& stream)
 
   if (sizeof(ZipCentralDirectoryFileHeaderBase) == ZipCentralDirectoryFileHeaderBase::SIZE_IN_BYTES)
   {
-    serialize<ZipCentralDirectoryFileHeaderBase>(stream, *this);
+    utils::stream::serialize<ZipCentralDirectoryFileHeaderBase>(stream, *this);
   }
   else
   {
-    serialize(stream, Signature);
-    serialize(stream, VersionMadeBy);
-    serialize(stream, VersionNeededToExtract);
-    serialize(stream, GeneralPurposeBitFlag);
-    serialize(stream, CompressionMethod);
-    serialize(stream, LastModificationTime);
-    serialize(stream, LastModificationDate);
-    serialize(stream, Crc32);
-    serialize(stream, CompressedSize);
-    serialize(stream, UncompressedSize);
-    serialize(stream, FilenameLength);
-    serialize(stream, ExtraFieldLength);
-    serialize(stream, FileCommentLength);
-    serialize(stream, DiskNumberStart);
-    serialize(stream, InternalFileAttributes);
-    serialize(stream, ExternalFileAttributes);
-    serialize(stream, RelativeOffsetOfLocalHeader);
+    utils::stream::serialize(stream, Signature);
+    utils::stream::serialize(stream, VersionMadeBy);
+    utils::stream::serialize(stream, VersionNeededToExtract);
+    utils::stream::serialize(stream, GeneralPurposeBitFlag);
+    utils::stream::serialize(stream, CompressionMethod);
+    utils::stream::serialize(stream, LastModificationTime);
+    utils::stream::serialize(stream, LastModificationDate);
+    utils::stream::serialize(stream, Crc32);
+    utils::stream::serialize(stream, CompressedSize);
+    utils::stream::serialize(stream, UncompressedSize);
+    utils::stream::serialize(stream, FilenameLength);
+    utils::stream::serialize(stream, ExtraFieldLength);
+    utils::stream::serialize(stream, FileCommentLength);
+    utils::stream::serialize(stream, DiskNumberStart);
+    utils::stream::serialize(stream, InternalFileAttributes);
+    utils::stream::serialize(stream, ExternalFileAttributes);
+    utils::stream::serialize(stream, RelativeOffsetOfLocalHeader);
   }
 
-  serialize(stream, Filename);
+  utils::stream::serialize(stream, Filename);
 
   if (ExtraFieldLength > 0)
   {
@@ -124,7 +124,7 @@ void ZipCentralDirectoryFileHeader::Serialize(std::ostream& stream)
     }
   }
 
-  serialize(stream, FileComment);
+  utils::stream::serialize(stream, FileComment);
 }
 
 }

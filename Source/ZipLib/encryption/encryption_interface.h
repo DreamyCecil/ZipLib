@@ -21,14 +21,12 @@ struct encryption_properties_interface
 class encryption_interface
 {
   public:
-    typedef char char_type;
-
     virtual ~encryption_interface() { }
 
     virtual bool is_init() const = 0;
 
-    virtual char_type* get_buffer_begin() = 0;
-    virtual char_type* get_buffer_end() = 0;
+    virtual uint8_t* get_buffer_begin() = 0;
+    virtual uint8_t* get_buffer_end() = 0;
 };
 
 class encryption_encoder_interface

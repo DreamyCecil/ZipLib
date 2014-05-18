@@ -1,8 +1,7 @@
 #pragma once
-#include "../compression_interface.h"
-
 #include "bzip2_properties.h"
-
+#include "../compression_interface.h"
+#include "../../utils/stream/serialization.h"
 #include "../../extlibs/bzip2/bzlib.h"
 
 #include <cstdint>
@@ -45,17 +44,17 @@ class bzip2_decoder
       _bufferCapacity = bzip2Props.BufferCapacity;
 
       uninit_buffers();
-      _inputBuffer = new char_type[_bufferCapacity];
-      _outputBuffer = new char_type[_bufferCapacity];
+      _inputBuffer        = new uint8_t[_bufferCapacity];
+      _outputBuffer       = new uint8_t[_bufferCapacity];
 
       // init bzip2
-      _bzstream.bzalloc = nullptr;
-      _bzstream.bzfree = nullptr;
-      _bzstream.opaque = nullptr;
+      _bzstream.bzalloc   = nullptr;
+      _bzstream.bzfree    = nullptr;
+      _bzstream.opaque    = nullptr;
 
-      _bzstream.next_in = nullptr;
-      _bzstream.next_out = nullptr;
-      _bzstream.avail_in = 0;
+      _bzstream.next_in   = nullptr;
+      _bzstream.next_out  = nullptr;
+      _bzstream.avail_in  = 0;
       _bzstream.avail_out = (unsigned int)-1; // force first load of data
 
       // no verbosity & do not use small memory model
@@ -67,12 +66,12 @@ class bzip2_decoder
       return (_inputBuffer != nullptr && _outputBuffer != nullptr);
     }
 
-    char_type* get_buffer_begin() override
+    uint8_t* get_buffer_begin() override
     {
       return _outputBuffer;
     }
 
-    char_type* get_buffer_end() override
+    uint8_t* get_buffer_end() override
     {
       return _outputBuffer + _outputBufferSize;
     }
@@ -139,7 +138,7 @@ class bzip2_decoder
     void read_next()
     {
       // read next bytes from input stream
-      _stream->read(_inputBuffer, _bufferCapacity);
+      utils::stream::deserialize(*_stream, _inputBuffer, _bufferCapacity);
 
       // set the size of buffer
       _inputBufferSize = static_cast<size_t>(_stream->gcount());
@@ -162,6 +161,6 @@ class bzip2_decoder
     size_t     _bufferCapacity    = 0;
     size_t     _inputBufferSize   = 0;        // how many bytes are read in the input buffer
     size_t     _outputBufferSize  = 0;        // how many bytes are written in the output buffer
-    char_type* _inputBuffer       = nullptr;  // pointer to the start of the input buffer
-    char_type* _outputBuffer      = nullptr;  // pointer to the start of the output buffer
+    uint8_t*   _inputBuffer       = nullptr;  // pointer to the start of the input buffer
+    uint8_t*   _outputBuffer      = nullptr;  // pointer to the start of the output buffer
 };

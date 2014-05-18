@@ -1,9 +1,8 @@
 #pragma once
-#include "../compression_interface.h"
-
 #include "store_properties.h"
-
+#include "../compression_interface.h"
 #include "../../streams/crc32stream.h"
+#include "../../utils/stream/serialization.h"
 #include "../../extlibs/zlib/zlib.h"
 
 #include <cstdint>
@@ -44,7 +43,7 @@ class store_decoder
       _bufferCapacity = storeProps.BufferCapacity;
 
       uninit_buffers();
-      _outputBuffer = new char_type[_bufferCapacity];
+      _outputBuffer = new uint8_t[_bufferCapacity];
     }
 
     bool is_init() const override
@@ -52,12 +51,12 @@ class store_decoder
       return (_outputBuffer != nullptr);
     }
 
-    char_type* get_buffer_begin() override
+    uint8_t* get_buffer_begin() override
     {
       return _outputBuffer;
     }
 
-    char_type* get_buffer_end() override
+    uint8_t* get_buffer_end() override
     {
       return _outputBuffer + _outputBufferSize;
     }
@@ -65,7 +64,7 @@ class store_decoder
     size_t decode_next() override
     {
       // read next bytes from input stream
-      _stream->read(_outputBuffer, _bufferCapacity);
+      utils::stream::deserialize(*_stream, _outputBuffer, _bufferCapacity);
 
       // set the size of buffer
       _outputBufferSize = static_cast<size_t>(_stream->gcount());
@@ -84,5 +83,5 @@ class store_decoder
 
     size_t     _bufferCapacity    = 0;
     size_t     _outputBufferSize  = 0;        // how many bytes are written in the output buffer
-    char_type* _outputBuffer      = nullptr;  // pointer to the start of the output buffer
+    uint8_t*   _outputBuffer      = nullptr;  // pointer to the start of the output buffer
 };

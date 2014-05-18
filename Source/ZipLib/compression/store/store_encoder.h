@@ -1,9 +1,8 @@
 #pragma once
-#include "../compression_interface.h"
-
 #include "store_properties.h"
-
+#include "../compression_interface.h"
 #include "../../streams/crc32stream.h"
+#include "../../utils/stream/serialization.h"
 #include "../../extlibs/zlib/zlib.h"
 
 #include <cstdint>
@@ -41,8 +40,8 @@ class store_encoder
       _bufferCapacity = storeProps.BufferCapacity;
 
       uninit_buffers();
-      _inputBuffer = new char_type[_bufferCapacity];
-      _outputBuffer = new char_type[_bufferCapacity];
+      _inputBuffer  = new uint8_t[_bufferCapacity];
+      _outputBuffer = new uint8_t[_bufferCapacity];
     }
 
     bool is_init() const override
@@ -50,19 +49,19 @@ class store_encoder
       return _stream != nullptr;
     }
 
-    char_type* get_buffer_begin() override
+    uint8_t* get_buffer_begin() override
     {
       return _inputBuffer;
     }
 
-    char_type* get_buffer_end() override
+    uint8_t* get_buffer_end() override
     {
       return _inputBuffer + _bufferCapacity;
     }
 
     void encode_next(size_t length) override
     {
-      _stream->write(_inputBuffer, length);
+      utils::stream::serialize(*_stream, _inputBuffer, length);
     }
 
     void sync() override
@@ -80,6 +79,6 @@ class store_encoder
     std::ostream* _stream       = nullptr;
 
     size_t     _bufferCapacity  = 0;
-    char_type* _inputBuffer     = nullptr;  // pointer to the start of the input buffer
-    char_type* _outputBuffer    = nullptr;  // pointer to the start of the output buffer
+    uint8_t*   _inputBuffer     = nullptr;  // pointer to the start of the input buffer
+    uint8_t*   _outputBuffer    = nullptr;  // pointer to the start of the output buffer
 };

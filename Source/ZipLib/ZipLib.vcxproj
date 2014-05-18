@@ -79,7 +79,6 @@
     <ClInclude Include="streams\encryption_encoder_stream.h" />
     <ClInclude Include="streams\memstream.h" />
     <ClInclude Include="streams\nullstream.h" />
-    <ClInclude Include="streams\serialization.h" />
     <ClInclude Include="streams\streambuffs\audit_streambuf.h" />
     <ClInclude Include="streams\streambuffs\compression_decoder_streambuf.h" />
     <ClInclude Include="streams\streambuffs\compression_encoder_streambuf.h" />
@@ -93,6 +92,8 @@
     <ClInclude Include="streams\substream.h" />
     <ClInclude Include="streams\teestream.h" />
     <ClInclude Include="utils\enum_utils.h" />
+    <ClInclude Include="utils\stream\copy.h" />
+    <ClInclude Include="utils\stream\serialization.h" />
     <ClInclude Include="utils\stream_utils.h" />
     <ClInclude Include="utils\time_utils.h" />
     <ClInclude Include="ZipArchive.h" />
@@ -197,6 +198,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -211,6 +213,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

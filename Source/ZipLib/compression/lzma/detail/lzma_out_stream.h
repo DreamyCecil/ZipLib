@@ -1,5 +1,5 @@
 #pragma once
-#include "../../../utils/stream/serialization.h"
+#include "../../../utils/stream/storage.h"
 #include "../../../extlibs/lzma/Types.h"
 
 namespace detail
@@ -20,7 +20,7 @@ namespace detail
       size_t write(const void* buf, size_t size)
       {
         auto currentPosition = _stream->tellp();
-        utils::stream::serialize(*_stream, buf, size);
+        utils::stream::store(*_stream, buf, size);
 
         size_t delta = static_cast<size_t>(_stream->tellp()) - static_cast<size_t>(currentPosition);
 

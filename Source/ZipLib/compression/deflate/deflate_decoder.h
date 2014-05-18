@@ -1,7 +1,7 @@
 #pragma once
 #include "deflate_properties.h"
 #include "../compression_interface.h"
-#include "../../utils/stream/serialization.h"
+#include "../../utils/stream/storage.h"
 #include "../../extlibs/zlib/zlib.h"  
 
 #include <cstdint>
@@ -137,7 +137,7 @@ class deflate_decoder
     void read_next()
     {
       // read next bytes from input stream
-      utils::stream::deserialize(*_stream, _inputBuffer, _bufferCapacity);
+      utils::stream::load(*_stream, _inputBuffer, _bufferCapacity);
 
       // set the size of buffer
       _inputBufferSize = static_cast<size_t>(_stream->gcount());

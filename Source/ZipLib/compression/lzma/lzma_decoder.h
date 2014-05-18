@@ -2,7 +2,7 @@
 #include "lzma_properties.h"
 #include "detail/lzma_alloc.h"
 #include "../compression_interface.h"
-#include "../../utils/stream/serialization.h"
+#include "../../utils/stream/storage.h"
 #include "../../extlibs/lzma/LzmaDec.h"
 
 #include <cstdint>
@@ -50,7 +50,7 @@ class lzma_decoder
 
       // read lzma header
       Byte header[detail::lzma_header::HEADER_SIZE];
-      utils::stream::deserialize(*_stream, header);
+      utils::stream::load(*_stream, header);
 
       // init lzma
       LzmaDec_Allocate(&_handle, &header[4], LZMA_PROPS_SIZE, &_alloc);
@@ -121,7 +121,7 @@ class lzma_decoder
     void read_next()
     {
       // read next bytes from input stream
-      utils::stream::deserialize(*_stream, _inputBuffer, _bufferCapacity);
+      utils::stream::load(*_stream, _inputBuffer, _bufferCapacity);
 
       // set the size of buffer
       _inputBufferSize = static_cast<size_t>(_stream->gcount());

@@ -93,7 +93,7 @@
     <ClInclude Include="streams\teestream.h" />
     <ClInclude Include="utils\enum_utils.h" />
     <ClInclude Include="utils\stream\copy.h" />
-    <ClInclude Include="utils\stream\serialization.h" />
+    <ClInclude Include="utils\stream\storage.h" />
     <ClInclude Include="utils\stream_utils.h" />
     <ClInclude Include="utils\time_utils.h" />
     <ClInclude Include="ZipArchive.h" />

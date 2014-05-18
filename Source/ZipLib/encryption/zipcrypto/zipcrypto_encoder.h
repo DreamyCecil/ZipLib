@@ -2,7 +2,7 @@
 #include "zipcrypto_properties.h"
 #include "detail/zipcrypto.h"
 #include "../encryption_interface.h"
-#include "../../utils/stream/serialization.h"
+#include "../../utils/stream/storage.h"
 
 #include <cstdint>
 
@@ -72,7 +72,7 @@ class zipcrypto_encoder
       }
 
       _zipcrypto.encrypt_buffer(_inputBuffer, length);
-      utils::stream::serialize(*_stream, _inputBuffer, length);
+      utils::stream::store(*_stream, _inputBuffer, length);
     }
 
     void sync() override
@@ -85,7 +85,7 @@ class zipcrypto_encoder
     {
       _zipcrypto.encrypt_header();
 
-      utils::stream::serialize(
+      utils::stream::store(
         *_stream,
         &_zipcrypto.get_encryption_header(),
          _zipcrypto.get_encryption_header_size());

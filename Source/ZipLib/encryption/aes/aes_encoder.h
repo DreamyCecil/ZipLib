@@ -2,7 +2,7 @@
 #include "aes_properties.h"
 #include "detail/aes_impl.h"
 #include "../encryption_interface.h"
-#include "../../utils/stream/serialization.h"
+#include "../../utils/stream/storage.h"
 
 #include <cstdint>
 
@@ -72,20 +72,20 @@ class aes_encoder
       }
 
       _aes.encrypt(_inputBuffer, length);
-      utils::stream::serialize(*_stream, _inputBuffer, length);
+      utils::stream::store(*_stream, _inputBuffer, length);
     }
 
     void sync() override
     {
-      utils::stream::serialize(*_stream, _aes.finish());
+      utils::stream::store(*_stream, _aes.finish());
       _stream->rdbuf()->pubsync();
     }
 
   private:
     void write_encryption_header()
     {
-      utils::stream::serialize(*_stream, _aesContext.salt.data(), _aesContext.salt.size());
-      utils::stream::serialize(*_stream, _aesContext.passverify);
+      utils::stream::store(*_stream, _aesContext.salt.data(), _aesContext.salt.size());
+      utils::stream::store(*_stream, _aesContext.passverify);
 
       _encryptionHeaderWritten = true;
     }

@@ -1,7 +1,7 @@
 #pragma once
 #include "bzip2_properties.h"
 #include "../compression_interface.h"
-#include "../../utils/stream/serialization.h"
+#include "../../utils/stream/storage.h"
 #include "../../extlibs/bzip2/bzlib.h"
 
 #include <cstdint>
@@ -92,7 +92,7 @@ class bzip2_encoder
 
         if (have > 0)
         {
-          utils::stream::serialize(*_stream, _outputBuffer, have);
+          utils::stream::store(*_stream, _outputBuffer, have);
         }
       } while (_bzstream.avail_out == 0);
     }

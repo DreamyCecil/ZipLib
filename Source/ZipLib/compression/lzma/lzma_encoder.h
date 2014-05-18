@@ -8,7 +8,7 @@
 #include "detail/lzma_out_stream.h"
 
 #include "../compression_interface.h"
-#include "../../utils/stream/serialization.h"
+#include "../../utils/stream/storage.h"
 
 #include <ostream>
 #include <thread>

@@ -2,7 +2,7 @@
 #include "aes_properties.h"
 #include "detail/aes_impl.h"
 #include "../encryption_interface.h"
-#include "../../utils/stream/serialization.h"
+#include "../../utils/stream/storage.h"
 
 #include <cstdint>
 
@@ -73,7 +73,7 @@ class aes_decoder
 
     size_t decrypt_next() override
     {
-      utils::stream::deserialize(*_encryptedStream, _inputBuffer, _bufferCapacity);
+      utils::stream::load(*_encryptedStream, _inputBuffer, _bufferCapacity);
 
       size_t n = static_cast<size_t>(_encryptedStream->gcount());
       _aes.decrypt(_inputBuffer, n);
@@ -115,15 +115,15 @@ class aes_decoder
 
     void read_encryption_header()
     {
-      utils::stream::deserialize(*_encryptedStream, _aesStoredContext.salt.data(), _aesStoredContext.salt.size());
-      utils::stream::deserialize(*_encryptedStream, _aesStoredContext.passverify);
+      utils::stream::load(*_encryptedStream, _aesStoredContext.salt.data(), _aesStoredContext.salt.size());
+      utils::stream::load(*_encryptedStream, _aesStoredContext.passverify);
 
       _encryptionHeaderRead = true;
     }
 
     void read_encryption_footer()
     {
-      utils::stream::deserialize(*_authCodeStream, _aesStoredContext.authcode);
+      utils::stream::load(*_authCodeStream, _aesStoredContext.authcode);
 
       _encryptionFooterRead = true;
     }

@@ -1,5 +1,5 @@
 #include "ZipGenericExtraField.h"
-#include "../utils/stream/serialization.h"
+#include "../utils/stream/storage.h"
 
 namespace detail {
 
@@ -10,15 +10,15 @@ bool ZipGenericExtraField::Deserialize(std::istream& stream, std::istream::pos_t
     return false;
   }
 
-  utils::stream::deserialize(stream, Tag);
-  utils::stream::deserialize(stream, Size);
+  utils::stream::load(stream, Tag);
+  utils::stream::load(stream, Size);
 
   if ((extraFieldEnd - stream.tellg()) < Size)
   {
     return false;
   }
 
-  utils::stream::deserialize(stream, Data, Size);
+  utils::stream::load(stream, Data, Size);
 
   return true;
 }
@@ -27,9 +27,9 @@ void ZipGenericExtraField::Serialize(std::ostream& stream)
 {
   Size = static_cast<uint16_t>(Data.size());
 
-  utils::stream::serialize(stream, Tag);
-  utils::stream::serialize(stream, Size);
-  utils::stream::serialize(stream, Data);
+  utils::stream::store(stream, Tag);
+  utils::stream::store(stream, Size);
+  utils::stream::store(stream, Data);
 }
 
 }

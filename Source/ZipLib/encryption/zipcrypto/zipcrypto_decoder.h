@@ -2,7 +2,7 @@
 #include "zipcrypto_properties.h"
 #include "detail/zipcrypto.h"
 #include "../encryption_interface.h"
-#include "../../utils/stream/serialization.h"
+#include "../../utils/stream/storage.h"
 #include "../../extlibs/zlib/zconf.h"
 
 #include <cstdint>
@@ -75,7 +75,7 @@ class zipcrypto_decoder
         read_encryption_header();
       }
 
-      utils::stream::deserialize(*_stream, _inputBuffer, _bufferCapacity);
+      utils::stream::load(*_stream, _inputBuffer, _bufferCapacity);
 
       size_t n = static_cast<size_t>(_stream->gcount());
       _zipcrypto.decrypt_buffer(_inputBuffer, n);
@@ -91,7 +91,7 @@ class zipcrypto_decoder
   private:
     void read_encryption_header()
     {
-      utils::stream::deserialize(
+      utils::stream::load(
         *_stream,
         &_zipcrypto.get_encryption_header(),
          _zipcrypto.get_encryption_header_size());

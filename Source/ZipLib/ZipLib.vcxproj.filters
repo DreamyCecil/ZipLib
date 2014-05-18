@@ -327,7 +327,7 @@
     <ClInclude Include="utils\stream\copy.h">
       <Filter>Header Files\utils\stream</Filter>
     </ClInclude>
-    <ClInclude Include="utils\stream\serialization.h">
+    <ClInclude Include="utils\stream\storage.h">
       <Filter>Header Files\utils\stream</Filter>
     </ClInclude>
   </ItemGroup>

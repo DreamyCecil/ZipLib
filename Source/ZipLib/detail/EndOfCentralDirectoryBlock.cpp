@@ -1,5 +1,5 @@
 #include "EndOfCentralDirectoryBlock.h"
-#include "../utils/stream/serialization.h"
+#include "../utils/stream/storage.h"
 #include <cstring>
 
 namespace detail {
@@ -15,21 +15,21 @@ bool EndOfCentralDirectoryBlock::Deserialize(std::istream& stream)
   // this condition should be optimized out :)
   if (sizeof(EndOfCentralDirectoryBlockBase) == EndOfCentralDirectoryBlockBase::SIZE_IN_BYTES)
   {
-    utils::stream::deserialize<EndOfCentralDirectoryBlockBase>(stream, *this);
+    utils::stream::load<EndOfCentralDirectoryBlockBase>(stream, *this);
   }
   else
   {
-    utils::stream::deserialize(stream, Signature);
-    utils::stream::deserialize(stream, NumberOfThisDisk);
-    utils::stream::deserialize(stream, NumberOfTheDiskWithTheStartOfTheCentralDirectory);
-    utils::stream::deserialize(stream, NumberOfEntriesInTheCentralDirectoryOnThisDisk);
-    utils::stream::deserialize(stream, NumberOfEntriesInTheCentralDirectory);
-    utils::stream::deserialize(stream, SizeOfCentralDirectory);
-    utils::stream::deserialize(stream, OffsetOfStartOfCentralDirectoryWithRespectToTheStartingDiskNumber);
-    utils::stream::deserialize(stream, CommentLength);
+    utils::stream::load(stream, Signature);
+    utils::stream::load(stream, NumberOfThisDisk);
+    utils::stream::load(stream, NumberOfTheDiskWithTheStartOfTheCentralDirectory);
+    utils::stream::load(stream, NumberOfEntriesInTheCentralDirectoryOnThisDisk);
+    utils::stream::load(stream, NumberOfEntriesInTheCentralDirectory);
+    utils::stream::load(stream, SizeOfCentralDirectory);
+    utils::stream::load(stream, OffsetOfStartOfCentralDirectoryWithRespectToTheStartingDiskNumber);
+    utils::stream::load(stream, CommentLength);
   }
 
-  utils::stream::deserialize(stream, Comment, CommentLength);
+  utils::stream::load(stream, Comment, CommentLength);
 
   return true;
 }
@@ -40,21 +40,21 @@ void EndOfCentralDirectoryBlock::Serialize(std::ostream& stream)
  
   if (sizeof(EndOfCentralDirectoryBlockBase) == EndOfCentralDirectoryBlockBase::SIZE_IN_BYTES)
   {
-    utils::stream::serialize<EndOfCentralDirectoryBlockBase>(stream, *this);
+    utils::stream::store<EndOfCentralDirectoryBlockBase>(stream, *this);
   }
   else
   {
-    utils::stream::serialize(stream, Signature);
-    utils::stream::serialize(stream, NumberOfThisDisk);
-    utils::stream::serialize(stream, NumberOfTheDiskWithTheStartOfTheCentralDirectory);
-    utils::stream::serialize(stream, NumberOfEntriesInTheCentralDirectoryOnThisDisk);
-    utils::stream::serialize(stream, NumberOfEntriesInTheCentralDirectory);
-    utils::stream::serialize(stream, SizeOfCentralDirectory);
-    utils::stream::serialize(stream, OffsetOfStartOfCentralDirectoryWithRespectToTheStartingDiskNumber);
-    utils::stream::serialize(stream, CommentLength);
+    utils::stream::store(stream, Signature);
+    utils::stream::store(stream, NumberOfThisDisk);
+    utils::stream::store(stream, NumberOfTheDiskWithTheStartOfTheCentralDirectory);
+    utils::stream::store(stream, NumberOfEntriesInTheCentralDirectoryOnThisDisk);
+    utils::stream::store(stream, NumberOfEntriesInTheCentralDirectory);
+    utils::stream::store(stream, SizeOfCentralDirectory);
+    utils::stream::store(stream, OffsetOfStartOfCentralDirectoryWithRespectToTheStartingDiskNumber);
+    utils::stream::store(stream, CommentLength);
   }
 
-  utils::stream::serialize(stream, Comment);
+  utils::stream::store(stream, Comment);
 }
 
 }

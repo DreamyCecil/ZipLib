@@ -2,7 +2,7 @@
 #include "store_properties.h"
 #include "../compression_interface.h"
 #include "../../streams/crc32stream.h"
-#include "../../utils/stream/serialization.h"
+#include "../../utils/stream/storage.h"
 #include "../../extlibs/zlib/zlib.h"
 
 #include <cstdint>
@@ -64,7 +64,7 @@ class store_decoder
     size_t decode_next() override
     {
       // read next bytes from input stream
-      utils::stream::deserialize(*_stream, _outputBuffer, _bufferCapacity);
+      utils::stream::load(*_stream, _outputBuffer, _bufferCapacity);
 
       // set the size of buffer
       _outputBufferSize = static_cast<size_t>(_stream->gcount());

@@ -1,5 +1,5 @@
 #include "ZipArchive.h"
-#include "utils/stream/serialization.h"
+#include "utils/stream/storage.h"
 
 #include <algorithm>
 #include <cassert>
@@ -197,7 +197,7 @@ bool ZipArchive::SeekToSignature(uint32_t signature, SeekDirection direction)
 
   while (!_zipStream->eof() && !_zipStream->fail())
   {
-    utils::stream::deserialize(*_zipStream, buffer);
+    utils::stream::load(*_zipStream, buffer);
 
     if (buffer == signature)
     {

@@ -2,7 +2,7 @@
 #include "store_properties.h"
 #include "../compression_interface.h"
 #include "../../streams/crc32stream.h"
-#include "../../utils/stream/serialization.h"
+#include "../../utils/stream/storage.h"
 #include "../../extlibs/zlib/zlib.h"
 
 #include <cstdint>
@@ -61,7 +61,7 @@ class store_encoder
 
     void encode_next(size_t length) override
     {
-      utils::stream::serialize(*_stream, _inputBuffer, length);
+      utils::stream::store(*_stream, _inputBuffer, length);
     }
 
     void sync() override

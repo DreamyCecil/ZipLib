@@ -22,7 +22,7 @@ namespace detail {
   }
 
   template <typename ELEM_TYPE, typename TRAITS_TYPE, typename CONTAINER_TYPE>
-  void serialize_stl_container(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const CONTAINER_TYPE& value)
+  void store_stl_container(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const CONTAINER_TYPE& value)
   {
     static_assert(sizeof(ELEM_TYPE) == sizeof(CONTAINER_TYPE::value_type), "sizes must match");
 
@@ -30,7 +30,7 @@ namespace detail {
   }
 
   template <typename ELEM_TYPE, typename TRAITS_TYPE, typename CONTAINER_TYPE>
-  std::ios::pos_type deserialize_stl_container(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, CONTAINER_TYPE& out, size_t size)
+  std::ios::pos_type load_stl_container(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, CONTAINER_TYPE& out, size_t size)
   {
     static_assert(sizeof(ELEM_TYPE) == sizeof(CONTAINER_TYPE::value_type), "sizes must match");
 
@@ -54,7 +54,7 @@ namespace detail {
  * \param   value     The value to be serialized.
  */
 template <typename TYPE, typename ELEM_TYPE, typename TRAITS_TYPE>
-void serialize(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const TYPE& value)
+void store(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const TYPE& value)
 {
   stream.write(reinterpret_cast<const ELEM_TYPE*>(&value), sizeof(TYPE) / sizeof(ELEM_TYPE));
 }
@@ -68,7 +68,7 @@ void serialize(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const TYPE& v
  * \param   value     The value to be serialized.
  */
 template <typename TYPE, size_t N, typename ELEM_TYPE, typename TRAITS_TYPE>
-void serialize(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const TYPE(&value)[N])
+void store(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const TYPE(&value)[N])
 {
   stream.write(reinterpret_cast<const ELEM_TYPE*>(value), N * (sizeof(TYPE) / sizeof(ELEM_TYPE)));
 }
@@ -82,7 +82,7 @@ void serialize(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const TYPE(&v
  * \param   size      Amount of TYPE to be written.
  */
 template <typename TYPE, typename ELEM_TYPE, typename TRAITS_TYPE>
-void serialize(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const TYPE* value, size_t size)
+void store(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const TYPE* value, size_t size)
 {
   stream.write(reinterpret_cast<const ELEM_TYPE*>(value), size);
 }
@@ -93,9 +93,9 @@ void serialize(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const TYPE* v
  * \param   value     The string to be serialized.
  */
 template <typename ELEM_TYPE, typename TRAITS_TYPE, typename ALLOCATOR_TYPE>
-void serialize(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const std::basic_string<ELEM_TYPE, TRAITS_TYPE, ALLOCATOR_TYPE>& value)
+void store(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const std::basic_string<ELEM_TYPE, TRAITS_TYPE, ALLOCATOR_TYPE>& value)
 {
-  detail::serialize_stl_container(stream, value);
+  detail::store_stl_container(stream, value);
 }
 
 /**
@@ -105,9 +105,9 @@ void serialize(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const std::ba
  * \param   value     The vector to be serialized.
  */
 template <typename ELEM_TYPE, typename TRAITS_TYPE, typename VECTOR_ELEM_TYPE, typename ALLOCATOR_TYPE>
-void serialize(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const std::vector<VECTOR_ELEM_TYPE, ALLOCATOR_TYPE>& value)
+void store(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const std::vector<VECTOR_ELEM_TYPE, ALLOCATOR_TYPE>& value)
 {
-  detail::serialize_stl_container(stream, value);
+  detail::store_stl_container(stream, value);
 }
 
 /**
@@ -117,9 +117,9 @@ void serialize(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const std::ve
  * \param   value     The list to be serialized.
  */
 template <typename ELEM_TYPE, typename TRAITS_TYPE, typename LIST_ELEM_TYPE, typename ALLOCATOR_TYPE>
-void serialize(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const std::list<LIST_ELEM_TYPE, ALLOCATOR_TYPE>& value)
+void store(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const std::list<LIST_ELEM_TYPE, ALLOCATOR_TYPE>& value)
 {
-  detail::serialize_stl_container(stream, value);
+  detail::store_stl_container(stream, value);
 }
 
 /**
@@ -129,9 +129,9 @@ void serialize(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const std::li
  * \param   value     The array to be serialized.
  */
 template <typename ELEM_TYPE, typename TRAITS_TYPE, typename ARRAY_ELEM_TYPE, size_t ARRAY_SIZE>
-void serialize(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const std::array<ARRAY_ELEM_TYPE, ARRAY_SIZE>& value)
+void store(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const std::array<ARRAY_ELEM_TYPE, ARRAY_SIZE>& value)
 {
-  detail::serialize_stl_container(stream, value);
+  detail::store_stl_container(stream, value);
 }
 
 /**
@@ -144,7 +144,7 @@ void serialize(std::basic_ostream<ELEM_TYPE, TRAITS_TYPE>& stream, const std::ar
  * \return  Count of read elements.
  */
 template <typename RETURN_TYPE, typename ELEM_TYPE, typename TRAITS_TYPE>
-std::ios::pos_type deserialize(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, RETURN_TYPE& out)
+std::ios::pos_type load(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, RETURN_TYPE& out)
 {
   stream.read(reinterpret_cast<ELEM_TYPE*>(&out), sizeof(RETURN_TYPE));
   return stream.gcount();
@@ -161,7 +161,7 @@ std::ios::pos_type deserialize(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& strea
  * \return  Count of read elements.
  */
 template <typename RETURN_TYPE, size_t N, typename ELEM_TYPE, typename TRAITS_TYPE>
-std::ios::pos_type deserialize(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, RETURN_TYPE(&out)[N])
+std::ios::pos_type load(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, RETURN_TYPE(&out)[N])
 {
   stream.read(reinterpret_cast<ELEM_TYPE*>(out), N * sizeof(RETURN_TYPE));
   return stream.gcount();
@@ -178,7 +178,7 @@ std::ios::pos_type deserialize(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& strea
  * \return  Count of read elements.
  */
 template <typename RETURN_TYPE, typename ELEM_TYPE, typename TRAITS_TYPE>
-std::ios::pos_type deserialize(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, RETURN_TYPE* out, size_t size)
+std::ios::pos_type load(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, RETURN_TYPE* out, size_t size)
 {
   stream.read(reinterpret_cast<ELEM_TYPE*>(out), size);
   return stream.gcount();
@@ -193,9 +193,9 @@ std::ios::pos_type deserialize(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& strea
  * \return  Count of read elements.
  */
 template <typename ELEM_TYPE, typename TRAITS_TYPE, typename ALLOCATOR_TYPE>
-std::ios::pos_type deserialize(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, std::basic_string<ELEM_TYPE, TRAITS_TYPE, ALLOCATOR_TYPE>& out, size_t size)
+std::ios::pos_type load(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, std::basic_string<ELEM_TYPE, TRAITS_TYPE, ALLOCATOR_TYPE>& out, size_t size)
 {
-  return detail::deserialize_stl_container(stream, out, size);
+  return detail::load_stl_container(stream, out, size);
 }
 
 /**
@@ -207,9 +207,9 @@ std::ios::pos_type deserialize(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& strea
  * \return  Count of read elements.
  */
 template <typename ELEM_TYPE, typename TRAITS_TYPE, typename VECTOR_ELEM_TYPE, typename ALLOCATOR_TYPE>
-std::ios::pos_type deserialize(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, std::vector<VECTOR_ELEM_TYPE, ALLOCATOR_TYPE>& out, size_t size)
+std::ios::pos_type load(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, std::vector<VECTOR_ELEM_TYPE, ALLOCATOR_TYPE>& out, size_t size)
 {
-  return detail::deserialize_stl_container(stream, out, size);
+  return detail::load_stl_container(stream, out, size);
 }
 
 /**
@@ -221,9 +221,9 @@ std::ios::pos_type deserialize(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& strea
  * \return  Count of read elements.
  */
 template <typename ELEM_TYPE, typename TRAITS_TYPE, typename LIST_ELEM_TYPE, typename ALLOCATOR_TYPE>
-std::ios::pos_type deserialize(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, std::list<LIST_ELEM_TYPE, ALLOCATOR_TYPE>& out, size_t size)
+std::ios::pos_type load(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, std::list<LIST_ELEM_TYPE, ALLOCATOR_TYPE>& out, size_t size)
 {
-  return detail::deserialize_stl_container(stream, out, size);
+  return detail::load_stl_container(stream, out, size);
 }
 
 /**
@@ -234,9 +234,9 @@ std::ios::pos_type deserialize(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& strea
  * \return  Count of read elements.
  */
 template <typename ELEM_TYPE, typename TRAITS_TYPE, typename ARRAY_ELEM_TYPE, size_t ARRAY_SIZE>
-std::ios::pos_type deserialize(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, std::array<ARRAY_ELEM_TYPE, ARRAY_SIZE>& out)
+std::ios::pos_type load(std::basic_istream<ELEM_TYPE, TRAITS_TYPE>& stream, std::array<ARRAY_ELEM_TYPE, ARRAY_SIZE>& out)
 {
-  return detail::deserialize_stl_container(stream, out, out.size());
+  return detail::load_stl_container(stream, out, out.size());
 }
 
 } }

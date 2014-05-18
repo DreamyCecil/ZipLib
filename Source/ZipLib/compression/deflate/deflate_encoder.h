@@ -1,7 +1,7 @@
 #pragma once
 #include "deflate_properties.h"
 #include "../compression_interface.h"
-#include "../../utils/stream/serialization.h"
+#include "../../utils/stream/storage.h"
 #include "../../extlibs/zlib/zlib.h"
 
 #include <cstdint>
@@ -92,7 +92,7 @@ class deflate_encoder
 
         if (have > 0)
         {
-          utils::stream::serialize(*_stream, _outputBuffer, have);
+          utils::stream::store(*_stream, _outputBuffer, have);
         }
       } while (_zstream.avail_out == 0);
     }

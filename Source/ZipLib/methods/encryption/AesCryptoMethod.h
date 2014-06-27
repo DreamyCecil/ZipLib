@@ -23,6 +23,21 @@ class AesCryptoMethod :
     typedef aes_encryption_mode EncryptionMode;
     typedef aes_version Version;
 
+    static AesCryptoMethod::Ptr CreateWithMode(EncryptionMode encryptionMode)
+    {
+      auto encryptionMethod = std::make_shared<AesCryptoMethod>();
+      encryptionMethod->SetEncryptionMode(encryptionMode);
+      return encryptionMethod;
+    }
+
+    static AesCryptoMethod::Ptr CreateWithPasswordAndMode(const std::string& password, EncryptionMode encryptionMode)
+    {
+      auto encryptionMethod = std::make_shared<AesCryptoMethod>();
+      encryptionMethod->SetPassword(password);
+      encryptionMethod->SetEncryptionMode(encryptionMode);
+      return encryptionMethod;
+    }
+
     const std::string& GetPassword() const override { return _properties.Password; }
     void SetPassword(const std::string& password) override { _properties.Password = password; }
 

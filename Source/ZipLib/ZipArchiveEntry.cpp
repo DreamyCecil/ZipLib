@@ -445,6 +445,13 @@ bool ZipArchiveEntry::SetCompressionStream(std::istream& stream, CompressionMeth
 
   if (_inputStream != nullptr && _compressionMode == CompressionMode::Immediate)
   {
+    if (auto encryptionMethod = _compressionMethod->GetEncryptionMethod())
+    {
+      _entryInfo.SetGeneralPurposeBitFlag(detail::ZipBitFlag::Encrypted);
+
+      encryptionMethod->OnEncryptionBegin(this->shared_from_this());
+    }
+
     _immediateBuffer = std::make_shared<std::stringstream>();
     this->InternalCompressStream(*_inputStream, *_immediateBuffer);
 
@@ -468,7 +475,10 @@ void ZipArchiveEntry::UnsetCompressionStream()
 
 void ZipArchiveEntry::Remove()
 {
-  auto it = std::find(_archive->_entries.begin(), _archive->_entries.end(), this->shared_from_this());
+  auto it = std::find(
+    _archive->_entries.begin(),
+    _archive->_entries.end(),
+    this->shared_from_this());
 
   if (it != _archive->_entries.end())
   {
@@ -554,6 +564,13 @@ void ZipArchiveEntry::SerializeLocalFileHeader(std::ostream& stream)
     }
   }
 
+  if (auto encryptionMethod = _compressionMethod->GetEncryptionMethod())
+  {
+    _entryInfo.SetGeneralPurposeBitFlag(detail::ZipBitFlag::Encrypted);
+
+    encryptionMethod->OnEncryptionBegin(this->shared_from_this());
+  }
+
   if (!_hasLocalFileHeader)
   {
     this->FetchLocalFileHeader();
@@ -635,10 +652,6 @@ void ZipArchiveEntry::InternalCompressStream(std::istream& inputStream, std::ost
     std::unique_ptr<encryption_encoder_stream> encryptionStream;
     if (auto encryptionMethod = _compressionMethod->GetEncryptionMethod())
     {
-      _entryInfo.SetGeneralPurposeBitFlag(detail::ZipBitFlag::Encrypted);
-
-      encryptionMethod->OnEncryptionBegin(this->shared_from_this());
-
       encryptionStream = std::unique_ptr<encryption_encoder_stream>(new encryption_encoder_stream(
         encryptionMethod->GetEncoder(),
         encryptionMethod->GetProperties(),

@@ -31,6 +31,13 @@ class MethodTemplate
       return std::make_shared<METHOD_CLASS>();
     }
 
+    static Ptr Create(const std::string& password)
+    {
+      auto encryptionMethod = std::make_shared<METHOD_CLASS>();
+      encryptionMethod->SetPassword(password);
+      return encryptionMethod;
+    }
+
     properties_type& GetProperties() override
     {
       _properties.normalize();

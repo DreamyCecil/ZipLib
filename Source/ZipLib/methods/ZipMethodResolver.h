@@ -34,9 +34,9 @@
 
 #define ZIP_ENCRYPTION_METHOD_ADD(method_class)                                                   \
   if (archiveEntry->IsEncrypted() &&                                                              \
-       (method_class::CompressionMethod != ZipMethodDescriptor::INVALID_COMPRESSION_METHOD &&     \
+      ((method_class::CompressionMethod != ZipMethodDescriptor::INVALID_COMPRESSION_METHOD &&    \
         method_class::CompressionMethod == archiveEntry->GetCompressionMethod())                  \
-    || (method_class::CompressionMethod == ZipMethodDescriptor::INVALID_COMPRESSION_METHOD))      \
+    || (method_class::CompressionMethod == ZipMethodDescriptor::INVALID_COMPRESSION_METHOD)))     \
     {                                                                                             \
       encryptionMethod = method_class::Create();                                                  \
       encryptionMethod->OnDecryptionBegin(archiveEntry);                                          \

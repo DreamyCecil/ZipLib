@@ -25,6 +25,7 @@ Bin/**
 
 # Visual Studio files
 Obj/**
+ipch
 *.psess
 *.vspx
 *.suo

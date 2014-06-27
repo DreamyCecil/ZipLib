@@ -113,12 +113,8 @@ class deflate_decoder
       {
         _endOfStream = true;
 
-        // if we read more than we should last time, move pointer to the correct position
-        if (_zstream.avail_in > 0)
-        {
-          _stream->clear();
-          _stream->seekg(-static_cast<std::istream::off_type>(_zstream.avail_in), std::ios::cur);
-        }
+        // we read more than we should
+        assert(_zstream.avail_in == 0);
       }
 
       _outputBufferSize = bytesProcessed;

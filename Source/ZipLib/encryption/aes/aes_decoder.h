@@ -100,7 +100,7 @@ class aes_decoder
       auto curPos = _stream->tellg();
 
       _stream->seekg(0, std::ios::end);
-      auto streamSize = _stream->tellg() - curPos;
+      auto streamSize = static_cast<size_t>(_stream->tellg() - curPos);
 
       _stream->seekg(curPos);
 

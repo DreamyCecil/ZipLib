@@ -97,29 +97,39 @@ class bzip2_decoder
         _bzstream.avail_in = static_cast<unsigned int>(_inputBufferSize);
       }
 
-      // zstream output
-      _bzstream.next_out = reinterpret_cast<char*>(_outputBuffer);
-      _bzstream.avail_out = static_cast<unsigned int>(_bufferCapacity);
-
-      // inflate stream
-      if (!bzip2_suceeded(BZ2_bzDecompress(&_bzstream)))
+      size_t bytesProcessed;
+      do 
       {
-        return 0;
-      }
+        // bzstream output
+        _bzstream.next_out = reinterpret_cast<char*>(_outputBuffer);
+        _bzstream.avail_out = static_cast<unsigned int>(_bufferCapacity);
 
-      // associate output buffer
-      size_t bytesProcessed = _bufferCapacity - static_cast<size_t>(_bzstream.avail_out);
+        // decompress stream
+        if (!bzip2_suceeded(BZ2_bzDecompress(&_bzstream)))
+        {
+          return 0;
+        }
+
+        // associate output buffer
+        bytesProcessed = _bufferCapacity - static_cast<size_t>(_bzstream.avail_out);
+
+        if (bytesProcessed == 0)
+        {
+          // read data into buffer
+          read_next();
+
+          // set input buffer and its size
+          _bzstream.next_in = reinterpret_cast<char*>(_inputBuffer);
+          _bzstream.avail_in = static_cast<unsigned int>(_inputBufferSize);
+        }
+      } while (bytesProcessed == 0);      
 
       if (_lastError == BZ_STREAM_END)
       {
         _endOfStream = true;
 
-        // if we read more than we should last time, move pointer to the correct position
-        if (_bzstream.avail_in > 0)
-        {
-          _stream->clear();
-          _stream->seekg(-static_cast<std::istream::off_type>(_bzstream.avail_in), std::ios::cur);
-        }
+        // we read more than we should
+        assert(_bzstream.avail_in == 0);
       }
 
       _outputBufferSize = bytesProcessed;

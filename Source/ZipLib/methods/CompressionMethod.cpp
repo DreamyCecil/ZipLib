@@ -9,7 +9,11 @@ CompressionMethod::EncryptionMethodPtr CompressionMethod::GetEncryptionMethod() 
 void CompressionMethod::SetEncryptionMethod(CompressionMethod::EncryptionMethodPtr encryptionMethod)
 {
   _encryptionMethod = encryptionMethod;
-  _encryptionMethod->_compressionMethod = this->shared_from_this();
+
+  if (_encryptionMethod)
+  {
+    _encryptionMethod->_compressionMethod = this->shared_from_this();
+  }
 }
 
 ZipMethodDescriptor CompressionMethod::GetFinalMethodDescriptor() const

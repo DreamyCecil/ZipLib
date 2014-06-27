@@ -19,12 +19,8 @@ namespace detail
 
       size_t write(const void* buf, size_t size)
       {
-        auto currentPosition = _stream->tellp();
         utils::stream::store(*_stream, buf, size);
-
-        size_t delta = static_cast<size_t>(_stream->tellp()) - static_cast<size_t>(currentPosition);
-
-        return delta;
+        return size;
       }
 
       const std::ostream& get_stream() const { return *_stream; }

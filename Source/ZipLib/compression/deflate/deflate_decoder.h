@@ -103,54 +103,60 @@ class basic_deflate_decoder
 
     size_t decode_next() override
     {
-      // do not load any data until there
-      // are something left
-      if (_zstream.avail_out != 0)
+      size_t bytesProcessed = 0;
+      do
       {
-        // if all data has not been fetched and the stream is at the end,
-        // it is an error
-        if (_endOfStream)
+        // do not load any data until there
+        // are something left
+        if (_zstream.avail_out != 0)
+        {
+          // if all data has not been fetched and the stream is at the end,
+          // it is an error
+          if (_endOfStream)
+          {
+            return 0;
+          }
+
+          // read data into buffer
+          read_next();
+
+          // set input buffer and its size
+          _zstream.next_in = reinterpret_cast<Bytef*>(_inputBuffer);
+          _zstream.avail_in = static_cast<uInt>(_inputBufferSize);
+        }
+
+        // zstream output
+        _zstream.next_out = reinterpret_cast<Bytef*>(_outputBuffer);
+        _zstream.avail_out = static_cast<uInt>(_bufferCapacity);
+
+        // inflate stream
+        if (!zlib_suceeded(inflate(&_zstream, Z_NO_FLUSH)))
         {
           return 0;
         }
 
-        // read data into buffer
-        read_next();
+        // associate output buffer
+        bytesProcessed += _bufferCapacity - static_cast<size_t>(_zstream.avail_out);
 
-        // set input buffer and its size
-        _zstream.next_in = reinterpret_cast<Bytef*>(_inputBuffer);
-        _zstream.avail_in = static_cast<uInt>(_inputBufferSize);
-      }
+        // increase amount of total written bytes
+        _bytesWritten += bytesProcessed;
 
-      // zstream output
-      _zstream.next_out = reinterpret_cast<Bytef*>(_outputBuffer);
-      _zstream.avail_out = static_cast<uInt>(_bufferCapacity);
-
-      // inflate stream
-      if (!zlib_suceeded(inflate(&_zstream, Z_NO_FLUSH)))
-      {
-        return 0;
-      }
-
-      // associate output buffer
-      size_t bytesProcessed = _bufferCapacity - static_cast<size_t>(_zstream.avail_out);
-
-      // increase amount of total written bytes
-      _bytesWritten += bytesProcessed;
-
-      if (_lastError == Z_STREAM_END)
-      {
-        _endOfStream = true;
-
-        // if we read more than we should last time, move pointer to the correct position
-        if (_zstream.avail_in > 0)
+        if (_lastError == Z_STREAM_END)
         {
-          _stream->clear();
-          _stream->seekg(-static_cast<typename istream_type::off_type>(_zstream.avail_in), std::ios::cur);
-        }
-      }
+          _endOfStream = true;
 
-      _outputBufferSize = bytesProcessed;
+          // if we read more than we should last time, move pointer to the correct position
+          if (_zstream.avail_in > 0)
+          {
+            _stream->clear();
+            _stream->seekg(-static_cast<typename istream_type::off_type>(_zstream.avail_in), std::ios::cur);
+          }
+        }
+
+        _outputBufferSize = bytesProcessed;
+      }
+      // Keep consuming input until we are able to produce some output
+      while (_zstream.avail_out == static_cast<uInt>(_bufferCapacity));
 
       // return count of processed bytes from input stream
       return bytesProcessed;
@@ -187,7 +193,9 @@ class basic_deflate_decoder
 
     bool zlib_suceeded(int errorCode)
     {
-      return ((_lastError = errorCode) >= 0);
+      // Z_BUF_ERROR just means zlib filled its output buffer without
+      // consuming all of its input buffer.
+      return ((_lastError = errorCode) >= 0) || errorCode == Z_BUF_ERROR;
     }
 
     z_stream    _zstream;         // internal zlib structure

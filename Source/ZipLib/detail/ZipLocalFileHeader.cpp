@@ -69,6 +69,12 @@ bool ZipLocalFileHeader::Deserialize(std::istream& stream)
     {
       ExtraFields.push_back(extraField);
     }
+
+    // Some archives do not store extra field in the form of tag, size and data tuples.
+    // That may cause the above while cycle exit prior to reaching the extra field end,
+    // which causes wrong data offset returned by ZipArchiveEntry::GetOffsetOfCompressedData().
+    // Seek forcefully to the end of extra field to mitigate that problem.
+    stream.seekg(extraFieldEnd, std::ios::beg);
   }
 
   return true;

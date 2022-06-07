@@ -36,7 +36,7 @@ struct ZipCentralDirectoryFileHeaderBase
   uint16_t DiskNumberStart;
   uint16_t InternalFileAttributes;
   uint32_t ExternalFileAttributes;
-   int32_t RelativeOffsetOfLocalHeader;
+  uint32_t RelativeOffsetOfLocalHeader; // [Cecil] int32_t -> uint32_t
 };
 
 struct ZipCentralDirectoryFileHeader

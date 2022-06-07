@@ -334,8 +334,8 @@ class ZipArchiveEntry
     uint16_t GetVersionMadeBy() const;
     void SetVersionMadeBy(uint16_t value);
 
-    int32_t GetOffsetOfLocalHeader() const;
-    void SetOffsetOfLocalHeader(int32_t value);
+    uint32_t GetOffsetOfLocalHeader() const; // [Cecil] int32_t -> uint32_t
+    void SetOffsetOfLocalHeader(uint32_t value); // [Cecil] int32_t -> uint32_t
 
     bool HasCompressionStream() const;
 

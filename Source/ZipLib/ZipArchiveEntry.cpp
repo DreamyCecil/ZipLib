@@ -522,14 +522,16 @@ void ZipArchiveEntry::SetVersionMadeBy(uint16_t value)
   _centralDirectoryFileHeader.VersionMadeBy = value;
 }
 
-int32_t ZipArchiveEntry::GetOffsetOfLocalHeader() const
+// [Cecil] int32_t -> uint32_t
+uint32_t ZipArchiveEntry::GetOffsetOfLocalHeader() const
 {
   return _centralDirectoryFileHeader.RelativeOffsetOfLocalHeader;
 }
 
-void ZipArchiveEntry::SetOffsetOfLocalHeader(int32_t value)
+// [Cecil] int32_t -> uint32_t
+void ZipArchiveEntry::SetOffsetOfLocalHeader(uint32_t value)
 {
-  _centralDirectoryFileHeader.RelativeOffsetOfLocalHeader = static_cast<int32_t>(value);
+  _centralDirectoryFileHeader.RelativeOffsetOfLocalHeader = value;
 }
 
 bool ZipArchiveEntry::HasCompressionStream() const

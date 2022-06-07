@@ -24,7 +24,9 @@
 Bin/**
 
 # Visual Studio files
-Obj/**
+.vs/*
+bin/*
+obj/*
 *.psess
 *.vspx
 *.suo

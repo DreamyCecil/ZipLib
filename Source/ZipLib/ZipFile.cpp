@@ -45,6 +45,7 @@ ZipArchive::Ptr ZipFile::Open(const std::string& zipPath)
     // if attempt to create file failed, throw an exception
     if (!zipFile->is_open())
     {
+      delete zipFile; // [Cecil] Don't leave in the memory
       throw std::runtime_error("cannot open zip file");
     }
   }

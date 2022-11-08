@@ -32,3 +32,7 @@ obj/*
 *.suo
 *.sdf
 *.opensdf
+
+# CMake
+out/*
+CMakeSettings.json

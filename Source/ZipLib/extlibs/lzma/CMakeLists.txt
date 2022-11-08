@@ -1,0 +1,166 @@
+# source files
+if(WIN32)
+    set(sources
+        7z.h
+        7zAlloc.c
+        7zAlloc.h
+        7zBuf.c
+        7zBuf.h
+        7zBuf2.c
+        7zCrc.c
+        7zCrc.h
+        7zCrcOpt.c
+        7zDec.c
+        7zFile.c
+        7zFile.h
+        7zIn.c
+        7zStream.c
+        7zVersion.h
+        Alloc.c
+        Alloc.h
+        Bcj2.c
+        Bcj2.h
+        Bra.c
+        Bra.h
+        Bra86.c
+        BraIA64.c
+        CpuArch.c
+        CpuArch.h
+        Delta.c
+        Delta.h
+        LzFind.c
+        LzFind.h
+        LzFindMt.c
+        LzFindMt.h
+        LzHash.h
+        Lzma2Dec.c
+        Lzma2Dec.h
+        Lzma2Enc.c
+        Lzma2Enc.h
+        Lzma86.h
+        Lzma86Dec.c
+        Lzma86Enc.c
+        LzmaDec.c
+        LzmaDec.h
+        LzmaEnc.c
+        LzmaEnc.h
+        LzmaLib.c
+        LzmaLib.h
+        MtCoder.c
+        MtCoder.h
+        Ppmd.h
+        Ppmd7.c
+        Ppmd7.h
+        Ppmd7Dec.c
+        Ppmd7Enc.c
+        RotateDefs.h
+        Sha256.c
+        Sha256.h
+        Threads.c
+        Threads.h
+        Types.h
+        Xz.c
+        Xz.h
+        XzCrc64.c
+        XzCrc64.h
+        XzDec.c
+        XzEnc.c
+        XzEnc.h
+        XzIn.c
+    )
+else()
+    set(sources
+        unix/LzmaUtil/Lzma86Dec.c
+        unix/LzmaUtil/Lzma86Dec.h
+        unix/LzmaUtil/Lzma86Enc.c
+        unix/LzmaUtil/Lzma86Enc.h
+        unix/7zBuf.h
+        unix/7zBuf2.c
+        unix/7zCrc.c
+        unix/7zCrc.h
+        unix/7zCrcOpt.c
+        unix/7zStream.c
+        unix/7zVersion.h
+        unix/Aes.c
+        unix/Aes.h
+        unix/Alloc.c
+        unix/Alloc.h
+        unix/Bra.c
+        unix/Bra.h
+        unix/Bra86.c
+        unix/BraIA64.c
+        unix/BwtSort.c
+        unix/BwtSort.h
+        unix/CpuArch.c
+        unix/CpuArch.h
+        unix/Delta.c
+        unix/Delta.h
+        unix/HuffEnc.c
+        unix/HuffEnc.h
+        unix/LzFind.c
+        unix/LzFind.h
+        unix/LzFindMt.c
+        unix/LzFindMt.h
+        unix/LzHash.h
+        unix/Lzma2Dec.c
+        unix/Lzma2Dec.h
+        unix/Lzma2Enc.c
+        unix/Lzma2Enc.h
+        unix/LzmaDec.c
+        unix/LzmaDec.h
+        unix/LzmaEnc.c
+        unix/LzmaEnc.h
+        unix/MtCoder.c
+        unix/MtCoder.h
+        unix/Ppmd.h
+        unix/Ppmd7.c
+        unix/Ppmd7.h
+        unix/Ppmd7Dec.c
+        unix/Ppmd7Enc.c
+        unix/Ppmd8.c
+        unix/Ppmd8.h
+        unix/Ppmd8Dec.c
+        unix/Ppmd8Enc.c
+        unix/RotateDefs.h
+        unix/Sha256.c
+        unix/Sha256.h
+        unix/Sort.c
+        unix/Sort.h
+        unix/Threads.c
+        unix/Threads.h
+        unix/Types.h
+        unix/Xz.c
+        unix/Xz.h
+        unix/XzCrc64.c
+        unix/XzCrc64.h
+        unix/XzDec.c
+        unix/XzEnc.c
+        unix/XzEnc.h
+        unix/XzIn.c
+    )
+endif()
+# library
+add_library(lzma STATIC
+    ${sources}
+)
+# properties
+if(WIN32)
+    set(include_dir .)
+else()
+    set(include_dir unix)
+endif()
+target_include_directories(lzma
+    PUBLIC
+        ${include_dir}
+)
+set_target_properties(lzma
+    PROPERTIES
+        FOLDER "External libraries"
+)
+if(UNIX AND NOT APPLE)
+    find_package(Threads REQUIRED)
+    target_link_libraries(lzma
+        PRIVATE
+            ${CMAKE_THREAD_LIBS_INIT}
+    )
+endif()

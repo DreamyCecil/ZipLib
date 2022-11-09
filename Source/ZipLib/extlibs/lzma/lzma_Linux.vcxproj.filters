@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="unix\Aes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\HuffEnc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\XzIn.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\7zBuf2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\7zCrc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\7zCrcOpt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\Ppmd8.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\Ppmd8Dec.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\Ppmd8Enc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\7zStream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\Alloc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\BwtSort.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\Bra.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\Bra86.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\BraIA64.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\CpuArch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\Delta.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\LzFind.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\LzFindMt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\Lzma2Dec.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\Lzma2Enc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\LzmaUtil\Lzma86Dec.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\LzmaUtil\Lzma86Enc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\LzmaDec.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\LzmaEnc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\Sort.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\MtCoder.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\Ppmd7.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\Ppmd7Dec.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\Ppmd7Enc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\Sha256.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\Threads.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\Xz.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\XzCrc64.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\XzDec.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unix\XzEnc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="unix\Aes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\BwtSort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\7zBuf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\7zCrc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\HuffEnc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\7zVersion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\Alloc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\Ppmd8.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\Bra.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\CpuArch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\Delta.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\LzFind.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\LzFindMt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\LzHash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\Lzma2Dec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\Lzma2Enc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\LzmaUtil\Lzma86Dec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\LzmaDec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\LzmaEnc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\LzmaUtil\Lzma86Enc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\MtCoder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\Ppmd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\Ppmd7.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\RotateDefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\Sha256.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\Threads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\Types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\Xz.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\XzCrc64.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\XzEnc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unix\Sort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

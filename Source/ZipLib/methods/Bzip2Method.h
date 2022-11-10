@@ -17,6 +17,8 @@ class Bzip2Method :
       /* VersionNeededToExtract */ 46
     );
 
+    ZIP_METHOD_CLASS_CONSTRUCTOR(Bzip2Method, bzip2_encoder, bzip2_decoder);
+
     enum class BlockSize : int
     {
       B100 = 1,

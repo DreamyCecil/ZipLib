@@ -17,6 +17,8 @@ class LzmaMethod :
       /* VersionNeededToExtract */ 63
     );
 
+    ZIP_METHOD_CLASS_CONSTRUCTOR(LzmaMethod, lzma_encoder, lzma_decoder);
+
     enum class CompressionLevel : int
     {
       L1 = 1,

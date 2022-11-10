@@ -17,6 +17,8 @@ class DeflateMethod :
       /* VersionNeededToExtract */ 20
     );
 
+    ZIP_METHOD_CLASS_CONSTRUCTOR(DeflateMethod, deflate_encoder, deflate_decoder);
+
     enum class CompressionLevel : int
     {
       L1 = 1,

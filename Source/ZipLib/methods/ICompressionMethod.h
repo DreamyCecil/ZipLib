@@ -6,6 +6,16 @@
 
 #include <memory>
 
+// [Cecil] Define construction methods separately
+#define ZIP_METHOD_CLASS_CONSTRUCTOR(method_class, encoder_class, decoder_class) \
+  method_class() {                                       \
+    this->SetEncoder(std::make_shared<encoder_class>()); \
+    this->SetDecoder(std::make_shared<decoder_class>()); \
+  }                                                      \
+  static Ptr Create() {                                  \
+    return std::make_shared<method_class>();             \
+  }
+
 #define ZIP_METHOD_CLASS_PROLOGUE(                                              \
     method_class,                                                               \
     encoder_class, decoder_class,                                               \
@@ -16,17 +26,6 @@
                                                                                 \
   static const uint16_t CompressionMethod = compression_method;                 \
   static const uint16_t VersionNeededToExtract = version_needed_to_extract;     \
-                                                                                \
-  method_class()                                                                \
-  {                                                                             \
-    this->SetEncoder(std::make_shared<encoder_class>());                        \
-    this->SetDecoder(std::make_shared<decoder_class>());                        \
-  }                                                                             \
-                                                                                \
-  static Ptr Create()                                                           \
-  {                                                                             \
-    return std::make_shared<method_class>();                                    \
-  }                                                                             \
                                                                                 \
   compression_encoder_properties_interface& GetEncoderProperties() override     \
   {                                                                             \

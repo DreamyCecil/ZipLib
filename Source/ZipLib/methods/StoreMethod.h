@@ -17,6 +17,8 @@ class StoreMethod :
       /* VersionNeededToExtract */ 10
     );
 
+    ZIP_METHOD_CLASS_CONSTRUCTOR(StoreMethod, store_encoder, store_decoder);
+
   private:
     store_encoder_properties _encoderProps;
     store_decoder_properties _decoderProps;

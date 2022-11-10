@@ -19,6 +19,13 @@ It is a fork of https://bitbucket.org/wbenny/ziplib with own adjustments and unm
 - Built around STL smart pointers
 - Support of Windows and Linux
 
+## Fork features
+
+- Project files for building under WSL (Linux) using Visual Studio 2019 or newer.
+- Ability to disable support of specific compression methods using macro definitions.
+- Removed dependency on zlib's CRC32 calculation in case its support is disabled.
+- ZIP file support up to 4 GB.
+
 ## License
 
 Original software belongs to Petr Benes (see `Licence.txt` file).

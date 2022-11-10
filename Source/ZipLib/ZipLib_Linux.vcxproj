@@ -60,6 +60,7 @@
     <ClInclude Include="streams\streambuffs\compression_decoder_streambuf.h" />
     <ClInclude Include="streams\streambuffs\compression_encoder_streambuf.h" />
     <ClInclude Include="streams\streambuffs\crc32_streambuf.h" />
+    <ClInclude Include="streams\streambuffs\crc32_table.h" />
     <ClInclude Include="streams\streambuffs\mem_streambuf.h" />
     <ClInclude Include="streams\streambuffs\null_streambuf.h" />
     <ClInclude Include="streams\streambuffs\sub_streambuf.h" />

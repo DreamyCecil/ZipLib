@@ -3,7 +3,7 @@
 #include <cstdint>
 
 #include "../substream.h"
-#include "../../extlibs/zlib/zlib.h"
+#include "crc32_table.h"
 
 template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class crc32_streambuf
@@ -84,7 +84,25 @@ class crc32_streambuf
       // so crc32 really represents the checksum of what really has been read
       this->setg(base, base, base + 1);
 
-      _crc32 = crc32(_crc32, reinterpret_cast<Bytef*>(this->gptr()), static_cast<uInt>(sizeof(ELEM_TYPE)));
+      const size_t ctSize = sizeof(ELEM_TYPE);
+      const uint8_t *aData = reinterpret_cast<uint8_t *>(this->gptr());
+
+      // [Cecil] Begin CRC32 calculation
+      uint32_t ulCRC32 = 0xFFFFFFFFu;
+
+      {
+        // [Cecil] Process every byte
+        for (size_t i = 0; i < ctSize; ++i)
+        {
+          const uint8_t iLookup = uint8_t(ulCRC32 ^ aData[i]);
+          ulCRC32 = (ulCRC32 >> 8) ^ ziplib_crc32Table[iLookup];
+        }
+
+        // [Cecil] Finalize CRC32 calculation by inverting the bits
+        ulCRC32 ^= 0xFFFFFFFFu;
+      }
+
+      _crc32 = ulCRC32;
 
       return traits_type::to_int_type(*this->gptr());
     }

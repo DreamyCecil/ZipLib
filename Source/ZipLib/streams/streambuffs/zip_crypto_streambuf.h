@@ -6,7 +6,7 @@
 #include <random>
 #include <cassert>
 
-#include "../../extlibs/zlib/zlib.h"
+#include "crc32_table.h"
 
 template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class zip_crypto_streambuf
@@ -168,7 +168,7 @@ class zip_crypto_streambuf
   private:
     static uint32_t crc32_byte(uint32_t prevCrc32, uint8_t c)
     {
-      return uint32_t(get_crc_table()[(prevCrc32 ^ c) & 0xff] ^ (prevCrc32 >> 8));
+      return uint32_t(ziplib_crc32Table[(prevCrc32 ^ c) & 0xFF] ^ (prevCrc32 >> 8));
     }
     
     bool init_internal(const ELEM_TYPE* password)

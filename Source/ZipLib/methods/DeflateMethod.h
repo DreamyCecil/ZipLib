@@ -5,6 +5,8 @@
 
 #include <memory>
 
+#ifdef ZIPLIB_ZLIB
+
 class DeflateMethod :
   public ICompressionMethod
 {
@@ -46,3 +48,12 @@ class DeflateMethod :
     deflate_encoder_properties _encoderProps;
     deflate_decoder_properties _decoderProps;
 };
+
+#else
+
+// [Cecil] Replace with a dummy method in case zlib is disabled
+#include "DummyMethod.h"
+
+typedef DummyMethod DeflateMethod;
+
+#endif // ZIPLIB_ZLIB

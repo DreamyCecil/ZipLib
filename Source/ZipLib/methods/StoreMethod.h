@@ -5,6 +5,8 @@
 
 #include <memory>
 
+#ifdef ZIPLIB_ZLIB
+
 class StoreMethod :
   public ICompressionMethod
 {
@@ -23,3 +25,12 @@ class StoreMethod :
     store_encoder_properties _encoderProps;
     store_decoder_properties _decoderProps;
 };
+
+#else
+
+// [Cecil] Replace with a dummy method in case zlib is disabled
+#include "DummyMethod.h"
+
+typedef DummyMethod StoreMethod;
+
+#endif // ZIPLIB_ZLIB

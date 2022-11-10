@@ -47,6 +47,7 @@
     <ClInclude Include="detail\ZipLocalFileHeader.h" />
     <ClInclude Include="methods\Bzip2Method.h" />
     <ClInclude Include="methods\DeflateMethod.h" />
+    <ClInclude Include="methods\DummyMethod.h" />
     <ClInclude Include="methods\ICompressionMethod.h" />
     <ClInclude Include="methods\LzmaMethod.h" />
     <ClInclude Include="methods\StoreMethod.h" />
@@ -84,17 +85,6 @@
     <ClCompile Include="ZipArchive.cpp" />
     <ClCompile Include="ZipArchiveEntry.cpp" />
     <ClCompile Include="ZipFile.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="extlibs\bzip2\bzip2_Linux.vcxproj">
-      <Project>{877676ed-2913-4f2e-a0fb-fbb5595c31b0}</Project>
-    </ProjectReference>
-    <ProjectReference Include="extlibs\lzma\lzma_Linux.vcxproj">
-      <Project>{bb81290f-d7cc-4275-bf8d-5bbaf7eb8450}</Project>
-    </ProjectReference>
-    <ProjectReference Include="extlibs\zlib\zlib_Linux.vcxproj">
-      <Project>{6e02f1ac-4f15-4991-9ff1-c03b68d2eafe}</Project>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5E65BBC5-6F01-4EC5-A1E0-A667880CADF6}</ProjectGuid>

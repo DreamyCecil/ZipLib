@@ -4,9 +4,12 @@
 #include "store_decoder_properties.h"
 
 #include "../../streams/crc32stream.h"
-#include "../../extlibs/zlib/zlib.h"
 
 #include <cstdint>
+
+#ifdef ZIPLIB_ZLIB
+
+#include "../../extlibs/zlib/zlib.h"
 
 template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class basic_store_decoder
@@ -121,3 +124,5 @@ class basic_store_decoder
 typedef basic_store_decoder<uint8_t, std::char_traits<uint8_t>>  byte_store_decoder;
 typedef basic_store_decoder<char, std::char_traits<char>>        store_decoder;
 typedef basic_store_decoder<wchar_t, std::char_traits<wchar_t>>  wstore_decoder;
+
+#endif // ZIPLIB_ZLIB

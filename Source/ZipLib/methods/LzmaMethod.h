@@ -5,6 +5,8 @@
 
 #include <memory>
 
+#ifdef ZIPLIB_LZMA
+
 class LzmaMethod :
   public ICompressionMethod
 {
@@ -46,3 +48,5 @@ class LzmaMethod :
     lzma_encoder_properties _encoderProps;
     lzma_decoder_properties _decoderProps;
 };
+
+#endif // ZIPLIB_LZMA

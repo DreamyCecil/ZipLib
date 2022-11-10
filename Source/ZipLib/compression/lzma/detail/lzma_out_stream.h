@@ -1,4 +1,7 @@
 #pragma once
+
+#ifdef ZIPLIB_LZMA
+
 #include "../../../extlibs/lzma/Types.h"
 
 namespace detail
@@ -43,3 +46,5 @@ namespace detail
       size_t _bytesWritten;
   };
 }
+
+#endif // ZIPLIB_LZMA

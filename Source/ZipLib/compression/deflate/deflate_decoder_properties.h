@@ -1,6 +1,8 @@
 #pragma once
 #include "../compression_interface.h"
 
+#ifdef ZIPLIB_ZLIB
+
 struct deflate_decoder_properties
   : compression_decoder_properties_interface
 {
@@ -17,3 +19,5 @@ struct deflate_decoder_properties
 
   size_t BufferCapacity;
 };
+
+#endif // ZIPLIB_ZLIB

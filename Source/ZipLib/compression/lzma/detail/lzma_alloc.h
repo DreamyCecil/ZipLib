@@ -1,4 +1,7 @@
 #pragma once
+
+#ifdef ZIPLIB_LZMA
+
 #include "../../../extlibs/lzma/Types.h"
 
 namespace detail
@@ -14,3 +17,5 @@ namespace detail
       }
   };
 }
+
+#endif // ZIPLIB_LZMA

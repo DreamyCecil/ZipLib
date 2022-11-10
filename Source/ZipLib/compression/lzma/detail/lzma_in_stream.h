@@ -1,8 +1,11 @@
 #pragma once
-#include "../../../extlibs/lzma/Types.h"
 
 #include <condition_variable>
 #include <mutex>
+
+#ifdef ZIPLIB_LZMA
+
+#include "../../../extlibs/lzma/Types.h"
 
 // forward declaration
 template <typename ELEM_TYPE_, typename TRAITS_TYPE_>
@@ -103,3 +106,5 @@ namespace detail
       }
   };
 }
+
+#endif // ZIPLIB_LZMA

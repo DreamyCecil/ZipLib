@@ -3,9 +3,11 @@
 
 #include "bzip2_encoder_properties.h"
 
-#include "../../extlibs/bzip2/bzlib.h"
-
 #include <cstdint>
+
+#ifdef ZIPLIB_BZIP2
+
+#include "../../extlibs/bzip2/bzlib.h"
 
 template <typename ELEM_TYPE, typename TRAITS_TYPE>
 class basic_bzip2_encoder
@@ -165,3 +167,5 @@ class basic_bzip2_encoder
 typedef basic_bzip2_encoder<uint8_t, std::char_traits<uint8_t>>  byte_bzip2_encoder;
 typedef basic_bzip2_encoder<char, std::char_traits<char>>        bzip2_encoder;
 typedef basic_bzip2_encoder<wchar_t, std::char_traits<wchar_t>>  wbzip2_encoder;
+
+#endif // ZIPLIB_BZIP2

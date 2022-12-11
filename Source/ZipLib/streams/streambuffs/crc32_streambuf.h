@@ -88,7 +88,7 @@ class crc32_streambuf
       const uint8_t *aData = reinterpret_cast<uint8_t *>(this->gptr());
 
       // [Cecil] Begin CRC32 calculation
-      uint32_t ulCRC32 = 0xFFFFFFFFu;
+      uint32_t ulCRC32 = _crc32 ^ 0xFFFFFFFFu;
 
       {
         // [Cecil] Process every byte

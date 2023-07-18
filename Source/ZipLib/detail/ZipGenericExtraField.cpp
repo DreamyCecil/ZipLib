@@ -10,15 +10,14 @@ bool ZipGenericExtraField::Deserialize(std::istream& stream, std::istream::pos_t
     return false;
   }
 
-  deserialize(stream, Tag);
-  deserialize(stream, Size);
+  if (!deserialize(stream, Tag) || !deserialize(stream, Size)) return false;
 
   if ((extraFieldEnd - stream.tellg()) < Size)
   {
     return false;
   }
 
-  deserialize(stream, Data, Size);
+  if (!deserialize(stream, Data, Size) && Size > 0) return false;
 
   return true;
 }

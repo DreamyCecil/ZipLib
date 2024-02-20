@@ -3,7 +3,7 @@
 
 #include "detail/lzma_handle.h"
 
-#ifdef ZIPLIB_LZMA
+#ifndef ZIPLIB_NO_LZMA
 
 #include "../../extlibs/lzma/LzmaEnc.h"
 
@@ -42,4 +42,4 @@ struct lzma_encoder_properties
   int  CompressionLevel;
 };
 
-#endif // ZIPLIB_LZMA
+#endif // ZIPLIB_NO_LZMA

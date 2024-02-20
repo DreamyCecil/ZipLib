@@ -5,7 +5,7 @@
 
 #include <memory>
 
-#ifdef ZIPLIB_ZLIB
+#ifndef ZIPLIB_NO_ZLIB
 
 class DeflateMethod :
   public ICompressionMethod
@@ -56,4 +56,4 @@ class DeflateMethod :
 
 typedef DummyMethod DeflateMethod;
 
-#endif // ZIPLIB_ZLIB
+#endif // ZIPLIB_NO_ZLIB

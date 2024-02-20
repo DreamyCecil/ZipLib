@@ -16,16 +16,16 @@ struct ZipMethodResolver
 {
   static ICompressionMethod::Ptr GetZipMethodInstance(uint16_t compressionMethod)
   {
-    #ifdef ZIPLIB_ZLIB
+    #ifndef ZIPLIB_NO_ZLIB
       ZIP_METHOD_ADD(StoreMethod);
       ZIP_METHOD_ADD(DeflateMethod);
     #endif
 
-    #ifdef ZIPLIB_BZIP2
+    #ifndef ZIPLIB_NO_BZIP2
       ZIP_METHOD_ADD(Bzip2Method);
     #endif
 
-    #ifdef ZIPLIB_LZMA
+    #ifndef ZIPLIB_NO_LZMA
       ZIP_METHOD_ADD(LzmaMethod);
     #endif
 

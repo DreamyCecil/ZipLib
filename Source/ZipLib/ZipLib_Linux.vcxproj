@@ -160,7 +160,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PreprocessorDefinitions>ZIPLIB_BZIP2;ZIPLIB_LZMA;ZIPLIB_ZLIB;_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib />
   </ItemDefinitionGroup>
@@ -168,7 +168,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PreprocessorDefinitions>ZIPLIB_BZIP2;ZIPLIB_LZMA;ZIPLIB_ZLIB;_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib />
   </ItemDefinitionGroup>
@@ -179,7 +179,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>ZIPLIB_BZIP2;ZIPLIB_LZMA;ZIPLIB_ZLIB;_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib />
   </ItemDefinitionGroup>
@@ -190,7 +190,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>ZIPLIB_BZIP2;ZIPLIB_LZMA;ZIPLIB_ZLIB;_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib />
   </ItemDefinitionGroup>

@@ -24,10 +24,10 @@ It is a fork of https://bitbucket.org/wbenny/ziplib with own adjustments and unm
 - Project files for building under WSL (Linux) using Visual Studio 2019 or newer.
 - Removed dependency on zlib's CRC32 calculation in case its support is disabled.
 - ZIP file support up to 4 GB.
-- Ability to toggle support of specific compression methods using macro definitions. Define any of these macros before including ZipLib headers:
-  - `ZIPLIB_BZIP2` - enable compression using bzip2 library.
-  - `ZIPLIB_LZMA` - enable compression using LZMA library.
-  - `ZIPLIB_ZLIB` - enable compression using zlib library.
+- Ability to toggle support of specific compression methods. Define any of these macros for **both** ZipLib and your project:
+  - `ZIPLIB_NO_BZIP2` - disable compression using bzip2 library.
+  - `ZIPLIB_NO_LZMA` - disable compression using LZMA library.
+  - `ZIPLIB_NO_ZLIB` - disable compression using zlib library.
 
 ## License
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "../compression_interface.h"
 
-#ifdef ZIPLIB_BZIP2
+#ifndef ZIPLIB_NO_BZIP2
 
 struct bzip2_decoder_properties
   : compression_decoder_properties_interface
@@ -20,4 +20,4 @@ struct bzip2_decoder_properties
   size_t BufferCapacity;
 };
 
-#endif // ZIPLIB_BZIP2
+#endif // ZIPLIB_NO_BZIP2

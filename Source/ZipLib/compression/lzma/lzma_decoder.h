@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-#ifdef ZIPLIB_LZMA
+#ifndef ZIPLIB_NO_LZMA
 
 #include "../../extlibs/lzma/LzmaDec.h"
 
@@ -192,4 +192,4 @@ typedef basic_lzma_decoder<uint8_t, std::char_traits<uint8_t>>  byte_lzma_decode
 typedef basic_lzma_decoder<char, std::char_traits<char>>        lzma_decoder;
 typedef basic_lzma_decoder<wchar_t, std::char_traits<wchar_t>>  wlzma_decoder;
 
-#endif // ZIPLIB_LZMA
+#endif // ZIPLIB_NO_LZMA

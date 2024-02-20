@@ -5,7 +5,7 @@
 
 #include <memory>
 
-#ifdef ZIPLIB_ZLIB
+#ifndef ZIPLIB_NO_ZLIB
 
 class StoreMethod :
   public ICompressionMethod
@@ -33,4 +33,4 @@ class StoreMethod :
 
 typedef DummyMethod StoreMethod;
 
-#endif // ZIPLIB_ZLIB
+#endif // ZIPLIB_NO_ZLIB

@@ -5,7 +5,7 @@
 
 #include <cstdint>
 
-#ifdef ZIPLIB_BZIP2
+#ifndef ZIPLIB_NO_BZIP2
 
 #include "../../extlibs/bzip2/bzlib.h"
 
@@ -168,4 +168,4 @@ typedef basic_bzip2_encoder<uint8_t, std::char_traits<uint8_t>>  byte_bzip2_enco
 typedef basic_bzip2_encoder<char, std::char_traits<char>>        bzip2_encoder;
 typedef basic_bzip2_encoder<wchar_t, std::char_traits<wchar_t>>  wbzip2_encoder;
 
-#endif // ZIPLIB_BZIP2
+#endif // ZIPLIB_NO_BZIP2

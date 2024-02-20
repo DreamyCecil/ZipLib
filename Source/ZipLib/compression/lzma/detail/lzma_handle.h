@@ -1,7 +1,7 @@
 #pragma once
 #include "lzma_alloc.h"
 
-#ifdef ZIPLIB_LZMA
+#ifndef ZIPLIB_NO_LZMA
 
 #include "../../../extlibs/lzma/LzmaEnc.h"
 
@@ -32,4 +32,4 @@ namespace detail
   };
 }
 
-#endif // ZIPLIB_LZMA
+#endif // ZIPLIB_NO_LZMA

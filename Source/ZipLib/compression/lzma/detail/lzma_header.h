@@ -2,7 +2,7 @@
 #include "lzma_handle.h"
 #include "lzma_out_stream.h"
 
-#ifdef ZIPLIB_LZMA
+#ifndef ZIPLIB_NO_LZMA
 
 #include "../../../extlibs/lzma/7zVersion.h"
 #include "../../../extlibs/lzma/LzmaEnc.h"
@@ -42,4 +42,4 @@ namespace detail
   };
 }
 
-#endif // ZIPLIB_LZMA
+#endif // ZIPLIB_NO_LZMA

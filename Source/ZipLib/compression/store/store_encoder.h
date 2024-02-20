@@ -7,7 +7,7 @@
 
 #include <cstdint>
 
-#ifdef ZIPLIB_ZLIB
+#ifndef ZIPLIB_NO_ZLIB
 
 #include "../../extlibs/zlib/zlib.h"
 
@@ -127,4 +127,4 @@ typedef basic_store_encoder<uint8_t, std::char_traits<uint8_t>>  byte_store_enco
 typedef basic_store_encoder<char, std::char_traits<char>>        store_encoder;
 typedef basic_store_encoder<wchar_t, std::char_traits<wchar_t>>  wstore_encoder;
 
-#endif // ZIPLIB_ZLIB
+#endif // ZIPLIB_NO_ZLIB

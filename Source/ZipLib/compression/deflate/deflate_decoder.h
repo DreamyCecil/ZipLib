@@ -5,7 +5,7 @@
 
 #include <cstdint>
 
-#ifdef ZIPLIB_ZLIB
+#ifndef ZIPLIB_NO_ZLIB
 
 #include "../../extlibs/zlib/zlib.h"
 
@@ -220,4 +220,4 @@ typedef basic_deflate_decoder<uint8_t, std::char_traits<uint8_t>>  byte_deflate_
 typedef basic_deflate_decoder<char, std::char_traits<char>>        deflate_decoder;
 typedef basic_deflate_decoder<wchar_t, std::char_traits<wchar_t>>  wdeflate_decoder;
 
-#endif // ZIPLIB_ZLIB
+#endif // ZIPLIB_NO_ZLIB

@@ -5,7 +5,7 @@
 
 #include <memory>
 
-#ifdef ZIPLIB_BZIP2
+#ifndef ZIPLIB_NO_BZIP2
 
 class Bzip2Method :
   public ICompressionMethod
@@ -49,4 +49,4 @@ class Bzip2Method :
     bzip2_decoder_properties _decoderProps;
 };
 
-#endif // ZIPLIB_BZIP2
+#endif // ZIPLIB_NO_BZIP2

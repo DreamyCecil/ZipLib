@@ -8,7 +8,6 @@ add_executable(ZipLib_Sample
 )
 # properties
 target_compile_features(ZipLib_Sample PRIVATE cxx_std_11)
-target_compile_definitions(ZipLib_Sample PRIVATE ZIPLIB_BZIP2 ZIPLIB_LZMA ZIPLIB_ZLIB)
 target_link_libraries(ZipLib_Sample
     PRIVATE
         ZipLib
